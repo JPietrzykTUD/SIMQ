@@ -1,0 +1,3 @@
+[submodule "submodules/memory_decorator"]
+	path = submodules/memory_decorator
+	url = https://github.com/JPietrzykTUD/MemoryDecorator.git

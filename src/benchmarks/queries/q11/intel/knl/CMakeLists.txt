@@ -1,0 +1,1 @@
+create_benchmark(benchmark_query_1_1_damon2020_intel_xeon_phi_knl query_intel_knl_q11_damon.cpp)

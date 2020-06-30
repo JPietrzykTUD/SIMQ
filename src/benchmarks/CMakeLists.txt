@@ -1,0 +1,2 @@
+add_subdirectory(microbenchmarks)
+add_subdirectory(queries)

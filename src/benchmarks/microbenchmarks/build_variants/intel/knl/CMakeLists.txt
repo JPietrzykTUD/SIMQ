@@ -1,0 +1,1 @@
+create_benchmark(micro_benchmark_build_variants_intel_phi_knl mb_xeon_phi_knl_build_variants.cpp)

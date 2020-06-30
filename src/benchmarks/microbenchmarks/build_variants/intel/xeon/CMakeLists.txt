@@ -1,0 +1,1 @@
+create_benchmark(micro_benchmark_build_variants_intel_xeon mb_intel_xeon_build_variants.cpp)
