@@ -22,9 +22,20 @@ you can find a description here: https://docs.docker.com/engine/install/ .
 
     $ git clone --recurse-submodules https://github.com/JPietrzykTUD/SIMQ.git
     
-# Building
+# Prepare
+There are two options to get the docker images: Build it from scratch (I) or download it from docker hub (II).
 
-    $ ./build_docker.sh #initial step (needs to be executed just once)
+## Build it from scratch
+    
+    $ ./build_docker.sh # initial step (needs to be executed just once)
+    
+## Download it from docker hub
+
+    $ docker pull jpietrzyktud/simq:damon2020
+    $ docker tag 59f0124b7651 simq_ubuntu:1.0
+    
+# Building
+    
     $ ./build.sh -p PLATFORM -c COMPILER
     
     # PLATFORM : COMPILER
