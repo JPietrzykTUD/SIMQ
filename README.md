@@ -32,7 +32,7 @@ There are two options to get the docker images: Build it from scratch (I) or dow
 ## Download it from docker hub
 
     $ docker pull jpietrzyktud/simq:damon2020
-    $ docker tag 59f0124b7651 simq_ubuntu:1.0
+    $ docker tag jpietrzyktud/simq:damon2020 simq_ubuntu:1.0
     
 # Building
     
