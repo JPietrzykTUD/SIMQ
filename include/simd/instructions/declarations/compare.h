@@ -34,6 +34,36 @@ namespace tuddbs {
       typename VectorExtension::vector_t const,
       typename VectorExtension::vector_t const
    );
+   
+   template< class VectorExtension >
+   typename VectorExtension::vector_t
+   min(
+      typename VectorExtension::vector_t const,
+      typename VectorExtension::vector_t const
+   );
+   
+   template< class VectorExtension >
+   typename VectorExtension::vector_t
+   mask_min(
+      typename VectorExtension::vector_t const,
+      typename VectorExtension::vector_t const,
+      typename VectorExtension::mask_t const
+   );
+   
+   template< class VectorExtension >
+   typename VectorExtension::vector_t
+   max(
+      typename VectorExtension::vector_t const,
+      typename VectorExtension::vector_t const
+   );
+   
+   template< class VectorExtension >
+   typename VectorExtension::vector_t
+   mask_max(
+      typename VectorExtension::vector_t const,
+      typename VectorExtension::vector_t const,
+      typename VectorExtension::mask_t const
+   );
 }
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_INSTRUCTIONS_DECLARATIONS_COMPARE_H

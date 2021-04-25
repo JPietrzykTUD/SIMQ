@@ -310,7 +310,7 @@ namespace tuddbs {
 
          typename VectorExtension_t::mask_t * input_bitmask_buffer_ptr =
             ( typename VectorExtension_t::mask_t * ) input_bitmask_column->data_ptr;
-         typename VectorExtension_t::vector_t result_vec = set_zero< VectorExtension_t >( );
+         typename VectorExtension_t::vector_t result_vec = Aggregator_t< VectorExtension_t >::init();
          std::size_t const fully_vectorized_count = element_count / step_width_t::value;
          std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
          typename VectorExtension_t::mask_t mask = 0;
@@ -355,8 +355,13 @@ namespace tuddbs {
                }
             }
          }
+
          typename VectorExtension_t::vector_t reduced_result_vec =
-            reduce_add< VectorExtension_t, VectorBuilder_t::lanes_per_query_t::value >( result_vec );
+            Aggregator_t< VectorExtension_t >::template inner_finalize< VectorBuilder_t::lanes_per_query_t::value >(
+               result_vec
+            );
+//         typename VectorExtension_t::vector_t reduced_result_vec =
+//            reduce_add< VectorExtension_t, VectorBuilder_t::lanes_per_query_t::value >( result_vec );
          [[maybe_unused]]typename VectorExtension_t::base_t * tmp = store< VectorExtension_t >( result_column->data_ptr, reduced_result_vec );
          return result_column;
       }

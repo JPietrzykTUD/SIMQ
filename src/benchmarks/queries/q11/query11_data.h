@@ -36,6 +36,8 @@ namespace global {
 
 #include <engine/operators/core/filter/point_filter_comparator_core.h>
 #include <engine/operators/core/aggregate/aggregate_sum_core.h>
+#include <engine/operators/core/aggregate/aggregate_min_core.h>
+#include <engine/operators/core/aggregate/aggregate_max_core.h>
 
 #include <engine/operators/bitmask_candidates/sequential/aggregate_bitmask_candidates.h>
 #include <engine/operators/bitmask_candidates/sequential/filter_bitmask_candidates.h>

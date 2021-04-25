@@ -1,4 +1,4 @@
-/* 
+ /*
  * This file is part of the LaneLord Project (https://github.com/JPietrzykTUD/LaneLord).
  * Copyright (c) 2020 Johannes Pietrzyk.
  * 

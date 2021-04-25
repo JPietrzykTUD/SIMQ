@@ -125,16 +125,206 @@ void print1( ) {
       << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp1, 0 >::incrementor_t::value << "\",";
 }
 
-void run_experiment( std::size_t data_size ) {
+
+void run_experiment_avx512( std::size_t data_size ) {
    using namespace tuddbs;
    datagenerator_q11< uint64_t, 1, 8 > * datagenerator =
-      new datagenerator_q11< uint64_t, 1, 8 >( 128_MiB );
-   
-   
-   
+      new datagenerator_q11< uint64_t, 1, 8 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 8 >::run(
+      datagenerator );
+   seq_wl_q12_one_Stage2_ops< avx512< uint64_t >, 8 >::run(
+      datagenerator );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,4 >::run(
+      datagenerator );
+   seq_wl_q12_two_Stage2_ops< avx512< uint64_t >, 4,4 >::run(
+      datagenerator );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,2,2 >::run(
+      datagenerator );
+   seq_wl_q12_three_Stage2_ops< avx512< uint64_t >, 4,2,2 >::run(
+      datagenerator );
    delete datagenerator;
+   
+   datagenerator_q11< uint32_t, 1, 16 > * datagenerator1 =
+      new datagenerator_q11< uint32_t, 1, 16 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint32_t >, 16 >::run(
+      datagenerator1 );
+   seq_wl_q12_one_Stage2_ops< avx512< uint32_t >, 16 >::run(
+      datagenerator1 );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint32_t >, 8, 8 >::run(
+      datagenerator1 );
+   seq_wl_q12_two_Stage2_ops< avx512< uint32_t >, 8, 8 >::run(
+      datagenerator1 );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint32_t >, 8,4,4 >::run(
+      datagenerator1 );
+   seq_wl_q12_three_Stage2_ops< avx512< uint32_t >, 8,4,4 >::run(
+      datagenerator1 );
+   delete datagenerator1;
+   
+   datagenerator_q11< uint16_t, 1, 32 > * datagenerator2 =
+      new datagenerator_q11< uint16_t, 1, 32 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint16_t >, 32 >::run(
+      datagenerator2 );
+   seq_wl_q12_one_Stage2_ops< avx512< uint16_t >, 32 >::run(
+      datagenerator2 );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint16_t >, 16, 16 >::run(
+      datagenerator2 );
+   seq_wl_q12_two_Stage2_ops< avx512< uint16_t >, 16, 16 >::run(
+      datagenerator2 );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint16_t >, 16,8,8 >::run(
+      datagenerator2 );
+   seq_wl_q12_three_Stage2_ops< avx512< uint16_t >, 16,8,8 >::run(
+      datagenerator2 );
+   delete datagenerator2;
+   
+   datagenerator_q11< uint8_t, 1, 64 > * datagenerator3 =
+      new datagenerator_q11< uint8_t, 1, 64 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint8_t >, 64 >::run(
+      datagenerator3 );
+   seq_wl_q12_one_Stage2_ops< avx512< uint8_t >, 64 >::run(
+      datagenerator3 );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint8_t >, 32, 32 >::run(
+      datagenerator3 );
+   seq_wl_q12_two_Stage2_ops< avx512< uint8_t >, 32, 32 >::run(
+      datagenerator3 );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint8_t >, 32,16,16 >::run(
+      datagenerator3 );
+   seq_wl_q12_three_Stage2_ops< avx512< uint8_t >, 32,16,16 >::run(
+      datagenerator3 );
+   delete datagenerator3;
 }
 
+void run_experiment_avx2( std::size_t data_size ) {
+   using namespace tuddbs;
+   datagenerator_q11< uint64_t, 1, 4 > * datagenerator =
+      new datagenerator_q11< uint64_t, 1, 4 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint64_t >, 4 >::run(
+      datagenerator );
+   seq_wl_q12_one_Stage2_ops< avx2< uint64_t >, 4 >::run(
+      datagenerator );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint64_t >, 2,2 >::run(
+      datagenerator );
+   seq_wl_q12_two_Stage2_ops< avx2< uint64_t >, 2,2 >::run(
+      datagenerator );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint64_t >, 2,1,1 >::run(
+      datagenerator );
+   seq_wl_q12_three_Stage2_ops< avx2< uint64_t >, 2,1,1 >::run(
+      datagenerator );
+   delete datagenerator;
+   
+   datagenerator_q11< uint32_t, 1, 8 > * datagenerator1 =
+      new datagenerator_q11< uint32_t, 1, 8 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint32_t >, 8 >::run(
+      datagenerator1 );
+   seq_wl_q12_one_Stage2_ops< avx2< uint32_t >, 8 >::run(
+      datagenerator1 );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint32_t >, 4, 4 >::run(
+      datagenerator1 );
+   seq_wl_q12_two_Stage2_ops< avx2< uint32_t >, 4, 4 >::run(
+      datagenerator1 );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint32_t >, 4,2,2 >::run(
+      datagenerator1 );
+   seq_wl_q12_three_Stage2_ops< avx2< uint32_t >, 4,2,2 >::run(
+      datagenerator1 );
+   delete datagenerator1;
+   
+   datagenerator_q11< uint16_t, 1, 16 > * datagenerator2 =
+      new datagenerator_q11< uint16_t, 1, 16 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint16_t >, 16 >::run(
+      datagenerator2 );
+   seq_wl_q12_one_Stage2_ops< avx2< uint16_t >, 16 >::run(
+      datagenerator2 );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint16_t >, 8, 8 >::run(
+      datagenerator2 );
+   seq_wl_q12_two_Stage2_ops< avx2< uint16_t >, 8, 8 >::run(
+      datagenerator2 );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint16_t >, 8,4,4 >::run(
+      datagenerator2 );
+   seq_wl_q12_three_Stage2_ops< avx2< uint16_t >, 8,4,4 >::run(
+      datagenerator2 );
+   delete datagenerator2;
+   
+   datagenerator_q11< uint8_t, 1, 32 > * datagenerator3 =
+      new datagenerator_q11< uint8_t, 1, 32 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint8_t >, 32 >::run(
+      datagenerator3 );
+   seq_wl_q12_one_Stage2_ops< avx2< uint8_t >, 32 >::run(
+      datagenerator3 );
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint8_t >, 16, 16 >::run(
+      datagenerator3 );
+   seq_wl_q12_two_Stage2_ops< avx2< uint8_t >, 16, 16 >::run(
+      datagenerator3 );
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx2< uint8_t >, 16,8,8 >::run(
+      datagenerator3 );
+   seq_wl_q12_three_Stage2_ops< avx2< uint8_t >, 16,8,8 >::run(
+      datagenerator3 );
+   delete datagenerator3;
+}
+
+
+void run_experiment_sse( std::size_t data_size ) {
+   using namespace tuddbs;
+   
+   datagenerator_q11< uint64_t, 1, 2 > * datagenerator0=
+      new datagenerator_q11< uint64_t, 1, 2 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, sse< uint64_t >, 2 >::run(
+      datagenerator0);
+   seq_wl_q12_one_Stage2_ops< sse< uint64_t >, 2 >::run(
+      datagenerator0);
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, sse< uint64_t >, 1,1 >::run(
+      datagenerator0);
+   seq_wl_q12_two_Stage2_ops< sse< uint64_t >, 1,1 >::run(
+      datagenerator0);
+   delete datagenerator0;
+   
+   datagenerator_q11< uint32_t, 1, 4 > * datagenerator1=
+      new datagenerator_q11< uint32_t, 1, 4 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, sse< uint32_t >, 4 >::run(
+      datagenerator1);
+   seq_wl_q12_one_Stage2_ops< sse< uint32_t >, 4 >::run(
+      datagenerator1);
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, sse< uint32_t >, 2,2 >::run(
+      datagenerator1);
+   seq_wl_q12_two_Stage2_ops< sse< uint32_t >, 2,2 >::run(
+      datagenerator1);
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, sse< uint32_t >, 2,1,1 >::run(
+      datagenerator1);
+   seq_wl_q12_three_Stage2_ops< sse< uint32_t >, 2,1,1 >::run(
+      datagenerator1);
+   delete datagenerator1;
+   
+   datagenerator_q11< uint16_t, 1, 8 > * datagenerator2=
+      new datagenerator_q11< uint16_t, 1, 8 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, sse< uint16_t >, 8 >::run(
+      datagenerator2);
+   seq_wl_q12_one_Stage2_ops< sse< uint16_t >, 8 >::run(
+      datagenerator2);
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, sse< uint16_t >, 4, 4 >::run(
+      datagenerator2);
+   seq_wl_q12_two_Stage2_ops< sse< uint16_t >, 4, 4 >::run(
+      datagenerator2);
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, sse< uint16_t >, 4,2,2 >::run(
+      datagenerator2);
+   seq_wl_q12_three_Stage2_ops< sse< uint16_t >, 4,2,2 >::run(
+      datagenerator2);
+   delete datagenerator2;
+   
+   datagenerator_q11< uint8_t, 1, 16 > * datagenerator3=
+      new datagenerator_q11< uint8_t, 1, 16 >( data_size );
+   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, sse< uint8_t >, 16 >::run(
+      datagenerator3);
+   seq_wl_q12_one_Stage2_ops< sse< uint8_t >, 16 >::run(
+      datagenerator3);
+   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, sse< uint8_t >, 8, 8 >::run(
+      datagenerator3);
+   seq_wl_q12_two_Stage2_ops< sse< uint8_t >, 8, 8 >::run(
+      datagenerator3);
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, sse< uint8_t >, 8,4,4 >::run(
+      datagenerator3);
+   seq_wl_q12_three_Stage2_ops< sse< uint8_t >, 8,4,4 >::run(
+      datagenerator3);
+   delete datagenerator3;
+   
+}
 
 int main( void ) {
    using namespace tuddbs;
@@ -152,79 +342,10 @@ int main( void ) {
    }
    global::outputfile << get_definitions("#");
    q11_header( );
-
-   datagenerator_q11< uint64_t, 1, 8 > * datagenerator =
-      new datagenerator_q11< uint64_t, 1, 8 >( 128_MiB );
-
    
-//   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 8 >::run(
-//      datagenerator );
-//   seq_wl_q12_one_Stage2_ops< avx512< uint64_t >, 8 >::run(
-//      datagenerator );
-
-//   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,4 >::run(
-//      datagenerator );
-//   seq_wl_q12_two_Stage2_ops< avx512< uint64_t >, 4,4 >::run(
-//      datagenerator );
-   
-   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,2,2 >::run(
-      datagenerator );
-   seq_wl_q12_three_Stage2_ops< avx512< uint64_t >, 4,2,2 >::run(
-      datagenerator );
-   
+   run_experiment_sse( 128_MiB );
    
    global::outputfile.close();
-
-/*
-   std::cout << "[";
-   print1< avx512< uint64_t >, 8 >();
-   print2< avx512< uint64_t >, 4, 4 >();
-   print3< avx512< uint64_t >, 4, 2, 2 >();
-   
-   print1< avx512< uint32_t >, 16 >();
-   print2< avx512< uint32_t >, 8, 8 >();
-   print3< avx512< uint32_t >, 8, 4, 4 >();
-   
-   print1< avx512< uint16_t >, 32 >();
-   print2< avx512< uint16_t >, 16, 16 >();
-   print3< avx512< uint16_t >, 16, 8, 8 >();
-   
-   print1< avx512< uint8_t >, 64 >();
-   print2< avx512< uint8_t >, 32, 32 >();
-   print3< avx512< uint8_t >, 32, 16, 16 >();
-   
-   print1< avx2< uint64_t >, 4 >();
-   print2< avx2< uint64_t >, 2, 2 >();
-   print3< avx2< uint64_t >, 2, 1, 1 >();
-   
-   print1< avx2< uint32_t >, 8 >();
-   print2< avx2< uint32_t >, 4, 4 >();
-   print3< avx2< uint32_t >, 4, 2, 2 >();
-   
-   print1< avx2< uint16_t >, 16 >();
-   print2< avx2< uint16_t >, 8, 8 >();
-   print3< avx2< uint16_t >, 8, 4, 4 >();
-   
-   print1< avx2< uint8_t >, 32 >();
-   print2< avx2< uint8_t >, 16, 16 >();
-   print3< avx2< uint8_t >, 16, 8, 8 >();
-   
-   print1< sse< uint64_t >, 2 >();
-   print2< sse< uint64_t >, 1, 1 >();
-   
-   print1< sse< uint32_t >, 4 >();
-   print2< sse< uint32_t >, 2, 2 >();
-   print3< sse< uint32_t >, 2, 1, 1 >();
-   
-   print1< sse< uint16_t >, 8 >();
-   print2< sse< uint16_t >, 4, 4 >();
-   print3< sse< uint16_t >, 4, 2, 2 >();
-   
-   print1< sse< uint8_t >, 16 >();
-   print2< sse< uint8_t >, 8, 8 >();
-   print3< sse< uint8_t >, 8, 4, 4 >();
-   std::cout << "]\n";
-*/
    
    return 0;
 }

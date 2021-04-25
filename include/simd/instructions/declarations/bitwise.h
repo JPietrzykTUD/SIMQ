@@ -59,6 +59,20 @@ namespace tuddbs {
    ) {
       return bitwise_and_t< typename VectorExtension::base_t, VectorExtension >::apply( a, b );
    }
+   
+   template< typename T, class VectorExtension >
+   struct bitwise_and_not_t;
+   
+   template< class VectorExtension >
+   NO_DISCARD FORCE_INLINE
+   typename VectorExtension::vector_t
+   bitwise_and_not(
+      typename VectorExtension::vector_t const a,
+      typename VectorExtension::vector_t const b
+   ) {
+      return bitwise_and_not_t< typename VectorExtension::base_t, VectorExtension >::apply( a, b );
+   }
+   
 
    template< class VectorExtension, int I >
    struct bitshift_left_t;
@@ -79,6 +93,8 @@ namespace tuddbs {
    bitshift_right( typename VectorExtension::vector_t const a ) {
       return bitshift_right_t< VectorExtension, I >::apply( a );
    }
+   
+   
 }
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_INSTRUCTIONS_DECLARATIONS_BITWISE_H

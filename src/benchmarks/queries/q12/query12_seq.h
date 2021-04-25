@@ -149,7 +149,7 @@ namespace tuddbs {
                sequential_filter_impl< VectorExtension, point_filter_lt_core >::apply(
                   filter_result_bitmask, filter_column, broadcast< VectorExtension >( predicate )
                );
-               sequential_aggregate_impl< VectorExtension, aggregate_mask_add >::apply(
+               sequential_aggregate_impl< VectorExtension, aggregate_mask_min >::apply(
                   aggregation_result_column2, aggregate_column, filter_result_bitmask
                );
                results2_from_queries->data_ptr[ query_id ] = aggregation_result_column2->data_ptr[ 0 ];
@@ -249,7 +249,7 @@ namespace tuddbs {
                sequential_filter_impl< VectorExtension, point_filter_lt_core >::apply(
                   filter_result_bitmask, filter_column, broadcast< VectorExtension >( predicate )
                );
-               sequential_aggregate_impl< VectorExtension, aggregate_mask_add >::apply(
+               sequential_aggregate_impl< VectorExtension, aggregate_mask_min >::apply(
                   aggregation_result_column2, aggregate_column, filter_result_bitmask
                );
                results2_from_queries->data_ptr[ query_id ] = aggregation_result_column2->data_ptr[ 0 ];
@@ -266,7 +266,7 @@ namespace tuddbs {
                sequential_filter_impl< VectorExtension, point_filter_lt_core >::apply(
                   filter_result_bitmask, filter_column, broadcast< VectorExtension >( predicate )
                );
-               sequential_aggregate_impl< VectorExtension, aggregate_mask_add >::apply(
+               sequential_aggregate_impl< VectorExtension, aggregate_mask_max >::apply(
                   aggregation_result_column3, aggregate_column, filter_result_bitmask
                );
                results3_from_queries->data_ptr[ query_id ] = aggregation_result_column3->data_ptr[ 0 ];

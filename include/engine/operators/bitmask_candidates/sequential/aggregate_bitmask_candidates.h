@@ -26,8 +26,43 @@
 #include <utils/preprocessor.h>
 #include <data/column.h>
 
-namespace tuddbs {
 
+#include <cstddef>
+#include <type_traits>
+#include <typeinfo>
+#ifndef _MSC_VER
+#   include <cxxabi.h>
+#endif
+#include <string>
+#include <cstdlib>
+#include <limits>
+namespace tuddbs {
+   template <class T>
+   std::string type_name() {
+      typedef typename std::remove_reference<T>::type TR;
+      std::unique_ptr<char, void(*)(void*)> own
+         (
+#ifndef _MSC_VER
+         abi::__cxa_demangle(typeid(TR).name(), nullptr,
+                             nullptr, nullptr),
+#else
+         nullptr,
+#endif
+         std::free
+      );
+      std::string r = own != nullptr ? own.get() : typeid(TR).name();
+      if (std::is_const<TR>::value)
+         r += " const";
+      if (std::is_volatile<TR>::value)
+         r += " volatile";
+      if (std::is_lvalue_reference<T>::value)
+         r += "&";
+      else if (std::is_rvalue_reference<T>::value)
+         r += "&&";
+      return r;
+   }
+
+#define TYPENAME(x) type_name< decltype( x ) >( )
    /**
     * @brief Helper class for reading a mask.
     *
@@ -324,8 +359,8 @@ namespace tuddbs {
          T * input_ptr = input_column->data_ptr;
          std::size_t const fully_vectorized_count = element_count / step_width_t::value;
          std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
-
-         typename VectorExtension_t::vector_t result_vec = set_zero< VectorExtension_t >( );
+   
+         typename VectorExtension_t::vector_t result_vec = Aggregator_t< VectorExtension_t >::init();
          for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
             result_vec =
                sequential_aggregate_mask_helper<
@@ -358,8 +393,12 @@ namespace tuddbs {
                }
             }
          }
+//         typename VectorExtension_t::vector_t reduced_result_vec =
+//            reduce_add< VectorExtension_t, Lanes >( result_vec );
          typename VectorExtension_t::vector_t reduced_result_vec =
-            reduce_add< VectorExtension_t, Lanes >( result_vec );
+            Aggregator_t< VectorExtension_t >::template inner_finalize< Lanes >(
+               result_vec
+            );
          [[maybe_unused]]typename VectorExtension_t::base_t * tmp = store< VectorExtension_t >( result_column->data_ptr, reduced_result_vec );
          return result_column;
       }

@@ -62,6 +62,19 @@ namespace tuddbs {
       }
    };
 
+   template< typename T >
+   struct bitwise_and_not_t< T, avx512< T > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename avx512< T >::vector_t
+      apply(
+         typename avx512< T >::vector_t const a,
+         typename avx512< T >::vector_t const b
+      ) {
+         return _mm512_andnot_si512( a, b );
+      }
+   };
+
    //use this with care!
    template< typename T, int I >
    struct bitshift_left_t< avx512< T >, I > {

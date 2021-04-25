@@ -193,7 +193,6 @@ namespace tuddbs{
       FORCE_INLINE
       static
          std::tuple< mask_t, mask_t * > read_mask_and_increment( mask_t * mask_ptr ) {
-         std::cout << "INC = 4 \n";
          return std::make_tuple(
             (
                // First Full Mask

@@ -209,7 +209,7 @@ namespace tuddbs {
          for( std::size_t rep = 0; rep < EXPERIMENT_MEASUREMENT_REPETITION_COUNT; ++rep ) {
             filter_result_bitmask->init( 0 );
             aggregation1_result_column->init( 0 );
-            aggregation2_result_column->init( 0 );
+            aggregation2_result_column->init( std::numeric_limits< T >::max() );
             
             auto dummy = cache_flusher::instance()->flush();
             auto start_simq_build = now();
@@ -226,7 +226,7 @@ namespace tuddbs {
             >::apply(
                aggregation1_result_column, svb_aggregation1, filter_result_bitmask
             );
-            aggregate_impl< VectorExtension, svbSecondStageOp2_t, aggregate_mask_add, QueryCount2ndStageOp2,
+            aggregate_impl< VectorExtension, svbSecondStageOp2_t, aggregate_mask_min, QueryCount2ndStageOp2,
                             QueryCount2ndStageOp1 >::apply(
                aggregation2_result_column, svb_aggregation2, filter_result_bitmask
             );
@@ -239,7 +239,7 @@ namespace tuddbs {
             );
             [[maybe_unused]]typename VectorExtension::base_t * tmp2 = store< VectorExtension >(
                aggregation2_result_column->data_ptr,
-               aggregate_mask_add< VectorExtension >::template finalize<
+               aggregate_mask_min< VectorExtension >::template finalize<
                   svbSecondStageOp2_t::lanes_per_query_t::value >(
                   load< VectorExtension >( aggregation2_result_column->data_ptr )
                )
@@ -357,7 +357,7 @@ namespace tuddbs {
          for( std::size_t rep = 0; rep < EXPERIMENT_MEASUREMENT_REPETITION_COUNT; ++rep ) {
             filter_result_bitmask->init( 0 );
             aggregation1_result_column->init( 0 );
-            aggregation2_result_column->init( 0 );
+            aggregation2_result_column->init( std::numeric_limits< T >::max() );
             aggregation3_result_column->init( 0 );
             
             auto dummy = cache_flusher::instance()->flush();
@@ -375,10 +375,10 @@ namespace tuddbs {
             aggregate_impl< VectorExtension, svbSecondStageOp1_t, aggregate_mask_add, QueryCount2ndStageOp1 >::apply(
                aggregation1_result_column, svb_aggregation1, filter_result_bitmask
             );
-            aggregate_impl< VectorExtension, svbSecondStageOp2_t, aggregate_mask_add, QueryCount2ndStageOp2, QueryCount2ndStageOp1 >::apply(
+            aggregate_impl< VectorExtension, svbSecondStageOp2_t, aggregate_mask_min, QueryCount2ndStageOp2, QueryCount2ndStageOp1 >::apply(
                aggregation2_result_column, svb_aggregation2, filter_result_bitmask
             );
-            aggregate_impl< VectorExtension, svbSecondStageOp3_t, aggregate_mask_add, QueryCount2ndStageOp3,
+            aggregate_impl< VectorExtension, svbSecondStageOp3_t, aggregate_mask_max, QueryCount2ndStageOp3,
             QueryCount2ndStageOp1+QueryCount2ndStageOp2 >::apply(
                aggregation3_result_column, svb_aggregation3, filter_result_bitmask
             );
@@ -391,14 +391,14 @@ namespace tuddbs {
             );
             [[maybe_unused]]typename VectorExtension::base_t * tmp2 = store< VectorExtension >(
                aggregation2_result_column->data_ptr,
-               aggregate_mask_add< VectorExtension >::template finalize<
+               aggregate_mask_min< VectorExtension >::template finalize<
                   svbSecondStageOp2_t::lanes_per_query_t::value >(
                   load< VectorExtension >( aggregation2_result_column->data_ptr )
                )
             );
             [[maybe_unused]]typename VectorExtension::base_t * tmp3 = store< VectorExtension >(
                aggregation3_result_column->data_ptr,
-               aggregate_mask_add< VectorExtension >::template finalize<
+               aggregate_mask_max< VectorExtension >::template finalize<
                   svbSecondStageOp3_t::lanes_per_query_t::value >(
                   load< VectorExtension >( aggregation3_result_column->data_ptr )
                )

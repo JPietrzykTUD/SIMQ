@@ -1,35 +1,36 @@
-/* 
+/*
  * This file is part of the SIMQ Project (https://github.com/JPietrzykTUD/SIMQ).
- * Copyright (c) 2020 Johannes Pietrzyk.
- * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
+ * Copyright (c) 2021 Johannes Pietrzyk.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3.
  *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
+ * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_CORE_AGGREGATE_AGGREGATE_SUM_CORE_H
-#define TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_CORE_AGGREGATE_AGGREGATE_SUM_CORE_H
-
+#ifndef TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_CORE_AGGREGATE_AGGREGATE_MIN_CORE_H
+#define TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_CORE_AGGREGATE_AGGREGATE_MIN_CORE_H
 #include <simd/intrin.h>
 #include <utils/preprocessor.h>
 
 namespace tuddbs {
-
+   
    template< class VectorExtension >
-   struct aggregate_mask_add {
+   struct aggregate_mask_min {
+      
       NO_DISCARD FORCE_INLINE
       static
       typename VectorExtension::vector_t
       init( ) {
-         return set_zero< VectorExtension >( );
+         return broadcast< VectorExtension >( std::numeric_limits< typename VectorExtension::base_t >::max() );
       }
+      
       NO_DISCARD FORCE_INLINE
       static
       typename VectorExtension::vector_t
@@ -38,9 +39,10 @@ namespace tuddbs {
          typename VectorExtension::vector_t const old_values,
          typename VectorExtension::mask_t const mask
       ) {
-         return mask_add< VectorExtension >( next_values, old_values, mask );
+         return mask_min< VectorExtension >( next_values, old_values, mask );
       }
-
+      
+      
       NO_DISCARD FORCE_INLINE
       static
       typename VectorExtension::vector_t
@@ -49,9 +51,15 @@ namespace tuddbs {
          typename VectorExtension::vector_t const old_values,
          typename VectorExtension::vector_t const mask_vec
       ) {
-         return add< VectorExtension >( old_values, bitwise_and< VectorExtension >( next_values, mask_vec ) );
+         return min< VectorExtension >( old_values,
+                                        bitwise_or< VectorExtension >(
+                                          bitwise_and_not< VectorExtension >( mask_vec,  broadcast< VectorExtension >
+                                             (std::numeric_limits< typename VectorExtension::base_t >::max())),
+                                          next_values
+                                        )
+         );
       }
-
+      
       template< int NumberOfActiveLanes >
       NO_DISCARD FORCE_INLINE
       static
@@ -64,9 +72,9 @@ namespace tuddbs {
          typename vector_constants_t< VectorExtension >::array_t result_buff{0};
          std::size_t res_pos = 0;
          for( std::size_t i = 0; i < vector_constants_t< VectorExtension >::vector_element_count_t::value; i += NumberOfActiveLanes ) {
-            typename VectorExtension::base_t result = 0;
+            typename VectorExtension::base_t result = buff[0];
             for( std::size_t j = 0; j < NumberOfActiveLanes; ++j ) {
-               result += buff[ i + j ];
+               result = ( result < buff[ i + j ] ) ? result : buff[ i + j ];
             }
             result_buff[ res_pos++ ] = result;
          }
@@ -82,12 +90,15 @@ namespace tuddbs {
       ) {
          typename vector_constants_t< VectorExtension >::array_t buff;
          [[maybe_unused]]typename VectorExtension::base_t * tmp = store< VectorExtension >( buff.data(), values );
-         typename vector_constants_t< VectorExtension >::array_t result_buff{0};
+         typename vector_constants_t< VectorExtension >::array_t result_buff{std::numeric_limits< typename VectorExtension::base_t >::max()};
          std::size_t res_pos = 0;
+         for( std::size_t i = 0; i < vector_constants_t< VectorExtension >::vector_element_count_t::value; ++i ) {
+            result_buff[ i ] = std::numeric_limits< typename VectorExtension::base_t >::max();
+         }
          for( std::size_t i = 0; i < vector_constants_t< VectorExtension >::vector_element_count_t::value; i += NumberOfLanesPerTuple ) {
-            typename VectorExtension::base_t result = 0;
+            typename VectorExtension::base_t result = buff[0];
             for( std::size_t j = 0; j < NumberOfLanesPerTuple; ++j ) {
-               result += buff[ i + j ];
+               result = ( result < buff[ i + j ] ) ? result : buff[ i + j ];
             }
             result_buff[ res_pos ] = result;
             res_pos += NumberOfLanesPerTuple;
@@ -95,8 +106,7 @@ namespace tuddbs {
          return load< VectorExtension >( result_buff.data() );
       }
    };
-
+   
 }
 
-
-#endif //TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_CORE_AGGREGATE_AGGREGATE_SUM_CORE_H
+#endif //TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_CORE_AGGREGATE_AGGREGATE_MIN_CORE_H
