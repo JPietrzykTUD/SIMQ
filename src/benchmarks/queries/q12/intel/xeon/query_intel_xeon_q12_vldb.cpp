@@ -69,8 +69,73 @@ void test( void ) {
       f::read_mask_and_increment( test );
    std::cout << std::bitset < sizeof( mask_t ) * 8 > { result } << " . Pos-Delta = " << ( newpos - test ) << "\n";
    std::cout << "-------------\n";
-
 }
+
+template<
+   class VectorExtension,
+   std::size_t QueryCount2ndStageOp1,
+   std::size_t QueryCount2ndStageOp2,
+   std::size_t QueryCount2ndStageOp3
+>
+void print3( ) {
+   std::cout
+      << "\"VPM - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp1, 0 >::vecs_per_mask_t::value
+      << ". INC - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp1, 0 >::incrementor_t::value << "\",";
+   std::cout
+      << "\"VPM - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp2, 0 >::vecs_per_mask_t::value
+      << ". INC - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp2, 0 >::incrementor_t::value << "\",";
+   std::cout
+      << "\"VPM - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp3, 0 >::vecs_per_mask_t::value
+      << ". INC - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp3, 0 >::incrementor_t::value << "\",";
+}
+
+template<
+   class VectorExtension,
+   std::size_t QueryCount2ndStageOp1,
+   std::size_t QueryCount2ndStageOp2
+>
+void print2( ) {
+   std::cout
+      << "\"VPM - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp1, 0 >::vecs_per_mask_t::value
+      << ". INC - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp1, 0 >::incrementor_t::value << "\",";
+   std::cout
+      << "\"VPM - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp2, 0 >::vecs_per_mask_t::value
+      << ". INC - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp2, 0 >::incrementor_t::value << "\",";
+}
+
+template<
+   class VectorExtension,
+   std::size_t QueryCount2ndStageOp1
+>
+void print1( ) {
+   std::cout
+      << "\"VPM - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp1, 0 >::vecs_per_mask_t::value
+      << ". INC - "
+      << tuddbs::complex_bitmask_helper_t< VectorExtension, QueryCount2ndStageOp1, 0 >::incrementor_t::value << "\",";
+}
+
+void run_experiment( std::size_t data_size ) {
+   using namespace tuddbs;
+   datagenerator_q11< uint64_t, 1, 8 > * datagenerator =
+      new datagenerator_q11< uint64_t, 1, 8 >( 128_MiB );
+   
+   
+   
+   delete datagenerator;
+}
+
+
 int main( void ) {
    using namespace tuddbs;
    auto t = std::time(nullptr);
@@ -87,27 +152,79 @@ int main( void ) {
    }
    global::outputfile << get_definitions("#");
    q11_header( );
-   
+
    datagenerator_q11< uint64_t, 1, 8 > * datagenerator =
-      new datagenerator_q11< uint64_t, 1, 8 >( 512 );
-   
+      new datagenerator_q11< uint64_t, 1, 8 >( 128_MiB );
+
    
 //   simq_wl_q12_one_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 8 >::run(
 //      datagenerator );
 //   seq_wl_q12_one_Stage2_ops< avx512< uint64_t >, 8 >::run(
 //      datagenerator );
-   
-   std::cerr << "------ SIMQ ------\n";
-   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,4 >::run(
-      datagenerator );
-   std::cerr << "------ SEQ ------\n";
-   seq_wl_q12_two_Stage2_ops< avx512< uint64_t >, 4,4 >::run(
-      datagenerator );
-   
-//   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,2,2 >::run(
+
+//   simq_wl_q12_two_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,4 >::run(
 //      datagenerator );
+//   seq_wl_q12_two_Stage2_ops< avx512< uint64_t >, 4,4 >::run(
+//      datagenerator );
+   
+   simq_wl_q12_three_Stage2_ops< simq_vector_builder_buffer_t, avx512< uint64_t >, 4,2,2 >::run(
+      datagenerator );
+   seq_wl_q12_three_Stage2_ops< avx512< uint64_t >, 4,2,2 >::run(
+      datagenerator );
    
    
    global::outputfile.close();
+
+/*
+   std::cout << "[";
+   print1< avx512< uint64_t >, 8 >();
+   print2< avx512< uint64_t >, 4, 4 >();
+   print3< avx512< uint64_t >, 4, 2, 2 >();
+   
+   print1< avx512< uint32_t >, 16 >();
+   print2< avx512< uint32_t >, 8, 8 >();
+   print3< avx512< uint32_t >, 8, 4, 4 >();
+   
+   print1< avx512< uint16_t >, 32 >();
+   print2< avx512< uint16_t >, 16, 16 >();
+   print3< avx512< uint16_t >, 16, 8, 8 >();
+   
+   print1< avx512< uint8_t >, 64 >();
+   print2< avx512< uint8_t >, 32, 32 >();
+   print3< avx512< uint8_t >, 32, 16, 16 >();
+   
+   print1< avx2< uint64_t >, 4 >();
+   print2< avx2< uint64_t >, 2, 2 >();
+   print3< avx2< uint64_t >, 2, 1, 1 >();
+   
+   print1< avx2< uint32_t >, 8 >();
+   print2< avx2< uint32_t >, 4, 4 >();
+   print3< avx2< uint32_t >, 4, 2, 2 >();
+   
+   print1< avx2< uint16_t >, 16 >();
+   print2< avx2< uint16_t >, 8, 8 >();
+   print3< avx2< uint16_t >, 8, 4, 4 >();
+   
+   print1< avx2< uint8_t >, 32 >();
+   print2< avx2< uint8_t >, 16, 16 >();
+   print3< avx2< uint8_t >, 16, 8, 8 >();
+   
+   print1< sse< uint64_t >, 2 >();
+   print2< sse< uint64_t >, 1, 1 >();
+   
+   print1< sse< uint32_t >, 4 >();
+   print2< sse< uint32_t >, 2, 2 >();
+   print3< sse< uint32_t >, 2, 1, 1 >();
+   
+   print1< sse< uint16_t >, 8 >();
+   print2< sse< uint16_t >, 4, 4 >();
+   print3< sse< uint16_t >, 4, 2, 2 >();
+   
+   print1< sse< uint8_t >, 16 >();
+   print2< sse< uint8_t >, 8, 8 >();
+   print3< sse< uint8_t >, 8, 4, 4 >();
+   std::cout << "]\n";
+*/
+   
    return 0;
 }

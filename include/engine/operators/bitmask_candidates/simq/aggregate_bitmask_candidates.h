@@ -306,7 +306,6 @@ namespace tuddbs {
          VectorBuilder_t & input_vector_builder,
          column< T > * const input_bitmask_column
       ) {
-         std::cerr << "Offset: " << BitPositionOffset << "\n.NumberOfBits: " << NumberOfBits << "\n";
          std::size_t const element_count = input_vector_builder.svw.element_count;
 
          typename VectorExtension_t::mask_t * input_bitmask_buffer_ptr =
@@ -319,14 +318,9 @@ namespace tuddbs {
             if constexpr( NumberOfBits != 0 ) {
                std::tie( mask, input_bitmask_buffer_ptr ) =
                   complex_bitmask_helper_t< VectorExtension_t, NumberOfBits, BitPositionOffset >::read_mask_and_increment( input_bitmask_buffer_ptr );
-//               std::cerr << "Incrementor: " << complex_bitmask_helper_t< VectorExtension_t, NumberOfBits,
-//               BitPositionOffset
-//               >::incrementor_t::value << "\n";
             } else {
                mask = *( input_bitmask_buffer_ptr++ );
-               std::cerr << "NO COMPLEX\n";
             }
-            std::cerr << "New Bitmask : " << std::bitset< 64 >( mask ) << "\n";
             result_vec =
                aggregate_mask_helper<
                   VectorExtension_t,

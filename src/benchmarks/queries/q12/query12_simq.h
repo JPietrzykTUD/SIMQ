@@ -155,10 +155,7 @@ namespace tuddbs {
    struct simq_wl_q12_two_Stage2_ops {
       using QueryCount_t = std::integral_constant< std::size_t,
                                                    QueryCount2ndStageOp1+QueryCount2ndStageOp2 >;
-      using BitCount2ndStageOp1 = std::integral_constant< std::size_t,
-         vector_constants_t< VectorExtension >::vector_element_count_t::value / QueryCount2ndStageOp1 >;
-      using BitCount2ndStageOp2 = std::integral_constant< std::size_t,
-          vector_constants_t< VectorExtension >::vector_element_count_t::value / QueryCount2ndStageOp2 >;
+
       static void run(
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount_t::value > * const datagenerator
       ) {
@@ -225,25 +222,21 @@ namespace tuddbs {
             filter_impl< VectorExtension, svbFirstStage_t, point_filter_lt_core >::apply(
                filter_result_bitmask, svb_filter, predicate_vec
             );
-            aggregate_impl< VectorExtension, svbSecondStageOp1_t, aggregate_mask_add, BitCount2ndStageOp1::value
+            aggregate_impl< VectorExtension, svbSecondStageOp1_t, aggregate_mask_add, QueryCount2ndStageOp1
             >::apply(
                aggregation1_result_column, svb_aggregation1, filter_result_bitmask
             );
-            aggregate_impl< VectorExtension, svbSecondStageOp2_t, aggregate_mask_add, BitCount2ndStageOp2::value,
-            BitCount2ndStageOp1::value >::apply(
+            aggregate_impl< VectorExtension, svbSecondStageOp2_t, aggregate_mask_add, QueryCount2ndStageOp2,
+                            QueryCount2ndStageOp1 >::apply(
                aggregation2_result_column, svb_aggregation2, filter_result_bitmask
             );
             auto end = now( );
-            print< VectorExtension >( std::cerr, load< VectorExtension >( aggregation1_result_column->data_ptr ), "Agg"
-                                                                                                                  " 0");
             [[maybe_unused]]typename VectorExtension::base_t * tmp1 = store< VectorExtension >(
                aggregation1_result_column->data_ptr,
                aggregate_mask_add< VectorExtension >::template finalize< svbSecondStageOp1_t::lanes_per_query_t::value >(
                   load< VectorExtension >( aggregation1_result_column->data_ptr )
                )
             );
-            print< VectorExtension >( std::cerr, load< VectorExtension >( aggregation2_result_column->data_ptr ), "Agg"
-                                                                                                                  " 1");
             [[maybe_unused]]typename VectorExtension::base_t * tmp2 = store< VectorExtension >(
                aggregation2_result_column->data_ptr,
                aggregate_mask_add< VectorExtension >::template finalize<
