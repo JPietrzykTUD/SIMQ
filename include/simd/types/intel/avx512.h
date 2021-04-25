@@ -30,6 +30,10 @@ namespace tuddbs {
    template< typename T >
    struct avx512 {
       static_assert( std::is_arithmetic< T >::value, "Basetype has to be an arithmetic type." );
+      
+      template< typename U >
+      using cast_t = avx512< U >;
+      
       using base_t = T;
       using vector_t =
       typename std::conditional<

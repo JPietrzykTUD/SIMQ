@@ -326,7 +326,7 @@ namespace tuddbs {
          std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
 
          typename VectorExtension_t::vector_t result_vec = set_zero< VectorExtension_t >( );
-
+         std::cerr << "New Bitmask : " << std::bitset< 64 >( *input_bitmask_buffer_ptr ) << "\n";
          for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
             result_vec =
                sequential_aggregate_mask_helper<

@@ -21,10 +21,13 @@
 #define TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_BITMASK_CANDIDATES_SIMQ_AGGREGATE_BITMASK_CANDIDATES_H
 
 #include <cstddef>
+#include <stdexcept>
 
 #include <simd/intrin.h>
 #include <utils/preprocessor.h>
 #include <data/column.h>
+
+#include <simq/control/bitmask/complex_bitmask.h>
 
 namespace tuddbs {
 
@@ -241,7 +244,9 @@ namespace tuddbs {
    template<
       class VectorExtension_t,
       class VectorBuilder_t,
-      template< class > class Aggregator_t
+      template< class > class Aggregator_t,
+      std::size_t NumberOfBits = 0,
+      std::size_t BitPositionOffset = 0
    >
    struct aggregate_impl {
       /**
@@ -301,6 +306,7 @@ namespace tuddbs {
          VectorBuilder_t & input_vector_builder,
          column< T > * const input_bitmask_column
       ) {
+         std::cerr << "Offset: " << BitPositionOffset << "\n.NumberOfBits: " << NumberOfBits << "\n";
          std::size_t const element_count = input_vector_builder.svw.element_count;
 
          typename VectorExtension_t::mask_t * input_bitmask_buffer_ptr =
@@ -308,7 +314,19 @@ namespace tuddbs {
          typename VectorExtension_t::vector_t result_vec = set_zero< VectorExtension_t >( );
          std::size_t const fully_vectorized_count = element_count / step_width_t::value;
          std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
+         typename VectorExtension_t::mask_t mask = 0;
          for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
+            if constexpr( NumberOfBits != 0 ) {
+               std::tie( mask, input_bitmask_buffer_ptr ) =
+                  complex_bitmask_helper_t< VectorExtension_t, NumberOfBits, BitPositionOffset >::read_mask_and_increment( input_bitmask_buffer_ptr );
+//               std::cerr << "Incrementor: " << complex_bitmask_helper_t< VectorExtension_t, NumberOfBits,
+//               BitPositionOffset
+//               >::incrementor_t::value << "\n";
+            } else {
+               mask = *( input_bitmask_buffer_ptr++ );
+               std::cerr << "NO COMPLEX\n";
+            }
+            std::cerr << "New Bitmask : " << std::bitset< 64 >( mask ) << "\n";
             result_vec =
                aggregate_mask_helper<
                   VectorExtension_t,
@@ -317,11 +335,12 @@ namespace tuddbs {
                >::apply(
                   input_vector_builder,
                   result_vec,
-                  *( input_bitmask_buffer_ptr++ )
+                  mask
                );
          }
 
          if( remainder_count != 0 ) {
+            throw std::runtime_error("Remainder!!!");
             std::size_t current_shift = 0;
             typename VectorExtension_t::mask_t remainder_mask = *( input_bitmask_buffer_ptr++ );
             for( std::size_t i = 0; i < remainder_count; i += incrementor_t::value ) {
@@ -372,7 +391,14 @@ namespace tuddbs {
          typename VectorExtension_t::vector_t result_vec = load< VectorExtension_t >( result_column );
          std::size_t const fully_vectorized_count = element_count / step_width_t::value;
          std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
+         typename VectorExtension_t::mask_t mask = 0;
          for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
+            if constexpr( NumberOfBits != 0 ) {
+               std::tie( mask, input_bitmask_buffer_ptr ) =
+                  complex_bitmask_helper_t< VectorExtension_t, NumberOfBits, BitPositionOffset >::read_mask_and_increment( input_bitmask_buffer_ptr );
+            } else {
+               mask = *( input_bitmask_buffer_ptr++ );
+            }
             result_vec =
                aggregate_mask_helper<
                   VectorExtension_t,
@@ -381,11 +407,12 @@ namespace tuddbs {
                >::apply(
                   input_vector_builder,
                   result_vec,
-                  *( input_bitmask_buffer_ptr++ )
+                  mask
                );
          }
 
          if( remainder_count != 0 ) {
+            throw std::runtime_error("Remainder!!!");
             std::size_t current_shift = 0;
             typename VectorExtension_t::mask_t remainder_mask = *( input_bitmask_buffer_ptr++ );
             for( std::size_t i = 0; i < remainder_count; i += incrementor_t::value ) {
