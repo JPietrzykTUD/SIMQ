@@ -30,7 +30,6 @@ namespace tuddbs {
       std::size_t QueryCount,
       std::size_t BatchSize
    >
-   struct sequential_parallel_wl_q11 {
       template<
          std::size_t BS = BatchSize,
          typename std::enable_if< BS == 0, std::nullptr_t >::type = nullptr

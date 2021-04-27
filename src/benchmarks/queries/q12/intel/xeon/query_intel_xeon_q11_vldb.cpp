@@ -25,7 +25,10 @@
 #include <ctime>
 
 #include <benchmarks/queries/q11/query11_data.h>
+<<<<<<< HEAD
 #include <benchmarks/queries/q11/query11_seq.h>
+=======
+>>>>>>> ea5aa027a99e1d7d09246fdb7b25ca7a45b30f89
 #include <benchmarks/queries/q11/query11_seq_parallel.h>
 #include <benchmarks/queries/q11/query11_simq.h>
 
@@ -49,8 +52,12 @@ void run_build_variants(
    using namespace tuddbs;
    std::cerr << "   " << vec_ext_to_string_t< VectorExtension >::apply( )
              << ". Queries: " << QueryCount << ". Columns: " << ColumnCount << ". BatchSize: " << BatchSize << "\n";
+<<<<<<< HEAD
    sequential_wl_q11< VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
    sequential_parallel_wl_q11< VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
+=======
+   sequential_wl_q11_parallel< VectorExtension, ColumnCount, QueryCount, BatchSize, true >::run( datagenerator );
+>>>>>>> ea5aa027a99e1d7d09246fdb7b25ca7a45b30f89
    simq_wl_q11< simq_vector_builder_buffer_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
    simq_wl_q11< simq_vector_builder_mask_broadcast_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
    simq_wl_q11< simq_vector_builder_set_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
