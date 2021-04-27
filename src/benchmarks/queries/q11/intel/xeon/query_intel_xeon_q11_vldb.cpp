@@ -90,8 +90,8 @@ void run_experiment( std::size_t data_size ) {
    run_batch_sizes< avx2< uint64_t >, 1, 4 >::apply( data_size );
    run_batch_sizes< avx512< uint64_t >, 1, 8 >::apply( data_size );
    std::cerr << "Experiment value size\n";
-//   run_batch_sizes< avx512< uint8_t >, 1, 64 >::apply( data_size );
-//   run_batch_sizes< avx512< uint16_t >, 1, 32 >::apply( data_size );
+   run_batch_sizes< avx512< uint8_t >, 1, 64 >::apply( data_size );
+   run_batch_sizes< avx512< uint16_t >, 1, 32 >::apply( data_size );
    run_batch_sizes< avx512< uint32_t >, 1, 16 >::apply( data_size );
    std::cerr << "Experiment query count\n";
    run_batch_sizes< avx512< uint64_t >, 1, 1 >::apply( data_size );
@@ -108,9 +108,9 @@ int main( void ) {
    auto t = std::time(nullptr);
    auto tm = *std::localtime(&t);
    std::ostringstream oss;
-   oss << "query_intel_xeon_q11_sample_run_" << std::put_time(&tm, "%Y_%m_%d_%H-%M") << ".csv";
+   oss << "query_intel_xeon_q11_vldb_sample_run_" << std::put_time(&tm, "%Y_%m_%d_%H-%M") << ".csv";
    auto str = oss.str();
-   std::cerr << "Executing Benchmark Query 1.1 on Xeon Gold.\n";
+   std::cerr << "Executing Benchmark Query 1.1 for VLDB on Xeon Gold.\n";
    std::cout << str.c_str() << "\n";
    global::outputfile.open(str.c_str());
    if(! global::outputfile.is_open()) {

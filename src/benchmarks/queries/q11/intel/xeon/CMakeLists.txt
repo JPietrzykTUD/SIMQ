@@ -1,2 +1,3 @@
 create_benchmark(benchmark_query_1_1_damon2020_intel_xeon query_intel_xeon_q11_damon.cpp)
 create_benchmark(benchmark_query_1_1_damon2020_talk_intel_xeon query_intel_xeon_q11_damon_talk.cpp)
+create_benchmark(benchmark_query_1_1_vldb_intel_xeon query_intel_xeon_q11_vldb.cpp -lpthread)

@@ -1,2 +1,1 @@
-create_benchmark(benchmark_query_1_2_vldb_intel_xeon query_intel_xeon_q12_vldb.cpp ${OpenMP_CXX_FLAGS})
-create_benchmark(benchmark_query_1_1_vldb_intel_xeon query_intel_xeon_q11_vldb.cpp)
+create_benchmark(benchmark_query_1_2_vldb_intel_xeon query_intel_xeon_q12_vldb.cpp)
