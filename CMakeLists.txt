@@ -98,7 +98,7 @@ find_package(OpenMP REQUIRED)
 
 add_definitions(-std=c++17)
 IF(${CPLATFORM} MATCHES "INTEL")
-    set(GENERAL_LINK_OPTIONS "-static-libgcc;-static-libstdc++")
+    set(GENERAL_LINK_OPTIONS "-static-libgcc;-static-libstdc++;-lpthread")
     IF(${CPROC} MATCHES "XEON")
         message("Platform Intel X86 XEON")
         set(GENERAL_COMPILE_DEFINITIONS "${SPECS};C17=True;X86=True;INTRIN=True;INTEL_SIMDI=True;INTEL_INTRINSICS_AVX512_VL=True;INTEL_INTRINSICS_AVX512_DQ=True;INTEL_INTRINSICS_AVX512_BW=True;INTEL_INTRINSICS_AVX512_F=True")
