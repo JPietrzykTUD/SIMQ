@@ -57,7 +57,7 @@ namespace tuddbs {
          simq_vector_builder_t<
             Strategy,
             column_array_t,
-            QueryCount
+            PackageQueryCount::value
          >;
          std::size_t const data_count = datagenerator->data_size / sizeof( T );
          
