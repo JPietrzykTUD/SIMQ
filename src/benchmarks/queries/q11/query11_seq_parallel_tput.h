@@ -57,7 +57,9 @@ namespace tuddbs {
 				aggregation_result_cols.emplace_back( create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value ) );
 			}
 			
-			std::atomic<size_t> global_query_counter = {0};
+			std::size_t global_query_counter[ ThreadCount ];
+			for( std::size_t i = 0; i < ThreadCount; ++i ) { global_query_counter[ i ] = 0; }
+//			std::atomic<size_t> global_query_counter = {0};
 			std::promise<void> p;
 			std::shared_future<void> ready_future(p.get_future());
 			// uint64_t* flushs = (uint64_t*) malloc( sizeof(uint64_t) * ThreadCount );
@@ -87,7 +89,7 @@ namespace tuddbs {
 						aggregation_result_cols[tid], aggregate_column, filter_result_masks[tid]
 					);
 					results_from_queries->data_ptr[ tid ] = aggregation_result_cols[tid]->data_ptr[ 0 ];
-					global_query_counter += 1;
+					++global_query_counter[ tid ];
 				}
 			};
 			
@@ -111,7 +113,11 @@ namespace tuddbs {
 				using namespace std::chrono_literals;
 				std::this_thread::sleep_for( 900ms );
 			}
-			std::cout << "SEQ GQC: " << global_query_counter << std::endl;
+			
+			//koennte man das nicht nach dem join erst machen?
+         std::size_t executed_queries = 0;
+         for( std::size_t i = 0; i < ThreadCount; ++i ) { executed_queries += global_query_counter[ i ]; }
+			std::cout << "SEQ GQC: " << executed_queries << std::endl;
 			finished = true;
 			
 			// Wait for threads to finish

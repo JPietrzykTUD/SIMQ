@@ -53,6 +53,7 @@ namespace tuddbs {
       std::size_t data_count;
       T * data_ptr;
       bool owns_memory;
+      using base_t = T;
 #ifdef HAS_MCD
       bool use_mcd;
 #endif
@@ -81,7 +82,7 @@ namespace tuddbs {
 #ifdef HAS_MCD
          , use_mcd{ _use_mcd }
 #endif
-         {}
+         { }
       column( T * p_data_ptr, std::size_t dc ):
          data_count{ dc },
          data_ptr{ p_data_ptr },

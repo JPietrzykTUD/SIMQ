@@ -54,15 +54,17 @@ namespace tuddbs {
 		std::vector< column< T > * > filter_result_masks;
 		std::vector< column< T > * > aggregation_result_cols;
 		for( std::size_t tid = 0; tid < ThreadCount; ++tid ) {
-			filter_result_masks.emplace_back( create_bitmask( T, data_count * QueryCount ) );
+		   filter_result_masks.emplace_back( create_bitmask( T, data_count * QueryCount ) );
 			aggregation_result_cols.emplace_back( create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value ) );
 			filter_result_masks[tid]->init( 0 ); // make one per thread
 			aggregation_result_cols[tid]->init( 0 ); // make one per thread
 		}
-		
+  
 		// column< T > * const filter_result_bitmask = create_bitmask( T, data_count * QueryCount );
 		// column< T > * const aggregation_result_column = create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value );
-		std::atomic<size_t> global_query_counter = {0};
+      std::size_t global_query_counter[ ThreadCount ];
+      for( std::size_t i = 0; i < ThreadCount; ++i ) { global_query_counter[ i ] = 0; }
+//		std::atomic<size_t> global_query_counter = {0};
 		std::promise<void> p;
 		std::shared_future<void> ready_future(p.get_future());
 		// uint64_t* flushs = (uint64_t*) malloc( sizeof(uint64_t) * ThreadCount );
@@ -110,7 +112,7 @@ namespace tuddbs {
 					  load< VectorExtension >( aggregation_result_cols[tid]->data_ptr )
 				   )
 				);
-				global_query_counter += QueryCount;
+				global_query_counter[ tid ] += QueryCount;
 			}
 		};
 		
@@ -126,7 +128,9 @@ namespace tuddbs {
 			using namespace std::chrono_literals;
 			std::this_thread::sleep_for( 900ms );
 		}
-		std::cout << "PAR GQC: " << global_query_counter << std::endl;
+      std::size_t executed_queries = 0;
+		for( std::size_t i = 0; i < ThreadCount; ++i ) { executed_queries += global_query_counter[ i ]; }
+		std::cout << "PAR GQC: " << executed_queries << std::endl;
 		finished = true;
 
 		// Wait for threads to finish
@@ -139,7 +143,7 @@ namespace tuddbs {
 		   // start_simq_build, end_simq_build, start, end, aggregation_result_column, dummy
 		// );
 
-		for( std::size_t query_id = 0; query_id < QueryCount; ++query_id ) {
+		for( std::size_t query_id = 0; query_id < ThreadCount; ++query_id ) {
 			destroy_column( filter_result_masks[query_id] );
 			destroy_column( aggregation_result_cols[query_id] );
 		}
