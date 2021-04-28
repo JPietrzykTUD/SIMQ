@@ -22,6 +22,7 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 namespace tuddbs {
    template<
@@ -39,7 +40,8 @@ namespace tuddbs {
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount > * const datagenerator
       ) {
          using T                 = typename VectorExtension::base_t;
-         
+         using chrono_tp = std::chrono::time_point<std::chrono::high_resolution_clock>;
+		 
          std::size_t const data_count = datagenerator->data_size / sizeof( T );
          column< T > * const results_from_queries =
             create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value );
@@ -53,6 +55,9 @@ namespace tuddbs {
             aggregation_result_cols.emplace_back( create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value ) );
          }
          
+		 chrono_tp* start_tps = (chrono_tp*) malloc( sizeof( chrono_tp) * QueryCount );
+		 chrono_tp* end_tps = (chrono_tp*) malloc( sizeof( chrono_tp) * QueryCount );
+		 
          for( std::size_t rep = 0; rep < EXPERIMENT_MEASUREMENT_REPETITION_COUNT; ++rep ) {
             for( std::size_t query_id = 0; query_id < QueryCount; ++query_id ) {
                filter_result_masks[query_id]->init( 0 ); // make one per thread
@@ -63,8 +68,9 @@ namespace tuddbs {
          auto start_simq_builder = now( );
          
          // QCnt Workers
-         auto magic = [&datagenerator,&filter_result_masks,&aggregation_result_cols,&results_from_queries]( const std::size_t query_id, const std::size_t column_id ) {
-            column <T> * const filter_column = datagenerator->filter_columns[ column_id ];
+         auto magic = [&datagenerator,&filter_result_masks,&aggregation_result_cols,&results_from_queries, &start_tps, &end_tps]( const std::size_t query_id, const std::size_t column_id ) {
+            start_tps[query_id] = now();
+			column <T> * const filter_column = datagenerator->filter_columns[ column_id ];
             column <T> * const aggregate_column = datagenerator->aggregate_columns[ column_id ];
             T predicate = datagenerator->predicates[ query_id ];
          
@@ -75,6 +81,7 @@ namespace tuddbs {
               aggregation_result_cols[query_id], aggregate_column, filter_result_masks[query_id]
             );
             results_from_queries->data_ptr[ query_id ] = aggregation_result_cols[query_id]->data_ptr[ 0 ];
+			end_tps[query_id] = now();
          };
          
          auto start = now( );
@@ -93,7 +100,19 @@ namespace tuddbs {
          );
          
          auto end = now( );
-         experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+		 
+		chrono_tp earliest_start = start_tps[0];
+		chrono_tp latest_end = end_tps[0];
+		size_t total_cpu_time_ns = 0;
+		
+		for( std::size_t query_id = 0; query_id < QueryCount; ++query_id ) {
+			earliest_start = std::min( earliest_start, start_tps[query_id] );
+			latest_end = std::max( latest_end, end_tps[query_id] );
+			total_cpu_time_ns += std::chrono::duration_cast< std::chrono::nanoseconds >( end_tps[query_id] - start_tps[query_id] ).count();
+		}
+		std::cout << total_cpu_time_ns << std::endl;
+
+		experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
             rep, datagenerator, "SISQ", "BITMASK", "SEQ-PAR",
             start_simq_builder, start_simq_builder, start, end, results_from_queries, dummy
          );
