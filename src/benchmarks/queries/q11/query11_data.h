@@ -64,6 +64,7 @@ namespace tuddbs {
       column< T > * filter_columns[ ColumnCount ];
       column< T > * aggregate_columns[ ColumnCount ];
       T   predicates[ QueryCount ];
+      T   extended_predicates[ 1024 ];
       std::size_t   results[ QueryCount ];
       std::size_t data_size;
 
@@ -144,6 +145,15 @@ namespace tuddbs {
       }
 
       datagenerator_q11( std::size_t data_size ) : data_size{ data_size } {
+         {
+            typename rng< T >::engine_t engine( 0xC004C0FEEBADC0DE );
+            std::size_t upper_limit = 100;
+            std::uniform_int_distribution< T > dist(0, upper_limit);
+            for( std::size_t i = 0; i < 1024; ++i ) {
+               extended_predicates[ i ] = dist( engine );
+            }
+         }
+         
          std::size_t const data_count = data_size / sizeof( T );
          for( std::size_t column_id = 0; column_id < ColumnCount; ++column_id ) {
 #ifdef HAS_MCD
@@ -168,6 +178,7 @@ namespace tuddbs {
             destroy_column( filter_columns[ column_id - 1 ] );
          }
       }
+      
    };
 
    void q11_header( void ) {
@@ -186,7 +197,8 @@ namespace tuddbs {
                 << "simq_build_time_ns;"
                 << "execution_time_ns;"
                 << "result;"
-                << "dummy\n";
+                << "dummy;"
+                << "opt_additional_time_ns\n";
    }
 
    template<
@@ -207,7 +219,12 @@ namespace tuddbs {
          std::chrono::time_point <std::chrono::high_resolution_clock> start,
          std::chrono::time_point <std::chrono::high_resolution_clock> end,
          column< typename VectorExtension::base_t > * const aggregation_result_column,
-         uint64_t const flush_dummy
+         uint64_t const flush_dummy,
+         std::chrono::time_point<std::chrono::high_resolution_clock> additional_time_start =
+            std::chrono::time_point<std::chrono::high_resolution_clock>(),
+         std::chrono::time_point<std::chrono::high_resolution_clock> additional_time_end =
+            std::chrono::time_point<std::chrono::high_resolution_clock>(),
+         
       ) {
          global::outputfile << rep << ";"
 //         std::cerr << rep << ";"
@@ -235,7 +252,8 @@ namespace tuddbs {
             global::outputfile << ( uint64_t ) aggregation_result_column->data_ptr[ query_id ] << " | ";
 //            std::cerr << ( uint64_t ) aggregation_result_column->data_ptr[ query_id ] << " | ";
          }
-         global::outputfile << ";" << flush_dummy << "\n";
+         global::outputfile << ";" << flush_dummy << ";"
+         << time_elapsed_ns( additional_time_start, additional_time_end ) << "\n";
 //         std::cerr << ";" << flush_dummy << "\n";
       }
    };

@@ -18,87 +18,306 @@
 #define TUDDBS_SIMQ_INCLUDE_SIMD_INSTRUCTIONS_ARM_NEON_BITWISE_NEON_H
 #include <utils/preprocessor.h>
 #include <simd/types/simd.h>
-#include <simd/types/intel/sse.h>
+#include <simd/types/arm/neon.h>
 #include <simd/instructions/declarations/bitwise.h>
 
 #include <cstdint>
 
 namespace tuddbs {
-   template< typename T >
-   struct bitwise_xor_t< T, sse< T > > {
+   template<>
+   struct bitwise_xor_t< uint64_t, neon< uint64_t > > {
       NO_DISCARD FORCE_INLINE
       static
-      typename sse< T >::vector_t
+      typename neon< uint64_t >::vector_t
       apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
+         typename neon< uint64_t >::vector_t const a,
+         typename neon< uint64_t >::vector_t const b
       ) {
-         return _mm_xor_si128( a, b );
+         return veorq_u64( a, b );
       }
    };
-   template< typename T >
-   struct bitwise_or_t< T, sse< T > > {
+   template<>
+   struct bitwise_xor_t< uint32_t, neon< uint32_t > > {
       NO_DISCARD FORCE_INLINE
       static
-      typename sse< T >::vector_t
+      typename neon< uint32_t >::vector_t
       apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
+         typename neon< uint32_t >::vector_t const a,
+         typename neon< uint32_t >::vector_t const b
       ) {
-         return _mm_or_si128( a, b );
+         return veorq_u32( a, b );
       }
    };
-   template< typename T >
-   struct bitwise_and_t< T, sse< T > > {
+   template<>
+   struct bitwise_xor_t< uint16_t, neon< uint16_t > > {
       NO_DISCARD FORCE_INLINE
       static
-      typename sse< T >::vector_t
+      typename neon< uint16_t >::vector_t
       apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
+         typename neon< uint16_t >::vector_t const a,
+         typename neon< uint16_t >::vector_t const b
       ) {
-         return _mm_and_si128( a, b );
+         return veorq_u16( a, b );
+      }
+   };
+   template<>
+   struct bitwise_xor_t< uint8_t, neon< uint8_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint8_t >::vector_t
+      apply(
+         typename neon< uint8_t >::vector_t const a,
+         typename neon< uint8_t >::vector_t const b
+      ) {
+         return veorq_u8( a, b );
+      }
+   };
+   
+   template<>
+   struct bitwise_or_t< uint64_t, neon< uint64_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint64_t >::vector_t
+      apply(
+         typename neon< uint64_t >::vector_t const a,
+         typename neon< uint64_t >::vector_t const b
+      ) {
+         return vorrq_u64( a, b );
+      }
+   };
+   template<>
+   struct bitwise_or_t< uint32_t, neon< uint32_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint32_t >::vector_t
+      apply(
+         typename neon< uint32_t >::vector_t const a,
+         typename neon< uint32_t >::vector_t const b
+      ) {
+         return vorrq_u32( a, b );
+      }
+   };
+   template<>
+   struct bitwise_or_t< uint16_t, neon< uint16_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint16_t >::vector_t
+      apply(
+         typename neon< uint16_t >::vector_t const a,
+         typename neon< uint16_t >::vector_t const b
+      ) {
+         return vorrq_u16( a, b );
+      }
+   };
+   template<>
+   struct bitwise_or_t< uint8_t, neon< uint8_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint8_t >::vector_t
+      apply(
+         typename neon< uint8_t >::vector_t const a,
+         typename neon< uint8_t >::vector_t const b
+      ) {
+         return vorrq_u8( a, b );
       }
    };
 
-   template< typename T >
-   struct bitwise_and_not_t< T, sse< T > > {
+
+   template<>
+   struct bitwise_and_t< uint64_t, neon< uint64_t > > {
       NO_DISCARD FORCE_INLINE
       static
-      typename sse< T >::vector_t
+      typename neon< uint64_t >::vector_t
       apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
+         typename neon< uint64_t >::vector_t const a,
+         typename neon< uint64_t >::vector_t const b
       ) {
-         return _mm_andnot_si128( a, b );
+         return vandq_u64( a, b );
+      }
+   };
+   template<>
+   struct bitwise_and_t< uint32_t, neon< uint32_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint32_t >::vector_t
+      apply(
+         typename neon< uint32_t >::vector_t const a,
+         typename neon< uint32_t >::vector_t const b
+      ) {
+         return vandq_u32( a, b );
+      }
+   };
+   template<>
+   struct bitwise_and_t< uint16_t, neon< uint16_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint16_t >::vector_t
+      apply(
+         typename neon< uint16_t >::vector_t const a,
+         typename neon< uint16_t >::vector_t const b
+      ) {
+         return vandq_u16( a, b );
+      }
+   };
+   template<>
+   struct bitwise_and_t< uint8_t, neon< uint8_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint8_t >::vector_t
+      apply(
+         typename neon< uint8_t >::vector_t const a,
+         typename neon< uint8_t >::vector_t const b
+      ) {
+         return vandq_u8( a, b );
+      }
+   };
+
+   template<>
+   struct bitwise_and_not_t< uint64_t, neon< uint64_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint64_t >::vector_t
+      apply(
+         typename neon< uint64_t >::vector_t const a,
+         typename neon< uint64_t >::vector_t const b
+      ) {
+         return vbicq_u64( b,a );
+      }
+   };
+   template<>
+   struct bitwise_and_not_t< uint32_t, neon< uint32_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint32_t >::vector_t
+      apply(
+         typename neon< uint32_t >::vector_t const a,
+         typename neon< uint32_t >::vector_t const b
+      ) {
+         return vbicq_u32( b, a );
+      }
+   };
+   template<>
+   struct bitwise_and_not_t< uint16_t, neon< uint16_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint16_t >::vector_t
+      apply(
+         typename neon< uint16_t >::vector_t const a,
+         typename neon< uint16_t >::vector_t const b
+      ) {
+         return vbicq_u16( b, a );
+      }
+   };
+   template<>
+   struct bitwise_and_not_t< uint8_t, neon< uint8_t > > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint8_t >::vector_t
+      apply(
+         typename neon< uint8_t >::vector_t const a,
+         typename neon< uint8_t >::vector_t const b
+      ) {
+         return vbicq_u8( b, a );
       }
    };
    
 
 
-//use this with care!
-   template< typename T, int I >
-   struct bitshift_left_t< sse< T >, I > {
+    //use this with care!
+   template< int I >
+   struct bitshift_left_t< neon< uint64_t >, I > {
       NO_DISCARD FORCE_INLINE
       static
-      typename sse< T >::vector_t
+      typename neon< uint64_t >::vector_t
       apply(
-         typename sse< T >::vector_t const a
+         typename neon< uint64_t >::vector_t const a
       ) {
-         return _mm_slli_epi64( a, I );
+         return vshlq_n_u64( a, I );
+      }
+   };
+   //use this with care!
+   template< int I >
+   struct bitshift_left_t< neon< uint32_t >, I > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint32_t >::vector_t
+      apply(
+         typename neon< uint32_t >::vector_t const a
+      ) {
+         return vshlq_n_u32( a, I );
+      }
+   };
+   //use this with care!
+   template< int I >
+   struct bitshift_left_t< neon< uint16_t >, I > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint16_t >::vector_t
+      apply(
+         typename neon< uint16_t >::vector_t const a
+      ) {
+         return vshlq_n_u16( a, I );
+      }
+   };
+   //use this with care!
+   template< int I >
+   struct bitshift_left_t< neon< uint8_t >, I > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint8_t >::vector_t
+      apply(
+         typename neon< uint8_t >::vector_t const a
+      ) {
+         return vshlq_n_u8( a, I );
       }
    };
 
-   //use this with care!
-   template< typename T, int I >
-   struct bitshift_right_t< sse< T >, I > {
+    //use this with care!
+   template< int I >
+   struct bitshift_right_t< neon< uint64_t >, I > {
       NO_DISCARD FORCE_INLINE
       static
-      typename sse< T >::vector_t
+      typename neon< uint64_t >::vector_t
       apply(
-         typename sse< T >::vector_t const a
+         typename neon< uint64_t >::vector_t const a
       ) {
-         return _mm_srli_epi64( a, I );
+         return vshrq_n_u64( a, I );
+      }
+   };
+   //use this with care!
+   template< int I >
+   struct bitshift_right_t< neon< uint32_t >, I > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint32_t >::vector_t
+      apply(
+         typename neon< uint32_t >::vector_t const a
+      ) {
+         return vshrq_n_u32( a, I );
+      }
+   };
+   //use this with care!
+   template< int I >
+   struct bitshift_right_t< neon< uint16_t >, I > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint16_t >::vector_t
+      apply(
+         typename neon< uint16_t >::vector_t const a
+      ) {
+         return vshrq_n_u16( a, I );
+      }
+   };
+   //use this with care!
+   template< int I >
+   struct bitshift_right_t< neon< uint8_t >, I > {
+      NO_DISCARD FORCE_INLINE
+      static
+      typename neon< uint8_t >::vector_t
+      apply(
+         typename neon< uint8_t >::vector_t const a
+      ) {
+         return vshrq_n_u8( a, I );
       }
    };
 }
