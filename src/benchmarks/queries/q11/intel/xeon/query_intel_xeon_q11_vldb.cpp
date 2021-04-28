@@ -27,6 +27,7 @@
 #include <benchmarks/queries/q11/query11_data.h>
 #include <benchmarks/queries/q11/query11_seq.h>
 #include <benchmarks/queries/q11/query11_seq_parallel.h>
+#include <benchmarks/queries/q11/query11_simq_parallel_tput.h>
 #include <benchmarks/queries/q11/query11_simq.h>
 
 #include <cstddef>
@@ -57,6 +58,7 @@ void run_build_variants(
    if( sizeof( typename VectorExtension::base_t ) > 2 ) {
       simq_wl_q11< simq_vector_builder_gather_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
    }
+   simq_wl_q11_parallel< simq_vector_builder_buffer_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
 }
 
 template< class VectorExtension, std::size_t ColumnCount, std::size_t QueryCount >
