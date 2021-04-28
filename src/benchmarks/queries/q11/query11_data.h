@@ -223,8 +223,7 @@ namespace tuddbs {
          std::chrono::time_point<std::chrono::high_resolution_clock> additional_time_start =
             std::chrono::time_point<std::chrono::high_resolution_clock>(),
          std::chrono::time_point<std::chrono::high_resolution_clock> additional_time_end =
-            std::chrono::time_point<std::chrono::high_resolution_clock>(),
-         
+            std::chrono::time_point<std::chrono::high_resolution_clock>()
       ) {
          global::outputfile << rep << ";"
 //         std::cerr << rep << ";"
