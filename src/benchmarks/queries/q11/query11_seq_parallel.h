@@ -114,7 +114,7 @@ namespace tuddbs {
 
 		experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
             rep, datagenerator, "SISQ", "BITMASK", "SEQ-PAR",
-            start_simq_builder, start_simq_builder, start, end, results_from_queries, dummy
+            start_simq_builder, start_simq_builder, earliest_start, latest_end, results_from_queries, dummy
          );
          }
          destroy_column( results_from_queries );

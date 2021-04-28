@@ -35,6 +35,21 @@ namespace tuddbs {
       static void run(
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount > * const datagenerator
       ) {
+         using ThreadCount       = std::conditional_t<
+            ( QueryCount > vector_constants_t< VectorExtension >::vector_element_count_t::value ),
+            std::integral_constant<
+               std::size_t,
+               ( QueryCount / vector_constants_t< VectorExtension >::vector_element_count_t::value )
+            >,
+            std::integral_constant< std::size_t, 1 >
+         >;
+         
+         using PackageQueryCount = std::conditional_t<
+            (ThreadCount::value == 1 ),
+            std::integral_constant< std::size_t, QueryCount >,
+            std::integral_constant< std::size_t, vector_constants_t< VectorExtension >::vector_element_count_t::value >
+         >;
+         
          using T                 = typename VectorExtension::base_t;
          using column_array_t    = column_array< VectorExtension, ColumnCount >;
          using predicate_array_t = value_array< VectorExtension, QueryCount >;
