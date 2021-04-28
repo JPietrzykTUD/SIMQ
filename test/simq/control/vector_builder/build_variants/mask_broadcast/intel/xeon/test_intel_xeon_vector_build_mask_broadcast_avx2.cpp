@@ -102,8 +102,8 @@ bool test( void ) {
          std::cerr << "[" << i << "]: " << "Should be: " << (int) should_be_buffer[ i ] << ". Is: " << (int) output_buffer_orig[ i ] << "\n";
       }
    }
-   release( ( void * ) should_be_buffer );
-   release((void*)output_buffer_orig);
+   release_ptr( ( void * ) should_be_buffer );
+   release_ptr((void*)output_buffer_orig);
    return result;
 }
 

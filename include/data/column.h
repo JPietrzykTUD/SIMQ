@@ -93,9 +93,9 @@ namespace tuddbs {
       ~column() {
          if( owns_memory )
 #ifdef HAS_MCD
-            release( data_ptr, use_mcd );
+            release_ptr( data_ptr, use_mcd );
 #else
-            release( data_ptr );
+            release_ptr( data_ptr );
 #endif
       }
 

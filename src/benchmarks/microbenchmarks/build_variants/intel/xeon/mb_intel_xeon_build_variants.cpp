@@ -100,7 +100,7 @@ void run_sequential( std::size_t data_size ) {
    /**
     * Release used buffers.
     */
-   release( output_buffer_orig );
+   release_ptr( output_buffer_orig );
    for( std::size_t i = 0; i < ColumnCount; ++i ) {
       destroy_column( mb_column_array.columns[ ColumnCount - 1 - i ] );
    }
@@ -183,7 +183,7 @@ void run_single_build_variant( std::size_t data_size ) {
       svb.reset();
    }
 
-   release( output_buffer_orig );
+   release_ptr( output_buffer_orig );
    for( std::size_t i = 0; i < ColumnCount; ++i ) {
       destroy_column( mb_column_array.columns[ ColumnCount - 1 - i ] );
    }
