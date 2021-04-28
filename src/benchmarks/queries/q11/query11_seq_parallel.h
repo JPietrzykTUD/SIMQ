@@ -84,7 +84,7 @@ namespace tuddbs {
 			end_tps[query_id] = now();
          };
          
-         auto start = now( );
+         // auto start = now( );
          std::vector< std::thread > pool;
          for( std::size_t query_id = 0; query_id < QueryCount; ++query_id ) {
             // Parallelize
@@ -99,7 +99,7 @@ namespace tuddbs {
             [](std::thread &t) {t.join();}
          );
          
-         auto end = now( );
+         // auto end = now( );
 		 
 		chrono_tp earliest_start = start_tps[0];
 		chrono_tp latest_end = end_tps[0];
@@ -119,8 +119,8 @@ namespace tuddbs {
          }
          destroy_column( results_from_queries );
          for( std::size_t query_id = 0; query_id < QueryCount; ++query_id ) {
-         destroy_column( filter_result_masks[query_id] );
-         destroy_column( aggregation_result_cols[query_id] );
+			destroy_column( filter_result_masks[query_id] );
+			destroy_column( aggregation_result_cols[query_id] );
          }
       }
       
