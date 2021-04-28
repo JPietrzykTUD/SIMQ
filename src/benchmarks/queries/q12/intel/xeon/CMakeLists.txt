@@ -1,1 +1,2 @@
 create_benchmark(benchmark_query_1_2_vldb_intel_xeon query_intel_xeon_q12_vldb.cpp)
+#create_benchmark(benchmark_query_1_2xx_vldb_intel_xeon ERROR_query_intel_xeon_q12_vldb2.cpp)

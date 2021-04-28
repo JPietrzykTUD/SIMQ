@@ -150,7 +150,8 @@ namespace tuddbs {
                                                       class VectorExtension,
       std::size_t QueryCount2ndStageOp1,
       std::size_t QueryCount2ndStageOp2,
-      std::size_t ColumnCount = 1
+      std::size_t ColumnCount = 1,
+      std::size_t ColumnCount2ndStageOp1 = 1
    >
    struct simq_wl_q12_two_Stage2_ops {
       using QueryCount_t = std::integral_constant< std::size_t,
@@ -160,34 +161,37 @@ namespace tuddbs {
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount_t::value > * const datagenerator
       ) {
          using T                 = typename VectorExtension::base_t;
-         using column_array_t    = column_array< VectorExtension, ColumnCount >;
+         using column_array_1st_stage_t    = column_array< VectorExtension, ColumnCount >;
+         using column_array_2nd_stage_t    = column_array< VectorExtension, ColumnCount2ndStageOp1 >;
          using predicate_array_t = value_array< VectorExtension, QueryCount_t::value >;
          using svbFirstStage_t =
          simq_vector_builder_t<
             Strategy,
-            column_array_t,
+            column_array_1st_stage_t,
             QueryCount_t::value
          >;
          using svbSecondStageOp1_t =
          simq_vector_builder_t<
             Strategy,
-            column_array_t,
+            column_array_2nd_stage_t,
             QueryCount2ndStageOp1
          >;
          using svbSecondStageOp2_t =
          simq_vector_builder_t<
             Strategy,
-            column_array_t,
+            column_array_2nd_stage_t,
             QueryCount2ndStageOp2
          >;
          std::size_t const data_count = datagenerator->data_size / sizeof( T );
-         
-         column_array_t q12_filter_column_array;
-         column_array_t q12_aggregate1_column_array;
-         column_array_t q12_aggregate2_column_array;
+   
+         column_array_1st_stage_t q12_filter_column_array;
+         column_array_2nd_stage_t q12_aggregate1_column_array;
+         column_array_2nd_stage_t q12_aggregate2_column_array;
          
          for( std::size_t column_id = 0; column_id < ColumnCount; ++column_id ) {
             q12_filter_column_array.set( column_id, datagenerator->filter_columns[ column_id ] );
+         }
+         for( std::size_t column_id = 0; column_id < ColumnCount2ndStageOp1; ++column_id ) {
             q12_aggregate1_column_array.set( column_id, datagenerator->aggregate_columns[ column_id ] );
             q12_aggregate2_column_array.set( column_id, datagenerator->aggregate_columns[ column_id ] );
          }
@@ -253,7 +257,7 @@ namespace tuddbs {
             >::print_experiment_result(
                rep, datagenerator, "SIMQ", "BITMASK",
                Strategy<
-                  column_array_t, QueryCount_t::value,
+                  column_array_1st_stage_t, QueryCount_t::value,
                   typename VectorExtension::base_t, VectorExtension
                >::get_name( ),
                start_simq_build, end_simq_build, start, end, dummy,
@@ -289,7 +293,9 @@ namespace tuddbs {
       std::size_t QueryCount2ndStageOp1,
       std::size_t QueryCount2ndStageOp2,
       std::size_t QueryCount2ndStageOp3,
-      std::size_t ColumnCount = 1
+      std::size_t ColumnCount = 1,
+      std::size_t ColumnCount2ndStageOp1 = 1,
+      std::size_t ColumnCount2ndStageOp2_3 = 1
    >
    struct simq_wl_q12_three_Stage2_ops {
       using QueryCount_t = std::integral_constant< std::size_t,
@@ -298,45 +304,52 @@ namespace tuddbs {
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount_t::value > * const datagenerator
       ) {
          using T                 = typename VectorExtension::base_t;
-         using column_array_t    = column_array< VectorExtension, ColumnCount >;
+         using column_array_1st_stage_t    = column_array< VectorExtension, ColumnCount >;
+         using column_array_2nd_stage_op_1_t    = column_array< VectorExtension, ColumnCount2ndStageOp1 >;
+         using column_array_2nd_stage_op_2_3_t    = column_array< VectorExtension, ColumnCount2ndStageOp2_3 >;
          using predicate_array_t = value_array< VectorExtension, QueryCount_t::value >;
          using svbFirstStage_t =
             simq_vector_builder_t<
                Strategy,
-               column_array_t,
+               column_array_1st_stage_t,
                QueryCount_t::value
             >;
          using svbSecondStageOp1_t =
             simq_vector_builder_t<
                Strategy,
-               column_array_t,
+               column_array_2nd_stage_op_1_t,
                QueryCount2ndStageOp1
             >;
          using svbSecondStageOp2_t =
             simq_vector_builder_t<
                Strategy,
-               column_array_t,
+               column_array_2nd_stage_op_2_3_t,
                QueryCount2ndStageOp2
             >;
          using svbSecondStageOp3_t =
             simq_vector_builder_t<
                Strategy,
-               column_array_t,
+               column_array_2nd_stage_op_2_3_t,
                QueryCount2ndStageOp3
             >;
          std::size_t const data_count = datagenerator->data_size / sizeof( T );
-         
-         column_array_t q12_filter_column_array;
-         column_array_t q12_aggregate1_column_array;
-         column_array_t q12_aggregate2_column_array;
-         column_array_t q12_aggregate3_column_array;
+   
+         column_array_1st_stage_t q12_filter_column_array;
+         column_array_2nd_stage_op_1_t q12_aggregate1_column_array;
+         column_array_2nd_stage_op_2_3_t q12_aggregate2_column_array;
+         column_array_2nd_stage_op_2_3_t q12_aggregate3_column_array;
          
          for( std::size_t column_id = 0; column_id < ColumnCount; ++column_id ) {
             q12_filter_column_array.set( column_id, datagenerator->filter_columns[ column_id ] );
+         }
+         for( std::size_t column_id = 0; column_id < ColumnCount2ndStageOp1; ++column_id ) {
             q12_aggregate1_column_array.set( column_id, datagenerator->aggregate_columns[ column_id ] );
+         }
+         for( std::size_t column_id = 0; column_id < ColumnCount2ndStageOp2_3; ++column_id ) {
             q12_aggregate2_column_array.set( column_id, datagenerator->aggregate_columns[ column_id ] );
             q12_aggregate3_column_array.set( column_id, datagenerator->aggregate_columns[ column_id ] );
          }
+         
          
          predicate_array_t q12_predicates_array;
          for( std::size_t query_id = 0; query_id < QueryCount_t::value; ++query_id ) {
@@ -412,7 +425,7 @@ namespace tuddbs {
             >::print_experiment_result(
                rep, datagenerator, "SIMQ", "BITMASK",
                Strategy<
-                  column_array_t, QueryCount_t::value,
+                  column_array_1st_stage_t, QueryCount_t::value,
                   typename VectorExtension::base_t, VectorExtension
                >::get_name( ),
                start_simq_build, end_simq_build, start, end, dummy,

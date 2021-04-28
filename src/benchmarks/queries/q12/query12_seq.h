@@ -92,7 +92,8 @@ namespace tuddbs {
       class VectorExtension,
       std::size_t QueryCount2ndStageOp1,
       std::size_t QueryCount2ndStageOp2,
-      std::size_t ColumnCount = 1
+      std::size_t ColumnCount = 1,
+      std::size_t ColumnCount2ndStageOp1 = 1
    >
    struct seq_wl_q12_two_Stage2_ops {
       using QueryCount_t = std::integral_constant< std::size_t,
@@ -154,7 +155,7 @@ namespace tuddbs {
                );
                results2_from_queries->data_ptr[ query_id ] = aggregation_result_column2->data_ptr[ 0 ];
       
-               if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount ) == 0 )  ) {
+               if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount2ndStageOp1 ) == 0 )  ) {
                   ++column_id;
                }
             }
@@ -186,7 +187,9 @@ namespace tuddbs {
       std::size_t QueryCount2ndStageOp1,
       std::size_t QueryCount2ndStageOp2,
       std::size_t QueryCount2ndStageOp3,
-      std::size_t ColumnCount = 1
+      std::size_t ColumnCount = 1,
+      std::size_t ColumnCount2ndStageOp1 = 1,
+      std::size_t ColumnCount2ndStageOp2_3 = 1
    >
    struct seq_wl_q12_three_Stage2_ops {
       using QueryCount_t = std::integral_constant< std::size_t,
@@ -254,7 +257,7 @@ namespace tuddbs {
                );
                results2_from_queries->data_ptr[ query_id ] = aggregation_result_column2->data_ptr[ 0 ];
                
-               if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount ) == 0 )  ) {
+               if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount2ndStageOp1 ) == 0 )  ) {
                   ++column_id;
                }
             }
@@ -271,7 +274,7 @@ namespace tuddbs {
                );
                results3_from_queries->data_ptr[ query_id ] = aggregation_result_column3->data_ptr[ 0 ];
       
-               if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount ) == 0 )  ) {
+               if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount2ndStageOp2_3 ) == 0 )  ) {
                   ++column_id;
                }
             }
