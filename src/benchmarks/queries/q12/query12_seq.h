@@ -19,7 +19,7 @@
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q12_QUERY12_SEQ_H
 
 #include <benchmarks/queries/q11/query11_data.h>
-#include <benchmarks/queries/q12/query12_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 
 namespace tuddbs {
    template<
@@ -76,16 +76,12 @@ namespace tuddbs {
                }
             }
             auto end = now( );
-            experiment_query12<
-               VectorExtension,
-               QueryCount2ndStageOp1,
-               0,
-               0,
-               ColumnCount
+            experiment_query_11_12<
+               VectorExtension, ColumnCount, QueryCount2ndStageOp1, 0
             >::print_experiment_result(
                rep, datagenerator, "SISQ", "BITMASK", "SEQ",
-               start_simq_builder, start_simq_builder, start, end, dummy,
-               results_from_queries, nullptr, nullptr
+               QueryCount2ndStageOp1, 1, start_simq_builder, start_simq_builder, start, end,  time_elapsed_ns( start, end ),
+               "", dummy, results_from_queries
             );
          }
          destroy_column( aggregation_result_column );
@@ -176,16 +172,12 @@ namespace tuddbs {
                }
             }
             auto end = now( );
-            experiment_query12<
-               VectorExtension,
-               QueryCount2ndStageOp1,
-               QueryCount2ndStageOp2,
-               0,
-               ColumnCount
+            experiment_query_11_12<
+               VectorExtension, ColumnCount, QueryCount2ndStageOp1+QueryCount2ndStageOp2, 0, QueryCount2ndStageOp2
             >::print_experiment_result(
                rep, datagenerator, "SISQ", "BITMASK", "SEQ",
-               start_simq_builder, start_simq_builder, start, end, dummy,
-               results1_from_queries, results2_from_queries, nullptr
+               QueryCount2ndStageOp1 + QueryCount2ndStageOp2, 1, start_simq_builder, start_simq_builder,  start, end,
+               time_elapsed_ns( start, end ), "", dummy, results1_from_queries, results2_from_queries
             );
          }
          destroy_column( aggregation_result_column2 );
@@ -305,16 +297,15 @@ namespace tuddbs {
                }
             }
             auto end = now( );
-            experiment_query12<
-               VectorExtension,
-               QueryCount2ndStageOp1,
-               QueryCount2ndStageOp2,
-               QueryCount2ndStageOp3,
-               ColumnCount
+            experiment_query_11_12<
+               VectorExtension, ColumnCount,
+               QueryCount2ndStageOp1+QueryCount2ndStageOp2+QueryCount2ndStageOp3, 0, QueryCount2ndStageOp2,
+               QueryCount2ndStageOp3
             >::print_experiment_result(
                rep, datagenerator, "SISQ", "BITMASK", "SEQ",
-               start_simq_builder, start_simq_builder, start, end, dummy,
-               results1_from_queries, results2_from_queries, results3_from_queries
+               QueryCount2ndStageOp1 + QueryCount2ndStageOp2 + QueryCount2ndStageOp3, 1, start_simq_builder,
+               start_simq_builder,  start, end,time_elapsed_ns( start, end ), "", dummy, results1_from_queries,
+               results2_from_queries, results3_from_queries
             );
          }
          destroy_column( aggregation_result_column3 );

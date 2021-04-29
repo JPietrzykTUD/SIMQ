@@ -19,6 +19,7 @@
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SEQ_PARALLEL_H
 
 #include <benchmarks/queries/q11/query11_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 #include <thread>
 #include <vector>
 #include <algorithm>
@@ -127,10 +128,10 @@ namespace tuddbs {
                   
             }
             
-            experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
-               rep, datagenerator, "SISQ", "BITMASK", "SEQ-PAR",
-               start_simq_builder, start_simq_builder, earliest_start, latest_end, results_from_queries, dummy,
-               total_cpu_time_ns
+            experiment_query_11_12< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+               rep, datagenerator, "SISQ", "BITMASK", "SEQ", QueryCount, QueryCount,
+               start_simq_builder, start_simq_builder, earliest_start, latest_end,
+               total_cpu_time_ns, "", dummy, results_from_queries
             );
          }
          destroy_column( results_from_queries );

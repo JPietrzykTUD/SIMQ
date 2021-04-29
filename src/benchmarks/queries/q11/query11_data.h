@@ -23,6 +23,8 @@ namespace global {
    extern std::ofstream outputfile;
 }
 
+
+
 #include <data/column.h>
 #include <data/container/column_array.h>
 
@@ -111,13 +113,6 @@ namespace tuddbs {
             results[ i ]     = result_carry + rep;
             result_carry += rep;
          }
-
-//         std::cerr << "RESULTS SHOULD BE: \n";
-//         std::cerr << " | ";
-//         for( std::size_t i = 0; i < QueryCount; ++i ) {
-//            std::cerr << results[ i ] << " | ";
-//         }
-//         std::cerr << "\n";
          std::shuffle( filter_column->data_ptr, filter_column->data_ptr + ( filter_column->data_count ), engine );
          aggregate_column->init( 1 );
       }
@@ -196,150 +191,6 @@ namespace tuddbs {
          }
       }
       
-   };
-   
-   void q11_header( void ) {
-      global::outputfile << "rep;"
-                         << "data_count;"
-                         << "data_size;"
-                         << "vector_extension_name;"
-                         << "data_type;"
-                         << "workload_processing_name;"
-                         << "intermediate_format;"
-                         << "build_variant_name;"
-                         << "column_count;"
-                         << "query_count;"
-                         << "query_processing_variant_name;"
-                         << "batch_size;"
-                         << "simq_build_time_ns;"
-                         << "execution_time_ns;"
-                         << "result;"
-                         << "dummy;"
-                         << "multithread_total_cpu_time_ns\n";
-   }
-   
-   template<
-      class VectorExtension,
-      std::size_t ColumnCount,
-      std::size_t QueryCount,
-      std::size_t BatchSize
-   >
-   struct experiment_query11 {
-      static void print_experiment_result(
-         std::size_t const rep,
-         datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount > * const datagenerator,
-         std::string variant_name,
-         std::string intermediate_name,
-         std::string build_name,
-         std::chrono::time_point <std::chrono::high_resolution_clock> start_simq_build,
-         std::chrono::time_point <std::chrono::high_resolution_clock> end_simq_build,
-         std::chrono::time_point <std::chrono::high_resolution_clock> start,
-         std::chrono::time_point <std::chrono::high_resolution_clock> end,
-         column< typename VectorExtension::base_t > * const aggregation_result_column,
-         uint64_t const flush_dummy,
-         double total_cpu_time = 0.0
-      ) {
-         global::outputfile << rep << ";"
-                            << datagenerator->data_size / sizeof( typename VectorExtension::base_t ) << ";"
-                            << datagenerator->data_size << ";"
-                            << vec_ext_to_string_t< VectorExtension >::apply( ) << ";"
-                            << variant_name << ";"
-                            << intermediate_name << ";"
-                            << build_name << ";"
-                            << ColumnCount << ";"
-                            << QueryCount << ";";
-         if( BatchSize == 0 ) {
-            global::outputfile << "Operator at a Time;";
-         } else {
-            global::outputfile << "Batch at a Time;";
-         }
-         global::outputfile << BatchSize << ";"
-                            << time_elapsed_ns( start_simq_build, end_simq_build ) << ";"
-                            << time_elapsed_ns( start, end ) << ";"
-                            << " | ";
-         for(
-            std::size_t query_id = 0; query_id < QueryCount; ++query_id
-            ) {
-            global::outputfile << ( uint64_t ) aggregation_result_column->data_ptr[ query_id ] << " | ";
-         }
-         global::outputfile << ";" << flush_dummy << ";";
-         if( total_cpu_time == 0.0 ) {
-            global::outputfile << time_elapsed_ns( start, end ) + time_elapsed_ns( start_simq_build, end_simq_build );
-         } else {
-            global::outputfile << total_cpu_time;
-         }
-         global::outputfile << "\n";
-      }
-   };
-   
-   void q11_mt_qtp_header( void ) {
-      global::outputfile << "rep;"
-                         << "data_count;"
-                         << "data_size;"
-                         << "vector_extension_name;"
-                         << "data_type;"
-                         << "workload_processing_name;"
-                         << "intermediate_format;"
-                         << "build_variant_name;"
-                         << "column_count;"
-                         << "query_count;"
-                         << "query_processing_variant_name;"
-                         << "batch_size;"
-                         << "execution_time_ns;"
-                         << "finished_queries;"
-                         << "thread_count;"
-                         << "cpufreq;"
-                         << "result\n";
-   }
-   
-   /**
-    * @brief Single Thread vs Multithread
-    * @tparam VectorExtension
-    * @tparam ColumnCount
-    * @tparam QueryCount
-    * @tparam BatchSize
-    */
-   template<
-      class VectorExtension,
-      std::size_t ColumnCount,
-      std::size_t QueryCount,
-      std::size_t BatchSize
-   >
-   struct experiment_query11_mt_qtp {
-      static void print_experiment_result(
-         std::size_t const rep,
-         datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount > * const datagenerator,
-         std::string variant_name,
-         std::string intermediate_name,
-         std::string build_name,
-         std::chrono::time_point <std::chrono::high_resolution_clock> start,
-         std::chrono::time_point <std::chrono::high_resolution_clock> end,
-         std::size_t executed_queries,
-         std::size_t thread_count,
-         std::string cpufreq,
-         typename VectorExtension::base_t result
-      ) {
-         global::outputfile << rep << ";"
-                            << datagenerator->data_size / sizeof( typename VectorExtension::base_t ) << ";"
-                            << datagenerator->data_size << ";"
-                            << vec_ext_to_string_t< VectorExtension >::apply( ) << ";"
-                            << variant_name << ";"
-                            << intermediate_name << ";"
-                            << build_name << ";"
-                            << ColumnCount << ";"
-                            << QueryCount << ";";
-         if( BatchSize == 0 ) {
-            global::outputfile << "Operator at a Time;";
-         } else {
-            global::outputfile << "Batch at a Time;";
-         }
-         global::outputfile << BatchSize << ";"
-                            << time_elapsed_ns( start, end ) << ";"
-                            << executed_queries << ";"
-                            << thread_count << ";"
-                            << cpufreq << ";"
-                            << result << "\n";
-      }
    };
    
 }

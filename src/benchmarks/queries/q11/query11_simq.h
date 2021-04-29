@@ -18,6 +18,7 @@
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SIMQ_H
 
 #include <benchmarks/queries/q11/query11_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 
 namespace tuddbs {
    template<
@@ -101,12 +102,13 @@ namespace tuddbs {
                   load< VectorExtension >( aggregation_result_column->data_ptr )
                )
             );
-            experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+            experiment_query_11_12< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
                rep, datagenerator, "SIMQ", "BITMASK", Strategy<
                   column_array_t, QueryCount,
                   typename VectorExtension::base_t, VectorExtension
                >::get_name( ),
-               start_simq_build, end_simq_build, start, end, aggregation_result_column, dummy
+               QueryCount, 1, start_simq_build, end_simq_build, start, end,  time_elapsed_ns( start, end ),
+               "", dummy, aggregation_result_column
             );
          }
          destroy_column( aggregation_result_column );
@@ -195,12 +197,13 @@ namespace tuddbs {
                   load< VectorExtension >( aggregation_result_column_ptr )
                )
             );
-            experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+            experiment_query_11_12< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
                rep, datagenerator, "SIMQ", "BITMASK", Strategy<
                   column_array_t, QueryCount,
                   typename VectorExtension::base_t, VectorExtension
                >::get_name( ),
-               start_simq_build, end_simq_build, start, end, aggregation_result_column, dummy
+               QueryCount, 1, start_simq_build, end_simq_build, start, end,  time_elapsed_ns( start, end ),
+               "", dummy, aggregation_result_column
             );
          }
          destroy_column( aggregation_result_column );

@@ -1,0 +1,1 @@
+create_benchmark(benchmark_vldb_intel_xeon workload_vldbj.cpp -pthread)

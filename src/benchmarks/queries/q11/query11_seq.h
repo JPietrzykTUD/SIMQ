@@ -18,7 +18,7 @@
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SEQ_H
 
 #include <benchmarks/queries/q11/query11_data.h>
-
+#include <benchmarks/queries/data/measurement_helper.h>
 namespace tuddbs {
    template<
       class VectorExtension,
@@ -83,9 +83,10 @@ namespace tuddbs {
                }
             }
             auto end = now( );
-            experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
-               rep, datagenerator, "SISQ", "BITMASK", "SEQ",
-               start_simq_builder, start_simq_builder, start, end, results_from_queries, dummy
+            experiment_query_11_12< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+               rep, datagenerator, "SISQ", "BITMASK", "SEQ", QueryCount, 1,
+               start_simq_builder, start_simq_builder, start, end,  time_elapsed_ns( start, end ),
+               "", dummy, results_from_queries
             );
          }
          destroy_column( aggregation_result_column );
@@ -167,9 +168,10 @@ namespace tuddbs {
                }
             }
             auto end = now( );
-            experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
-               rep, datagenerator, "SISQ", "BITMASK", "SEQ",
-               start_simq_builder, start_simq_builder, start, end, results_from_queries, dummy
+            experiment_query_11_12< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+               rep, datagenerator, "SISQ", "BITMASK", "SEQ", QueryCount, 1,
+               start_simq_builder, start_simq_builder, start, end,  time_elapsed_ns( start, end ),
+               "", dummy, results_from_queries
             );
          }
          destroy_column( aggregation_result_column );

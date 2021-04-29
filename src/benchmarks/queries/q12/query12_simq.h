@@ -18,7 +18,7 @@
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q12_QUERY12_SIMQ_H
 
 #include <benchmarks/queries/q11/query11_data.h>
-#include <benchmarks/queries/q12/query12_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 
 namespace tuddbs {
    
@@ -120,20 +120,17 @@ namespace tuddbs {
                   load< VectorExtension >( aggregation1_result_column->data_ptr )
                )
             );
-            experiment_query12<
-               VectorExtension,
-               QueryCount2ndStageOp1,
-               0,
-               0,
-               ColumnCount
+
+            experiment_query_11_12<
+               VectorExtension, ColumnCount, QueryCount2ndStageOp1, 0
             >::print_experiment_result(
                rep, datagenerator, "SIMQ", "BITMASK",
                Strategy<
                   column_array_t, QueryCount_t::value,
                   typename VectorExtension::base_t, VectorExtension
                >::get_name( ),
-               start_simq_build, end_simq_build, start, end, dummy,
-               aggregation1_result_column, nullptr, nullptr
+               QueryCount2ndStageOp1, 1, start_simq_build, end_simq_build, start, end,  time_elapsed_ns( start, end ),
+               "", dummy, aggregation1_result_column
             );
          }
          destroy_column( aggregation1_result_column );
@@ -275,20 +272,16 @@ namespace tuddbs {
                   load< VectorExtension >( aggregation2_result_column->data_ptr )
                )
             );
-            experiment_query12<
-               VectorExtension,
-               QueryCount2ndStageOp1,
-               QueryCount2ndStageOp2,
-               0,
-               ColumnCount
+            experiment_query_11_12<
+               VectorExtension, ColumnCount, QueryCount2ndStageOp1+QueryCount2ndStageOp2, 0, QueryCount2ndStageOp2
             >::print_experiment_result(
                rep, datagenerator, "SIMQ", "BITMASK",
                Strategy<
                   column_array_1st_stage_t, QueryCount_t::value,
                   typename VectorExtension::base_t, VectorExtension
                >::get_name( ),
-               start_simq_build, end_simq_build, start, end, dummy,
-               aggregation1_result_column, aggregation2_result_column, nullptr
+               QueryCount2ndStageOp1 + QueryCount2ndStageOp2, 1, start_simq_build, end_simq_build,  start, end,
+               time_elapsed_ns( start, end ), "", dummy, aggregation1_result_column, aggregation2_result_column
             );
          }
          destroy_column( aggregation2_result_column );
@@ -465,20 +458,19 @@ namespace tuddbs {
                   load< VectorExtension >( aggregation3_result_column->data_ptr )
                )
             );
-            experiment_query12<
-               VectorExtension,
-               QueryCount2ndStageOp1,
-               QueryCount2ndStageOp2,
-               QueryCount2ndStageOp3,
-               ColumnCount
+            experiment_query_11_12<
+               VectorExtension, ColumnCount,
+               QueryCount2ndStageOp1+QueryCount2ndStageOp2+QueryCount2ndStageOp3, 0, QueryCount2ndStageOp2,
+               QueryCount2ndStageOp3
             >::print_experiment_result(
                rep, datagenerator, "SIMQ", "BITMASK",
                Strategy<
                   column_array_1st_stage_t, QueryCount_t::value,
                   typename VectorExtension::base_t, VectorExtension
                >::get_name( ),
-               start_simq_build, end_simq_build, start, end, dummy,
-               aggregation1_result_column, aggregation2_result_column, aggregation3_result_column
+               QueryCount2ndStageOp1 + QueryCount2ndStageOp2 + QueryCount2ndStageOp3, 1, start_simq_build,
+               end_simq_build,  start, end,time_elapsed_ns( start, end ), "", dummy, aggregation1_result_column,
+               aggregation2_result_column, aggregation3_result_column
             );
          }
          destroy_column( aggregation3_result_column );

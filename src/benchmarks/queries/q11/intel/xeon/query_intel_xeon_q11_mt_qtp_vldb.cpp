@@ -26,6 +26,7 @@
 #include <ctime>
 
 #include <benchmarks/queries/q11/query11_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 //#include <benchmarks/queries/q11/query11_seq.h>
 #include <benchmarks/queries/q11/query11_seq_parallel_tput.h>
 #include <benchmarks/queries/q11/query11_simq_parallel_tput.h>
@@ -141,7 +142,7 @@ int main( void ) {
    auto start = std::chrono::system_clock::now( );
    using namespace tuddbs;
    global::outputfile << get_definitions( "#" );
-   q11_mt_qtp_header( );
+   measurement_header( );
    run_experiment( 128_MiB );
 //   run_experiment( 128 );
    auto                            end             = std::chrono::system_clock::now( );

@@ -40,6 +40,9 @@
 #include <ctime>
 
 #include <simd/intrin.h>
+
+#include <benchmarks/queries/q11/query11_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 #include <benchmarks/queries/q12/query12_simq.h>
 #include <benchmarks/queries/q12/query12_seq.h>
 
@@ -427,7 +430,7 @@ int main( void ) {
       return 1;
    }
    global::outputfile << get_definitions( "#" );
-   q12_header( );
+   measurement_header( );
    auto start = std::chrono::system_clock::now( );
    
    run( 32_KiB );

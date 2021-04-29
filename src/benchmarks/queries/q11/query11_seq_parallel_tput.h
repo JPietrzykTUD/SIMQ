@@ -18,7 +18,12 @@
 #ifndef TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SEQ_PARALLEL_TPUT_H
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SEQ_PARALLEL_TPUT_H
 
+
+#ifndef EXPERIMENT_THROUGHPUT_TIME_SLOT
+#define EXPERIMENT_THROUGHPUT_TIME_SLOT 30
+#endif
 #include <benchmarks/queries/q11/query11_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 #include <thread>
 #include <vector>
 #include <algorithm>
@@ -115,12 +120,15 @@ namespace tuddbs {
             }
          }
          using namespace std::chrono_literals;
-         cpu_freq_monitor::instance()->init( ThreadCount, (30s / cpu_freq_monitor::instance()->get_resolution()) + 1 );
+         cpu_freq_monitor::instance()->init(
+            ThreadCount, (std::chrono::milliseconds( EXPERIMENT_THROUGHPUT_TIME_SLOT ) / cpu_freq_monitor::instance()
+               ->get_resolution()) + 1
+         );
          p.set_value( );
          
          cpu_freq_monitor::instance()->start_monitoring();
          auto start_interval = now( );
-         while( std::chrono::duration_cast< std::chrono::seconds >( now( ) - start_interval ).count( ) < 30 ) {
+         while( std::chrono::duration_cast< std::chrono::seconds >( now( ) - start_interval ).count( ) < EXPERIMENT_THROUGHPUT_TIME_SLOT ) {
             std::this_thread::sleep_for( 900ms );
          }
          std::size_t    executed_queries = 0;
@@ -141,9 +149,12 @@ namespace tuddbs {
             ) {
             aggregated_result ^= results_from_queries->data_ptr[ i ];
          }
-         experiment_query11_mt_qtp< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
-            0, datagenerator, "SISQ", "BITMASK", "SEQ-PAR", start_interval, end_interval, executed_queries,
-            ThreadCount, cpu_freq_monitor::instance()->get_data(), aggregated_result
+         
+         experiment_query_11_12< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+            0, datagenerator, "SISQ", "BITMASK", "SEQ", executed_queries, ThreadCount,
+            start_interval, start_interval, start_interval, end_interval, time_elapsed_ns( start_interval,
+                                                                                           end_interval ),
+            cpu_freq_monitor::instance()->get_data(), 0, results_from_queries
          );
          destroy_column( results_from_queries );
          for(

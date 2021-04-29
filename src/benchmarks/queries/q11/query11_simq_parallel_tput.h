@@ -17,7 +17,11 @@
 #ifndef TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SIMQ_PARALLEL_H
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SIMQ_PARALLEL_H
 
+#ifndef EXPERIMENT_THROUGHPUT_TIME_SLOT
+#define EXPERIMENT_THROUGHPUT_TIME_SLOT 30
+#endif
 #include <benchmarks/queries/q11/query11_data.h>
+#include <benchmarks/queries/data/measurement_helper.h>
 #include <thread>
 #include <future>
 #include <atomic>
@@ -138,12 +142,18 @@ namespace tuddbs {
             }
          }
          using namespace std::chrono_literals;
-         cpu_freq_monitor::instance()->init( ThreadCount, (30s / cpu_freq_monitor::instance()->get_resolution()) + 1 );
+         cpu_freq_monitor::instance()->init(
+            ThreadCount, (std::chrono::milliseconds( EXPERIMENT_THROUGHPUT_TIME_SLOT ) / cpu_freq_monitor::instance()
+            ->get_resolution()) + 1
+         );
          p.set_value( );
    
          cpu_freq_monitor::instance()->start_monitoring();
          auto start_interval = now( );
-         while( std::chrono::duration_cast< std::chrono::seconds >( now( ) - start_interval ).count( ) < 30 ) {
+         while(
+            std::chrono::duration_cast< std::chrono::seconds >( now( ) - start_interval ).count( )
+            < EXPERIMENT_THROUGHPUT_TIME_SLOT
+            ) {
             using namespace std::chrono_literals;
             std::this_thread::sleep_for( 900ms );
          }
@@ -165,11 +175,14 @@ namespace tuddbs {
             ) {
             aggregated_result ^= aggregation_result_cols[i]->data_ptr[ 0 ];
          }
-         
-         experiment_query11_mt_qtp< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
+
+         experiment_query_11_12< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
             0, datagenerator, "SIMQ", "BITMASK", Strategy< column_array_t, QueryCount,
-                                                           typename VectorExtension::base_t, VectorExtension >::get_name( ) , start_interval, end_interval,
-            executed_queries, ThreadCount, cpu_freq_monitor::instance()->get_data(), aggregated_result
+                                                           typename VectorExtension::base_t, VectorExtension
+                                                           >::get_name( ),
+            executed_queries, ThreadCount, start_interval, start_interval, start_interval, end_interval,
+            time_elapsed_ns( start_interval, end_interval ),
+            cpu_freq_monitor::instance()->get_data(), 0, aggregation_result_cols[0]
          );
          
          for(
