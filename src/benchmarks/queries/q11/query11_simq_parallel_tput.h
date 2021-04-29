@@ -21,6 +21,7 @@
 #include <thread>
 #include <future>
 #include <atomic>
+#include <utils/cpu_freq_monitor.h>
 
 namespace tuddbs {
    template<
@@ -136,8 +137,11 @@ namespace tuddbs {
                std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
             }
          }
+         using namespace std::chrono_literals;
+         cpu_freq_monitor::instance()->init( ThreadCount, (30s / cpu_freq_monitor::instance()->get_resolution()) + 1 );
          p.set_value( );
-         
+   
+         cpu_freq_monitor::instance()->start_monitoring();
          auto start_interval = now( );
          while( std::chrono::duration_cast< std::chrono::seconds >( now( ) - start_interval ).count( ) < 30 ) {
             using namespace std::chrono_literals;
@@ -150,6 +154,7 @@ namespace tuddbs {
             executed_queries += global_query_counter[ i ];
          }
          auto end_interval = now( );
+         cpu_freq_monitor::instance()->stop_monitoring();
          finished = true;
          
          // Wait for threads to finish
@@ -164,7 +169,7 @@ namespace tuddbs {
          experiment_query11_mt_qtp< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
             0, datagenerator, "SIMQ", "BITMASK", Strategy< column_array_t, QueryCount,
                                                            typename VectorExtension::base_t, VectorExtension >::get_name( ) , start_interval, end_interval,
-            executed_queries, ThreadCount, aggregated_result
+            executed_queries, ThreadCount, cpu_freq_monitor::instance()->get_data(), aggregated_result
          );
          
          for(

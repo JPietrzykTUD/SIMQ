@@ -287,6 +287,8 @@ namespace tuddbs {
                          << "batch_size;"
                          << "execution_time_ns;"
                          << "finished_queries;"
+                         << "thread_count;"
+                         << "cpufreq;"
                          << "result\n";
    }
    
@@ -314,6 +316,7 @@ namespace tuddbs {
          std::chrono::time_point <std::chrono::high_resolution_clock> end,
          std::size_t executed_queries,
          std::size_t thread_count,
+         std::string cpufreq,
          typename VectorExtension::base_t result
       ) {
          global::outputfile << rep << ";"
@@ -334,6 +337,7 @@ namespace tuddbs {
                             << time_elapsed_ns( start, end ) << ";"
                             << executed_queries << ";"
                             << thread_count << ";"
+                            << cpufreq << ";"
                             << result << "\n";
       }
    };

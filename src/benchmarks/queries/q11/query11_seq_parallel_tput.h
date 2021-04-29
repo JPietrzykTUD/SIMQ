@@ -132,7 +132,6 @@ namespace tuddbs {
          auto end_interval = now( );
          cpu_freq_monitor::instance()->stop_monitoring();
          finished = true;
-         std::cout << "Monitoring: " << std::endl << cpu_freq_monitor::instance()->get_data() << std::endl;
          
          // Wait for threads to finish
          std::for_each( pool.begin( ), pool.end( ), [ ]( std::thread & t ) { t.join( ); } );
@@ -144,7 +143,7 @@ namespace tuddbs {
          }
          experiment_query11_mt_qtp< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
             0, datagenerator, "SISQ", "BITMASK", "SEQ-PAR", start_interval, end_interval, executed_queries,
-            ThreadCount, aggregated_result
+            ThreadCount, cpu_freq_monitor::instance()->get_data(), aggregated_result
          );
          destroy_column( results_from_queries );
          for(
