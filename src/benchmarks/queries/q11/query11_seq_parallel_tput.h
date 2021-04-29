@@ -96,9 +96,17 @@ namespace tuddbs {
 			// auto start = now( );
 			std::size_t column_id = 0;
 			std::vector< std::thread > pool;
+			cpu_set_t cpuset;
 			for( std::size_t tid = 0; tid < ThreadCount; ++tid ) {
 				// Parallelize
 				pool.emplace_back( std::thread( magic, tid, column_id ) );
+				/* Set Thread Affinity */
+				CPU_ZERO(&cpuset);
+				CPU_SET(tid, &cpuset);
+				int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+				if (rc != 0) {
+				  std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+				}
 				if( ( ( tid + 1 ) % ( QueryCount / ColumnCount ) == 0 )  ) {
 					++column_id;
 					if ( column_id >= ColumnCount ) {
