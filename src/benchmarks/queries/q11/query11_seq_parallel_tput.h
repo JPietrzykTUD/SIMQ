@@ -25,6 +25,7 @@
 #include <chrono>
 #include <future>
 #include <atomic>
+#include <utils/cpu_freq_monitor.h>
 
 namespace tuddbs {
    template<
@@ -113,11 +114,13 @@ namespace tuddbs {
                }
             }
          }
+         using namespace std::chrono_literals;
+         cpu_freq_monitor::instance()->init( ThreadCount, (30s / cpu_freq_monitor::instance()->get_resolution()) + 1 );
          p.set_value( );
          
+         cpu_freq_monitor::instance()->start_monitoring();
          auto start_interval = now( );
          while( std::chrono::duration_cast< std::chrono::seconds >( now( ) - start_interval ).count( ) < 30 ) {
-            using namespace std::chrono_literals;
             std::this_thread::sleep_for( 900ms );
          }
          std::size_t    executed_queries = 0;
@@ -127,8 +130,9 @@ namespace tuddbs {
             executed_queries += global_query_counter[ i ];
          }
          auto end_interval = now( );
+         cpu_freq_monitor::instance()->stop_monitoring();
          finished = true;
-   
+         std::cout << "Monitoring: " << std::endl << cpu_freq_monitor::instance()->get_data() << std::endl;
          
          // Wait for threads to finish
          std::for_each( pool.begin( ), pool.end( ), [ ]( std::thread & t ) { t.join( ); } );
