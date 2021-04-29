@@ -18,6 +18,7 @@
 #define TUDDBS_SIMQ_INCLUDE_UTILS_DEFINITIONS_H
 
 #include <string>
+
 #ifndef GIT_REMOTE_URL
 #define GIT_REMOTE_URL ""
 #endif
@@ -69,31 +70,62 @@
 
 std::string get_definitions( std::string prefix ) {
    std::string result = "";
-   result += prefix + "Git Repository: " + std::string(GIT_REMOTE_URL) + "\n";
-   result += prefix + "Git Branch:     " + std::string(GIT_BRANCH_CMAKE) + "\n";
-   result += prefix + "Git Commit:     " + std::string(GIT_COMMIT_ABBREV_HASH_CMAKE) + "(" + std::string( GIT_COMMIT_HASH_CMAKE ) + ")" + "\n";
+   result += prefix + "Git Repository: " + std::string( GIT_REMOTE_URL ) + "\n";
+   result += prefix + "Git Branch:     " + std::string( GIT_BRANCH_CMAKE ) + "\n";
+   result
+      +=
+      prefix
+      + "Git Commit:     "
+      + std::string( GIT_COMMIT_ABBREV_HASH_CMAKE )
+      + "("
+      + std::string( GIT_COMMIT_HASH_CMAKE )
+      + ")"
+      + "\n";
    result += prefix + "\n";
-   result += prefix + "System:         " + std::string(BUILD_UNAME_CMAKE) + "\n";
-   result += prefix + "Processor:      " + std::string(PROCESSOR_NAME) + "\n";
-   result += prefix + "L1D | L2 | L3:  " + std::string(L1D) + " | " + std::string(L2) + " | " + std::string(L3) + "\n";
-   result += prefix + "Hostname:       " + std::string(BUILD_HOSTNAME_CMAKE) + "\n";
+   result += prefix + "System:         " + std::string( BUILD_UNAME_CMAKE ) + "\n";
+   result += prefix + "Processor:      " + std::string( PROCESSOR_NAME ) + "\n";
+   result
+      +=
+      prefix + "L1D | L2 | L3:  " + std::string( L1D ) + " | " + std::string( L2 ) + " | " + std::string( L3 ) + "\n";
+   result += prefix + "Hostname:       " + std::string( BUILD_HOSTNAME_CMAKE ) + "\n";
    result += prefix + "\n";
-   result += prefix + "Compiler:       " + std::string(BUILD_COMPILER_NAME_CMAKE);
-   result += "( v. " + std::string(BUILD_COMPILER_VERSION_CMAKE) + " ). Path: " + std::string(BUILD_COMPILER_PATH_CMAKE) + "\n";
-   result += prefix + "Build-Time:     " + std::string(BUILD_TIME_CMAKE) + "\n";
-   result += prefix + "Compile-Flags:  " + std::string(COMPILE_OPTIONS) + " ( " + std::string(COMPILE_DEFINITIONS) + " )\n";
-
+   result += prefix + "Compiler:       " + std::string( BUILD_COMPILER_NAME_CMAKE );
+   result
+      +=
+      "( v. "
+      + std::string( BUILD_COMPILER_VERSION_CMAKE )
+      + " ). Path: "
+      + std::string( BUILD_COMPILER_PATH_CMAKE )
+      + "\n";
+   result += prefix + "Build-Time:     " + std::string( BUILD_TIME_CMAKE ) + "\n";
+   result
+      +=
+      prefix
+      + "Compile-Flags:  "
+      + std::string( COMPILE_OPTIONS )
+      + " ( "
+      + std::string( COMPILE_DEFINITIONS )
+      + " )\n";
+   
    return result;
 }
 
 namespace tuddbs {
-   constexpr std::size_t operator"" _MiB( unsigned long long int bytes ) {
+   constexpr std::size_t
+   
+   operator "" _MiB( unsigned long long int bytes ) {
       return bytes * 1024 * 1024;
    }
-   constexpr std::size_t operator"" _GiB( unsigned long long int bytes ) {
+   
+   constexpr std::size_t
+   
+   operator "" _GiB( unsigned long long int bytes ) {
       return bytes * 1024 * 1024 * 1024;
    }
-   constexpr std::size_t operator"" _KiB( unsigned long long int bytes ) {
+   
+   constexpr std::size_t
+   
+   operator "" _KiB( unsigned long long int bytes ) {
       return bytes * 1024;
    }
 }

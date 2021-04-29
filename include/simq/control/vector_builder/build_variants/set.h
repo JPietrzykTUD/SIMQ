@@ -27,7 +27,6 @@ namespace tuddbs {
    struct simq_vector_builder_set_t;
 }
 
-
 #ifdef INTEL_SIMDI
 #include <generated/simq/control/vector_builder/build_variants/set/set_sse.h>
 #include <generated/simq/control/vector_builder/build_variants/set/set_avx2.h>

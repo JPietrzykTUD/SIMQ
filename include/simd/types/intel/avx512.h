@@ -26,7 +26,7 @@
 #include "immintrin.h"
 
 namespace tuddbs {
-
+   
    template< typename T >
    struct avx512 {
       static_assert( std::is_arithmetic< T >::value, "Basetype has to be an arithmetic type." );
@@ -40,33 +40,33 @@ namespace tuddbs {
          std::is_integral< T >::value,
          __m512i,
          typename std::conditional<
-            (std::is_floating_point< T >::value && sizeof( T ) == sizeof( float ) ),
+            ( std::is_floating_point< T >::value && sizeof( T ) == sizeof( float ) ),
             __m512,
             __m512d
          >::type
       >::type;
       using mask_t =
-         typename std::conditional<
-            sizeof( T ) == 1,
+      typename std::conditional<
+         sizeof( T ) == 1,
 #if defined(INTEL_INTRINSICS_AVX512_BW)
-            __mmask64,
+         __mmask64,
 #else
-            uint64_t,
+         uint64_t,
+#endif
+         typename std::conditional<
+            sizeof( T ) == 2,
+#if defined(INTEL_INTRINSICS_AVX512_BW)
+            __mmask32,
+#else
+            uint32_t,
 #endif
             typename std::conditional<
-               sizeof( T ) == 2,
-#if defined(INTEL_INTRINSICS_AVX512_BW)
-               __mmask32,
-#else
-               uint32_t,
-#endif
-               typename std::conditional<
-                  sizeof( T ) == 4,
-                  __mmask16,
-                  __mmask8
-               >::type
+               sizeof( T ) == 4,
+               __mmask16,
+               __mmask8
             >::type
-         >::type;
+         >::type
+      >::type;
    };
 }
 

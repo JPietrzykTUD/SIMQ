@@ -21,17 +21,18 @@
 #include <utils/preprocessor.h>
 
 namespace tuddbs {
-
+   
    template< class VectorExtension >
    struct point_filter_lt_core {
       NO_DISCARD FORCE_INLINE
+      
       static
       typename VectorExtension::mask_t
       apply( typename VectorExtension::vector_t const a, typename VectorExtension::vector_t const b ) {
          return cmp_lt< VectorExtension >( a, b );
       }
    };
-
+   
 }
 
 #endif //TUDDBS_SIMQ_INCLUDE_ENGINE_OPERATORS_CORE_FILTER_POINT_FILTER_COMPARATOR_CORE_H

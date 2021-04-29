@@ -18,11 +18,8 @@
 #ifndef TUDDBS_SIMQ_INCLUDE_SIMQ_CONTROL_BITMASK_COMPLEX_BITMASK_H
 #define TUDDBS_SIMQ_INCLUDE_SIMQ_CONTROL_BITMASK_COMPLEX_BITMASK_H
 
-
 #include <cstdint>
 #include <cstddef>
-
-
 
 #include <cstddef>
 #include <type_traits>
@@ -31,25 +28,29 @@
 #include <utils/preprocessor.h>
 #include <simd/intrin.h>
 
-
-
 namespace tuddbs {
    
    template< typename T >
-   NO_DISCARD FORCE_INLINE uint64_t interleave_with_one_zero( T a ) {
+   NO_DISCARD FORCE_INLINE
+   
+   uint64_t interleave_with_one_zero( T a ) {
       auto _a = _mm_set1_epi64x( a );
       return _mm_extract_epi64( _mm_clmulepi64_si128( _a, _a, 0 ), 0 );
    }
    
    template< typename T >
-   NO_DISCARD FORCE_INLINE uint64_t interleave_with_three_zeroes( T a ) {
+   NO_DISCARD FORCE_INLINE
+   
+   uint64_t interleave_with_three_zeroes( T a ) {
       auto _a = _mm_set1_epi64x( a );
       auto _b = _mm_clmulepi64_si128( _a, _a, 0 );
       return _mm_extract_epi64( _mm_clmulepi64_si128( _b, _b, 0 ), 0 );
    }
    
    template< typename T >
-   NO_DISCARD FORCE_INLINE uint64_t interleave_with_seven_zeroes( T a ) {
+   NO_DISCARD FORCE_INLINE
+   
+   uint64_t interleave_with_seven_zeroes( T a ) {
       auto _a = _mm_set1_epi64x( a );
       auto _b = _mm_clmulepi64_si128( _a, _a, 0 );
       auto _c = _mm_clmulepi64_si128( _b, _b, 0 );
@@ -57,7 +58,9 @@ namespace tuddbs {
    }
    
    template< typename T >
-   NO_DISCARD FORCE_INLINE uint64_t interleave_with_15_zeroes( T a ) {
+   NO_DISCARD FORCE_INLINE
+   
+   uint64_t interleave_with_15_zeroes( T a ) {
       auto _a = _mm_set1_epi64x( a );
       auto _b = _mm_clmulepi64_si128( _a, _a, 0 );
       auto _c = _mm_clmulepi64_si128( _b, _b, 0 );
@@ -66,23 +69,29 @@ namespace tuddbs {
    }
    
    template< typename T >
-   NO_DISCARD FORCE_INLINE uint64_t interleave_with_31_zeroes( T a ) {
+   NO_DISCARD FORCE_INLINE
+   
+   uint64_t interleave_with_31_zeroes( T a ) {
       return ( a & 0b1 ) | ( ( a & 0b01 ) << 32 );
    }
+   
    template< typename T >
-   NO_DISCARD FORCE_INLINE uint64_t interleave_with_63_zeroes( T a ) {
+   NO_DISCARD FORCE_INLINE
+   
+   uint64_t interleave_with_63_zeroes( T a ) {
       return ( a & 0b1 );
    }
    
-   
-   
-   
    template< typename T, std::size_t NumberOfBits >
-   constexpr T get_all_bits_set( ) {
-      if constexpr( NumberOfBits == ( sizeof( T ) * 8 ) ) {
-         return std::numeric_limits< T >::max();
+   constexpr T
+   
+   get_all_bits_set( ) {
+      if constexpr( NumberOfBits == ( sizeof( T ) * 8 ) )
+      {
+         return std::numeric_limits< T >::max( );
       } else {
-         return (( (T)1 << NumberOfBits ) - 1);
+         return ( ( ( T )
+         1 << NumberOfBits ) -1);
       }
    }
    
@@ -99,7 +108,7 @@ namespace tuddbs {
       std::size_t BitPositionOffset = 0
    >
    struct complex_bitmask_helper_t {
-   
+      
       using mask_t = typename VectorExtension::mask_t;
       using bits_per_mask_t = std::integral_constant< std::size_t, sizeof( mask_t ) << 3 >;
       using vecs_per_mask_t = typename vector_constants_t< VectorExtension >::number_of_vectors_per_mask_t;
@@ -107,22 +116,22 @@ namespace tuddbs {
       std::integral_constant<
          std::size_t, NumberOfBits * vecs_per_mask_t::value
       >;
-   
+      
       using incrementor_t =
       std::integral_constant<
          std::size_t, bits_per_mask_t::value / number_of_bits_per_mask::value
       >;
-
-      using bits_of_interest_t = std::integral_constant< mask_t, get_all_bits_set< mask_t, NumberOfBits >() >;
+      
+      using bits_of_interest_t = std::integral_constant< mask_t, get_all_bits_set < mask_t, NumberOfBits >( ) >;
       using offset_t = std::integral_constant< std::size_t, bits_per_mask_t::value / vecs_per_mask_t::value >;
       using has_to_be_applied_t = std::integral_constant< bool, NumberOfBits != 0 >;
-   
+      
       template<
          std::size_t INC = incrementor_t::value,
          typename std::enable_if_t< INC == 1, std::nullptr_t > = nullptr
       >
       FORCE_INLINE static
-      std::tuple< mask_t, mask_t * >
+         std::tuple< mask_t, mask_t * >
       read_mask_and_increment( mask_t * mask_ptr ) {
          if constexpr( vecs_per_mask_t::value == 1 )
          {
@@ -150,7 +159,7 @@ namespace tuddbs {
             auto tmp0 = ( *mask_ptr ) >> BitPositionOffset;
             auto tmp1 = ( tmp0 >> offset_t::value );
             auto tmp2 = ( tmp0 >> ( offset_t::value + offset_t::value ) );
-            auto tmp3 = ( tmp0 >> ( offset_t::value + offset_t::value + offset_t::value) );
+            auto tmp3 = ( tmp0 >> ( offset_t::value + offset_t::value + offset_t::value ) );
             
             return std::make_tuple(
                (
@@ -159,20 +168,20 @@ namespace tuddbs {
                   ( interleave_with_three_zeroes( tmp2 & bits_of_interest_t::value ) << 2 ) |
                   ( interleave_with_three_zeroes( tmp3 & bits_of_interest_t::value ) << 3 )
                ),
-               mask_ptr +1
+               mask_ptr + 1
             );
          }
       }
-   
+      
       template<
          std::size_t INC = incrementor_t::value,
          typename std::enable_if_t< INC == 2, std::nullptr_t > = nullptr
       >
       FORCE_INLINE static
-      std::tuple< mask_t, mask_t * >
+         std::tuple< mask_t, mask_t * >
       read_mask_and_increment( mask_t * mask_ptr ) {
          auto m0 = ( *mask_ptr ) >> BitPositionOffset;
-         auto m1 = ( *( mask_ptr +1 ) ) >> BitPositionOffset;
+         auto m1 = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
          
          if constexpr( vecs_per_mask_t::value == 1 )
          {
@@ -225,13 +234,13 @@ namespace tuddbs {
             );
          }
       }
-   
+      
       template<
          std::size_t INC = incrementor_t::value,
          typename std::enable_if_t< INC == 4, std::nullptr_t > = nullptr
       >
       FORCE_INLINE static
-      std::tuple< mask_t, mask_t * >
+         std::tuple< mask_t, mask_t * >
       read_mask_and_increment( mask_t * mask_ptr ) {
          auto m0 = ( *mask_ptr ) >> BitPositionOffset;
          auto m1 = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
@@ -258,7 +267,7 @@ namespace tuddbs {
             auto tmp5 = ( m2 >> offset_t::value ) & bits_of_interest_t::value;
             auto tmp6 = m3 & bits_of_interest_t::value;
             auto tmp7 = ( m3 >> offset_t::value ) & bits_of_interest_t::value;
-   
+            
             return std::make_tuple(
                (
                   interleave_with_seven_zeroes( tmp0 ) |
@@ -274,7 +283,7 @@ namespace tuddbs {
             );
          }
       }
-   
+      
       template<
          std::size_t INC = incrementor_t::value,
          typename std::enable_if_t< INC == 8, std::nullptr_t > = nullptr
@@ -307,7 +316,7 @@ namespace tuddbs {
             );
          }
       }
-   
+      
       template<
          std::size_t INC = incrementor_t::value,
          typename std::enable_if_t< INC == 16, std::nullptr_t > = nullptr
@@ -315,16 +324,16 @@ namespace tuddbs {
       FORCE_INLINE static
          std::tuple< mask_t, mask_t * >
       read_mask_and_increment( mask_t * mask_ptr ) {
-         auto m0 = ( *mask_ptr ) >> BitPositionOffset;
-         auto m1 = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
-         auto m2 = ( *( mask_ptr + 2 ) ) >> BitPositionOffset;
-         auto m3 = ( *( mask_ptr + 3 ) ) >> BitPositionOffset;
-         auto m4 = ( *( mask_ptr + 4 ) ) >> BitPositionOffset;
-         auto m5 = ( *( mask_ptr + 5 ) ) >> BitPositionOffset;
-         auto m6 = ( *( mask_ptr + 6 ) ) >> BitPositionOffset;
-         auto m7 = ( *( mask_ptr + 7 ) ) >> BitPositionOffset;
-         auto m8 = ( *( mask_ptr + 8 ) ) >> BitPositionOffset;
-         auto m9 = ( *( mask_ptr + 9 ) ) >> BitPositionOffset;
+         auto m0  = ( *mask_ptr ) >> BitPositionOffset;
+         auto m1  = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
+         auto m2  = ( *( mask_ptr + 2 ) ) >> BitPositionOffset;
+         auto m3  = ( *( mask_ptr + 3 ) ) >> BitPositionOffset;
+         auto m4  = ( *( mask_ptr + 4 ) ) >> BitPositionOffset;
+         auto m5  = ( *( mask_ptr + 5 ) ) >> BitPositionOffset;
+         auto m6  = ( *( mask_ptr + 6 ) ) >> BitPositionOffset;
+         auto m7  = ( *( mask_ptr + 7 ) ) >> BitPositionOffset;
+         auto m8  = ( *( mask_ptr + 8 ) ) >> BitPositionOffset;
+         auto m9  = ( *( mask_ptr + 9 ) ) >> BitPositionOffset;
          auto m10 = ( *( mask_ptr + 10 ) ) >> BitPositionOffset;
          auto m11 = ( *( mask_ptr + 11 ) ) >> BitPositionOffset;
          auto m12 = ( *( mask_ptr + 12 ) ) >> BitPositionOffset;
@@ -351,13 +360,13 @@ namespace tuddbs {
                   ( interleave_with_15_zeroes( m13 ) << 13 ) |
                   ( interleave_with_15_zeroes( m14 ) << 14 ) |
                   ( interleave_with_15_zeroes( m15 ) << 15 )
-                  
+               
                ),
                mask_ptr + 16
             );
          }
       }
-   
+      
       template<
          std::size_t INC = incrementor_t::value,
          typename std::enable_if_t< INC == 32, std::nullptr_t > = nullptr
@@ -365,16 +374,16 @@ namespace tuddbs {
       FORCE_INLINE static
          std::tuple< mask_t, mask_t * >
       read_mask_and_increment( mask_t * mask_ptr ) {
-         auto m0 = ( *mask_ptr ) >> BitPositionOffset;
-         auto m1 = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
-         auto m2 = ( *( mask_ptr + 2 ) ) >> BitPositionOffset;
-         auto m3 = ( *( mask_ptr + 3 ) ) >> BitPositionOffset;
-         auto m4 = ( *( mask_ptr + 4 ) ) >> BitPositionOffset;
-         auto m5 = ( *( mask_ptr + 5 ) ) >> BitPositionOffset;
-         auto m6 = ( *( mask_ptr + 6 ) ) >> BitPositionOffset;
-         auto m7 = ( *( mask_ptr + 7 ) ) >> BitPositionOffset;
-         auto m8 = ( *( mask_ptr + 8 ) ) >> BitPositionOffset;
-         auto m9 = ( *( mask_ptr + 9 ) ) >> BitPositionOffset;
+         auto m0  = ( *mask_ptr ) >> BitPositionOffset;
+         auto m1  = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
+         auto m2  = ( *( mask_ptr + 2 ) ) >> BitPositionOffset;
+         auto m3  = ( *( mask_ptr + 3 ) ) >> BitPositionOffset;
+         auto m4  = ( *( mask_ptr + 4 ) ) >> BitPositionOffset;
+         auto m5  = ( *( mask_ptr + 5 ) ) >> BitPositionOffset;
+         auto m6  = ( *( mask_ptr + 6 ) ) >> BitPositionOffset;
+         auto m7  = ( *( mask_ptr + 7 ) ) >> BitPositionOffset;
+         auto m8  = ( *( mask_ptr + 8 ) ) >> BitPositionOffset;
+         auto m9  = ( *( mask_ptr + 9 ) ) >> BitPositionOffset;
          auto m10 = ( *( mask_ptr + 10 ) ) >> BitPositionOffset;
          auto m11 = ( *( mask_ptr + 11 ) ) >> BitPositionOffset;
          auto m12 = ( *( mask_ptr + 12 ) ) >> BitPositionOffset;
@@ -439,7 +448,7 @@ namespace tuddbs {
             );
          }
       }
-   
+      
       template<
          std::size_t INC = incrementor_t::value,
          typename std::enable_if_t< INC == 64, std::nullptr_t > = nullptr
@@ -447,16 +456,16 @@ namespace tuddbs {
       FORCE_INLINE static
          std::tuple< mask_t, mask_t * >
       read_mask_and_increment( mask_t * mask_ptr ) {
-         auto m0 = ( *mask_ptr ) >> BitPositionOffset;
-         auto m1 = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
-         auto m2 = ( *( mask_ptr + 2 ) ) >> BitPositionOffset;
-         auto m3 = ( *( mask_ptr + 3 ) ) >> BitPositionOffset;
-         auto m4 = ( *( mask_ptr + 4 ) ) >> BitPositionOffset;
-         auto m5 = ( *( mask_ptr + 5 ) ) >> BitPositionOffset;
-         auto m6 = ( *( mask_ptr + 6 ) ) >> BitPositionOffset;
-         auto m7 = ( *( mask_ptr + 7 ) ) >> BitPositionOffset;
-         auto m8 = ( *( mask_ptr + 8 ) ) >> BitPositionOffset;
-         auto m9 = ( *( mask_ptr + 9 ) ) >> BitPositionOffset;
+         auto m0  = ( *mask_ptr ) >> BitPositionOffset;
+         auto m1  = ( *( mask_ptr + 1 ) ) >> BitPositionOffset;
+         auto m2  = ( *( mask_ptr + 2 ) ) >> BitPositionOffset;
+         auto m3  = ( *( mask_ptr + 3 ) ) >> BitPositionOffset;
+         auto m4  = ( *( mask_ptr + 4 ) ) >> BitPositionOffset;
+         auto m5  = ( *( mask_ptr + 5 ) ) >> BitPositionOffset;
+         auto m6  = ( *( mask_ptr + 6 ) ) >> BitPositionOffset;
+         auto m7  = ( *( mask_ptr + 7 ) ) >> BitPositionOffset;
+         auto m8  = ( *( mask_ptr + 8 ) ) >> BitPositionOffset;
+         auto m9  = ( *( mask_ptr + 9 ) ) >> BitPositionOffset;
          auto m10 = ( *( mask_ptr + 10 ) ) >> BitPositionOffset;
          auto m11 = ( *( mask_ptr + 11 ) ) >> BitPositionOffset;
          auto m12 = ( *( mask_ptr + 12 ) ) >> BitPositionOffset;
@@ -511,7 +520,7 @@ namespace tuddbs {
          auto m61 = ( *( mask_ptr + 61 ) ) >> BitPositionOffset;
          auto m62 = ( *( mask_ptr + 62 ) ) >> BitPositionOffset;
          auto m63 = ( *( mask_ptr + 63 ) ) >> BitPositionOffset;
-      
+         
          if constexpr( vecs_per_mask_t::value == 1 )
          {
             return std::make_tuple(
@@ -585,7 +594,7 @@ namespace tuddbs {
             );
          }
       }
-   
+      
    };
 }
 #endif //TUDDBS_SIMQ_INCLUDE_SIMQ_CONTROL_BITMASK_COMPLEX_BITMASK_H

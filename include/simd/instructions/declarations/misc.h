@@ -21,11 +21,10 @@
 #include <simd/instructions/declarations/io.h>
 
 namespace tuddbs {
-
+   
    template< class VectorExtension >
    char const * vector_extension_to_str( void );
-
-
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    blend(

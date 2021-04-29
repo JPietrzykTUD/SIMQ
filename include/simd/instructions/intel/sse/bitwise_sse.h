@@ -26,82 +26,93 @@
 
 namespace tuddbs {
    template< typename T >
-   struct bitwise_xor_t< T, sse< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename sse< T >::vector_t
-      apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
-      ) {
-         return _mm_xor_si128( a, b );
-      }
-   };
-   template< typename T >
-   struct bitwise_or_t< T, sse< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename sse< T >::vector_t
-      apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
-      ) {
-         return _mm_or_si128( a, b );
-      }
-   };
-   template< typename T >
-   struct bitwise_and_t< T, sse< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename sse< T >::vector_t
-      apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
-      ) {
-         return _mm_and_si128( a, b );
-      }
-   };
-
-   template< typename T >
-   struct bitwise_and_not_t< T, sse< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename sse< T >::vector_t
-      apply(
-         typename sse< T >::vector_t const a,
-         typename sse< T >::vector_t const b
-      ) {
-         return _mm_andnot_si128( a, b );
-      }
-   };
+   struct bitwise_xor_t< T, sse < T > > {
+   NO_DISCARD FORCE_INLINE
    
+   static
+   typename sse< T >::vector_t
+   apply(
+      typename sse< T >::vector_t const a,
+      typename sse< T >::vector_t const b
+   ) {
+      return _mm_xor_si128( a, b );
+   }
+};
+template< typename T >
+struct bitwise_or_t< T, sse < T > > {
+NO_DISCARD FORCE_INLINE
+
+static
+typename sse< T >::vector_t
+apply(
+   typename sse< T >::vector_t const a,
+   typename sse< T >::vector_t const b
+) {
+   return _mm_or_si128( a, b );
+}
+
+};
+template< typename T >
+struct bitwise_and_t< T, sse < T > > {
+NO_DISCARD FORCE_INLINE
+
+static
+typename sse< T >::vector_t
+apply(
+   typename sse< T >::vector_t const a,
+   typename sse< T >::vector_t const b
+) {
+   return _mm_and_si128( a, b );
+}
+
+};
+
+template< typename T >
+struct bitwise_and_not_t< T, sse < T > > {
+NO_DISCARD FORCE_INLINE
+
+static
+typename sse< T >::vector_t
+apply(
+   typename sse< T >::vector_t const a,
+   typename sse< T >::vector_t const b
+) {
+   return _mm_andnot_si128( a, b );
+}
+
+};
+
 
 
 //use this with care!
-   template< typename T, int I >
-   struct bitshift_left_t< sse< T >, I > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename sse< T >::vector_t
-      apply(
-         typename sse< T >::vector_t const a
-      ) {
-         return _mm_slli_epi64( a, I );
-      }
-   };
+template< typename T, int I >
+struct bitshift_left_t< sse < T >, I > {
+NO_DISCARD FORCE_INLINE
 
-   //use this with care!
-   template< typename T, int I >
-   struct bitshift_right_t< sse< T >, I > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename sse< T >::vector_t
-      apply(
-         typename sse< T >::vector_t const a
-      ) {
-         return _mm_srli_epi64( a, I );
-      }
-   };
+static
+typename sse< T >::vector_t
+apply(
+   typename sse< T >::vector_t const a
+) {
+   return _mm_slli_epi64( a, I );
+}
+
+};
+
+//use this with care!
+template< typename T, int I >
+struct bitshift_right_t< sse < T >, I > {
+NO_DISCARD FORCE_INLINE
+
+static
+typename sse< T >::vector_t
+apply(
+   typename sse< T >::vector_t const a
+) {
+   return _mm_srli_epi64( a, I );
+}
+
+};
 }
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_INSTRUCTIONS_INTEL_SSE_BITWISE_SSE_H

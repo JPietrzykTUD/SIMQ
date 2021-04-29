@@ -20,14 +20,14 @@
 #include <simd/types/simd.h>
 
 namespace tuddbs {
-
+   
    template< class VectorExtension >
    typename VectorExtension::mask_t
    cmp_lt(
       typename VectorExtension::vector_t const,
       typename VectorExtension::vector_t const
    );
-
+   
    template< class VectorExtension >
    typename VectorExtension::mask_t
    cmp_neq(

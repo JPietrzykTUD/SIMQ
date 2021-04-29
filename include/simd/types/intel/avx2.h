@@ -26,11 +26,11 @@
 #include "immintrin.h"
 
 namespace tuddbs {
-
+   
    template< typename T >
    struct avx2 {
       static_assert( std::is_arithmetic< T >::value, "Basetype has to be an arithmetic type." );
-   
+      
       template< typename U >
       using cast_t = avx2< U >;
       
@@ -40,7 +40,7 @@ namespace tuddbs {
          std::is_integral< T >::value,
          __m256i,
          typename std::conditional<
-            (std::is_floating_point< T >::value && sizeof( T ) == sizeof( float ) ),
+            ( std::is_floating_point< T >::value && sizeof( T ) == sizeof( float ) ),
             __m256,
             __m256d
          >::type
@@ -70,6 +70,5 @@ namespace tuddbs {
 #endif
    };
 }
-
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_TYPES_INTEL_AVX2_H

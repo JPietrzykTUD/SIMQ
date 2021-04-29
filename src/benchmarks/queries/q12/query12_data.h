@@ -6,6 +6,7 @@
 #define TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q12_QUERY12_DATA_H
 
 #include <fstream>
+
 namespace global {
    extern std::ofstream outputfile;
 }
@@ -31,7 +32,6 @@ namespace global {
 #include <engine/operators/bitmask_candidates/simq/aggregate_bitmask_candidates.h>
 #include <engine/operators/bitmask_candidates/simq/filter_bitmask_candidates.h>
 
-
 #include <utils/random.h>
 #include <utils/clock.h>
 #include <utils/helper.h>
@@ -39,7 +39,7 @@ namespace global {
 #include <cstddef>
 #include <iostream>
 
-namespace tuddbs{
+namespace tuddbs {
    void q12_header( void ) {
       global::outputfile << "rep;"
                          << "data_count;"
@@ -74,9 +74,11 @@ namespace tuddbs{
    struct experiment_query12 {
       static void print_experiment_result(
          std::size_t const rep,
-         datagenerator_q11< typename VectorExtension::base_t, ColumnCount,
-         QueryCount2ndStageOp1+QueryCount2ndStageOp2+QueryCount2ndStageOp3 > * const
-            datagenerator,
+         datagenerator_q11<
+            typename VectorExtension::base_t, ColumnCount,
+            QueryCount2ndStageOp1 + QueryCount2ndStageOp2 + QueryCount2ndStageOp3
+         > * const
+         datagenerator,
          std::string variant_name,
          std::string intermediate_name,
          std::string build_name,
@@ -97,21 +99,25 @@ namespace tuddbs{
                             << intermediate_name << ";"
                             << build_name << ";"
                             << 1 << ";"
-                            << QueryCount2ndStageOp1+QueryCount2ndStageOp2+QueryCount2ndStageOp3 << ";"
+                            << QueryCount2ndStageOp1 + QueryCount2ndStageOp2 + QueryCount2ndStageOp3 << ";"
                             << QueryCount2ndStageOp1 << ";"
-                            << QueryCount2ndStageOp2<< ";"
+                            << QueryCount2ndStageOp2 << ";"
                             << QueryCount2ndStageOp3 << ";"
                             << "Operator at a Time;0;"
                             << time_elapsed_ns( start_simq_build, end_simq_build ) << ";"
                             << time_elapsed_ns( start, end ) << ";"
                             << " | ";
-         for( std::size_t query_id = 0; query_id < QueryCount2ndStageOp1; ++query_id ) {
+         for(
+            std::size_t query_id = 0; query_id < QueryCount2ndStageOp1; ++query_id
+            ) {
             global::outputfile << ( uint64_t ) aggregation1_result->data_ptr[ query_id ] << " | ";
          }
          global::outputfile << ";";
          if( aggregation2_result != nullptr ) {
             global::outputfile << " | ";
-            for( std::size_t query_id = 0; query_id < QueryCount2ndStageOp2; ++query_id ) {
+            for(
+               std::size_t query_id = 0; query_id < QueryCount2ndStageOp2; ++query_id
+               ) {
                global::outputfile << ( uint64_t ) aggregation2_result->data_ptr[ query_id ] << " | ";
             }
          } else {
@@ -120,7 +126,9 @@ namespace tuddbs{
          global::outputfile << ";";
          if( aggregation3_result != nullptr ) {
             global::outputfile << " | ";
-            for( std::size_t query_id = 0; query_id < QueryCount2ndStageOp3; ++query_id ) {
+            for(
+               std::size_t query_id = 0; query_id < QueryCount2ndStageOp3; ++query_id
+               ) {
                global::outputfile << ( uint64_t ) aggregation3_result->data_ptr[ query_id ] << " | ";
             }
          } else {

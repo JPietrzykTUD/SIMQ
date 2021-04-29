@@ -22,7 +22,7 @@
 namespace tuddbs {
    template<
       template< class, std::size_t, typename, class > class Strategy,
-      class VectorExtension,
+                                                      class VectorExtension,
       std::size_t ColumnCount,
       std::size_t QueryCount,
       std::size_t BatchSize
@@ -35,50 +35,58 @@ namespace tuddbs {
       static void run(
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount > * const datagenerator
       ) {
-         using T                 = typename VectorExtension::base_t;
-         using column_array_t    = column_array< VectorExtension, ColumnCount >;
+         using T = typename VectorExtension::base_t;
+         using column_array_t = column_array< VectorExtension, ColumnCount >;
          using predicate_array_t = value_array< VectorExtension, QueryCount >;
-         using svb_t             =
+         using svb_t =
          simq_vector_builder_t<
             Strategy,
             column_array_t,
             QueryCount
          >;
-         std::size_t const data_count = datagenerator->data_size / sizeof( T );
-
-         column_array_t q11_filter_column_array;
-         column_array_t q11_aggregate_column_array;
-         for( std::size_t column_id = 0; column_id < ColumnCount; ++column_id ) {
+         std::size_t const data_count                     = datagenerator->data_size / sizeof( T );
+         
+         column_array_t                     q11_filter_column_array;
+         column_array_t                     q11_aggregate_column_array;
+         for(
+            std::size_t                     column_id     = 0; column_id < ColumnCount; ++column_id
+            ) {
             q11_filter_column_array.set( column_id, datagenerator->filter_columns[ column_id ] );
             q11_aggregate_column_array.set( column_id, datagenerator->aggregate_columns[ column_id ] );
          }
-         predicate_array_t q11_predicates_array;
-         for( std::size_t query_id = 0; query_id < QueryCount; ++query_id ) {
+         predicate_array_t                  q11_predicates_array;
+         for(
+            std::size_t                     query_id      = 0; query_id < QueryCount; ++query_id
+            ) {
             q11_predicates_array.set( query_id, datagenerator->predicates[ query_id ] );
          }
          typename VectorExtension::vector_t predicate_vec =
-            simq_value_vector_view_t< predicate_array_t, ColumnCount >::apply( q11_predicates_array );
+                                               simq_value_vector_view_t< predicate_array_t, ColumnCount >::apply(
+                                                  q11_predicates_array
+                                               );
 
 #ifdef HAS_MCD
          column< T > * const filter_result_bitmask = create_bitmask( T, data_count * QueryCount, false );
          column< T > * const aggregation_result_column =
             create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value, false );
 #else
-         column< T > * const filter_result_bitmask = create_bitmask( T, data_count * QueryCount );
-         column< T > * const aggregation_result_column =
-            create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value );
+         column <T> * const filter_result_bitmask     = create_bitmask( T, data_count * QueryCount );
+         column <T> * const aggregation_result_column =
+                       create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value );
 #endif
-
-         for( std::size_t rep = 0; rep < EXPERIMENT_MEASUREMENT_REPETITION_COUNT; ++rep ) {
+         
+         for(
+            std::size_t rep = 0; rep < EXPERIMENT_MEASUREMENT_REPETITION_COUNT; ++rep
+            ) {
             filter_result_bitmask->init( 0 );
             aggregation_result_column->init( 0 );
-
-            auto dummy = cache_flusher::instance()->flush();
-            auto start_simq_build = now();
+            
+            auto  dummy            = cache_flusher::instance( )->flush( );
+            auto  start_simq_build = now( );
             svb_t svb_filter( q11_filter_column_array );
             svb_t svb_aggregation( q11_aggregate_column_array );
-            auto end_simq_build = now();
-
+            auto  end_simq_build   = now( );
+            
             auto start = now( );
             filter_impl< VectorExtension, svb_t, point_filter_lt_core >::apply(
                filter_result_bitmask, svb_filter, predicate_vec
@@ -94,15 +102,17 @@ namespace tuddbs {
                )
             );
             experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
-               rep, datagenerator, "SIMQ", "BITMASK", Strategy< column_array_t, QueryCount,
-               typename VectorExtension::base_t, VectorExtension >::get_name( ),
+               rep, datagenerator, "SIMQ", "BITMASK", Strategy<
+                  column_array_t, QueryCount,
+                  typename VectorExtension::base_t, VectorExtension
+               >::get_name( ),
                start_simq_build, end_simq_build, start, end, aggregation_result_column, dummy
             );
          }
          destroy_column( aggregation_result_column );
          destroy_column( filter_result_bitmask );
       }
-
+      
       template<
          std::size_t BS = BatchSize,
          typename std::enable_if< BS != 0, std::nullptr_t >::type = nullptr
@@ -110,55 +120,65 @@ namespace tuddbs {
       static void run(
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount > * const datagenerator
       ) {
-         using T                 = typename VectorExtension::base_t;
-         using column_array_t    = column_array< VectorExtension, ColumnCount >;
+         using T = typename VectorExtension::base_t;
+         using column_array_t = column_array< VectorExtension, ColumnCount >;
          using predicate_array_t = value_array< VectorExtension, QueryCount >;
-         using svb_t             =
+         using svb_t =
          simq_vector_builder_t<
             Strategy,
             column_array_t,
             QueryCount
          >;
-         std::size_t const data_count = datagenerator->data_size / sizeof( T );
-
-         column_array_t q11_filter_column_array;
-         column_array_t q11_aggregate_column_array;
-         for( std::size_t column_id = 0; column_id < ColumnCount; ++column_id ) {
+         std::size_t const data_count                     = datagenerator->data_size / sizeof( T );
+         
+         column_array_t                     q11_filter_column_array;
+         column_array_t                     q11_aggregate_column_array;
+         for(
+            std::size_t                     column_id     = 0; column_id < ColumnCount; ++column_id
+            ) {
             q11_filter_column_array.set( column_id, datagenerator->filter_columns[ column_id ] );
             q11_aggregate_column_array.set( column_id, datagenerator->aggregate_columns[ column_id ] );
          }
-         predicate_array_t q11_predicates_array;
-         for( std::size_t query_id = 0; query_id < QueryCount; ++query_id ) {
+         predicate_array_t                  q11_predicates_array;
+         for(
+            std::size_t                     query_id      = 0; query_id < QueryCount; ++query_id
+            ) {
             q11_predicates_array.set( query_id, datagenerator->predicates[ query_id ] );
          }
          typename VectorExtension::vector_t predicate_vec =
-            simq_value_vector_view_t< predicate_array_t, ColumnCount >::apply( q11_predicates_array );
+                                               simq_value_vector_view_t< predicate_array_t, ColumnCount >::apply(
+                                                  q11_predicates_array
+                                               );
 
 #ifdef HAS_MCD
          column< T > * const filter_result_bitmask = create_bitmask( T, data_count * QueryCount, false );
          column< T > * const aggregation_result_column =
             create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value, false );
 #else
-         column< T > * const filter_result_bitmask = create_bitmask( T, data_count * QueryCount );
-         column< T > * const aggregation_result_column =
-            create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value );
+         column <T> * const filter_result_bitmask     = create_bitmask( T, data_count * QueryCount );
+         column <T> * const aggregation_result_column =
+                       create_column( T, vector_constants_t< VectorExtension >::vector_element_count_t::value );
 #endif
-
+         
          std::size_t const BatchCount = BatchSize / sizeof( T );
-
-         for( std::size_t rep = 0; rep < EXPERIMENT_MEASUREMENT_REPETITION_COUNT; ++rep ) {
+         
+         for(
+            std::size_t rep = 0; rep < EXPERIMENT_MEASUREMENT_REPETITION_COUNT; ++rep
+            ) {
             filter_result_bitmask->init( 0 );
             aggregation_result_column->init( 0 );
-
-            typename VectorExtension::mask_t * filter_result_bitmask_ptr = ( typename VectorExtension::mask_t * ) filter_result_bitmask->data_ptr;
+            
+            typename VectorExtension::mask_t
+                                             * filter_result_bitmask_ptr     =
+               ( typename VectorExtension::mask_t * ) filter_result_bitmask->data_ptr;
             typename VectorExtension::mask_t * filter_result_bitmask_ptr_new;
-            T * aggregation_result_column_ptr = aggregation_result_column->data_ptr;
-            auto dummy = cache_flusher::instance()->flush();
-            auto start_simq_build = now();
+            T                                * aggregation_result_column_ptr = aggregation_result_column->data_ptr;
+            auto  dummy            = cache_flusher::instance( )->flush( );
+            auto  start_simq_build = now( );
             svb_t svb_filter( q11_filter_column_array );
             svb_t svb_aggregation( q11_aggregate_column_array );
-            auto end_simq_build = now();
-            auto start = now( );
+            auto  end_simq_build   = now( );
+            auto  start            = now( );
             while( svb_filter.has_next( ) ) {
                filter_result_bitmask_ptr_new = filter_impl< VectorExtension, svb_t, point_filter_lt_core >::apply(
                   filter_result_bitmask_ptr, svb_filter, BatchCount, predicate_vec
@@ -166,18 +186,20 @@ namespace tuddbs {
                aggregation_result_column_ptr = aggregate_impl< VectorExtension, svb_t, aggregate_mask_add >::apply(
                   aggregation_result_column_ptr, svb_aggregation, BatchCount, filter_result_bitmask_ptr
                );
-               filter_result_bitmask_ptr = filter_result_bitmask_ptr_new;
+               filter_result_bitmask_ptr     = filter_result_bitmask_ptr_new;
             }
-            auto end = now();
+            auto end = now( );
             [[maybe_unused]]typename VectorExtension::base_t * tmp = store< VectorExtension >(
                aggregation_result_column_ptr,
                aggregate_mask_add< VectorExtension >::template finalize< svb_t::lanes_per_query_t::value >(
-                  load< VectorExtension >( aggregation_result_column_ptr)
+                  load< VectorExtension >( aggregation_result_column_ptr )
                )
             );
             experiment_query11< VectorExtension, ColumnCount, QueryCount, BatchSize >::print_experiment_result(
-               rep, datagenerator, "SIMQ", "BITMASK", Strategy< column_array_t, QueryCount,
-               typename VectorExtension::base_t, VectorExtension >::get_name( ),
+               rep, datagenerator, "SIMQ", "BITMASK", Strategy<
+                  column_array_t, QueryCount,
+                  typename VectorExtension::base_t, VectorExtension
+               >::get_name( ),
                start_simq_build, end_simq_build, start, end, aggregation_result_column, dummy
             );
          }
@@ -185,7 +207,7 @@ namespace tuddbs {
          destroy_column( filter_result_bitmask );
       }
    };
-
+   
 }
 
 #endif //TUDDBS_SIMQ_SRC_BENCHMARKS_QUERIES_Q11_QUERY11_SIMQ_H

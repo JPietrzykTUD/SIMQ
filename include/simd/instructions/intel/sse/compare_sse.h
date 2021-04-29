@@ -70,172 +70,204 @@ namespace tuddbs {
    template< >
    NO_DISCARD FORCE_INLINE
    typename sse< uint32_t >::mask_t
-   cmp_lt< sse< uint32_t > >(
-      typename sse< uint32_t >::vector_t const a,
-      typename sse< uint32_t >::vector_t const b
+              cmp_lt< sse < uint32_t >
+   >(
+   typename sse< uint32_t >::vector_t const a,
+   typename sse< uint32_t >::vector_t const b
    ) {
 #if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
-      return _mm_cmplt_epu32_mask( a, b );
+   return _mm_cmplt_epu32_mask( a, b );
 #else
-      return _mm_movemask_ps( _mm_castsi128_ps( _mm_cmplt_epi32( a, b ) ) );
+   return
+   _mm_movemask_ps( _mm_castsi128_ps( _mm_cmplt_epi32( a, b ) )
+   );
 #endif
-   }
-
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint32_t >::mask_t
-   cmp_neq< sse< uint32_t > >(
-      typename sse< uint32_t >::vector_t const a,
-      typename sse< uint32_t >::vector_t const b
-   ) {
-#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
-      return _mm_cmpneq_epu32_mask( a, b );
-#else
-      return _mm_movemask_ps( _mm_cmpneq_ps(_mm_castsi128_ps( a ), _mm_castsi128_ps( b ) ) );
-#endif
-   }
-
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint64_t >::mask_t
-   cmp_lt< sse< uint64_t > >(
-      typename sse< uint64_t >::vector_t const a,
-      typename sse< uint64_t >::vector_t const b
-   ) {
-#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
-      return _mm_cmplt_epu64_mask( a, b );
-#else
-      return _mm_movemask_pd( _mm_cmplt_pd(_mm_castsi128_pd( a ), _mm_castsi128_pd( b ) ) );
-#endif
-   }
-
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint64_t >::mask_t
-   cmp_neq< sse< uint64_t > >(
-      typename sse< uint64_t >::vector_t const a,
-      typename sse< uint64_t >::vector_t const b
-   ) {
-#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
-      return _mm_cmpneq_epu64_mask( a, b );
-#else
-      return _mm_movemask_pd( _mm_cmpneq_pd(_mm_castsi128_pd( a ), _mm_castsi128_pd( b ) ) );
-#endif
-   }
-   
-   template<>
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint8_t >::vector_t
-   min< sse< uint8_t > >(
-      typename sse< uint8_t >::vector_t const a,
-      typename sse< uint8_t >::vector_t const b
-   ) {
-      return _mm_min_epu8( a, b );
-   }
-
-   template<>
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint16_t >::vector_t
-   min< sse< uint16_t > >(
-      typename sse< uint16_t >::vector_t const a,
-      typename sse< uint16_t >::vector_t const b
-   ) {
-      return _mm_min_epu16( a, b );
-   }
-
-   template<>
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint32_t >::vector_t
-   min< sse< uint32_t > >(
-      typename sse< uint32_t >::vector_t const a,
-      typename sse< uint32_t >::vector_t const b
-   ) {
-      return _mm_min_epu32( a, b );
-   }
-
-#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
-   template<>
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint64_t >::vector_t
-   min< sse< uint64_t > >(
-      typename sse< uint64_t >::vector_t const a,
-      typename sse< uint64_t >::vector_t const b
-   ) {
-      return _mm_min_epu64( a, b );
-   }
-#endif
-
-
-#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_BW) && defined(INTEL_INTRINSICS_AVX512_F)
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint8_t >::vector_t
-   mask_min< sse< uint8_t > >(
-      typename sse< uint8_t >::vector_t const a,
-      typename sse< uint8_t >::vector_t const b,
-      typename sse< uint8_t >::mask_t const mask
-   ) {
-      return _mm_mask_min_epu8( b, mask, a, b );
-   }
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint16_t >::vector_t
-   mask_min< sse< uint16_t > >(
-      typename sse< uint16_t >::vector_t const a,
-      typename sse< uint16_t >::vector_t const b,
-      typename sse< uint16_t >::mask_t const mask
-   ) {
-      return _mm_mask_min_epu16( b, mask, a, b );
-   }
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint32_t >::vector_t
-   mask_min< sse< uint32_t > >(
-      typename sse< uint32_t >::vector_t const a,
-      typename sse< uint32_t >::vector_t const b,
-      typename sse< uint32_t >::mask_t const mask
-   ) {
-      return _mm_mask_min_epu32( b, mask, a, b );
-   }
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename sse< uint64_t >::vector_t
-   mask_min< sse< uint64_t > >(
-      typename sse< uint64_t >::vector_t const a,
-      typename sse< uint64_t >::vector_t const b,
-      typename sse< uint64_t >::mask_t const mask
-   ) {
-      return _mm_mask_min_epu64( b, mask, a, b );
-   }
-#endif
-template<>
-NO_DISCARD FORCE_INLINE
-typename sse< uint8_t >::vector_t
-   max< sse< uint8_t > >(
-typename sse< uint8_t >::vector_t const a,
-typename sse< uint8_t >::vector_t const b
-) {
-return _mm_max_epu8( a, b );
 }
 
-template<>
+template< >
 NO_DISCARD FORCE_INLINE
-typename sse< uint16_t >::vector_t
-   max< sse< uint16_t > >(
-typename sse< uint16_t >::vector_t const a,
-typename sse< uint16_t >::vector_t const b
-) {
-return _mm_max_epu16( a, b );
-}
-
-template<>
-NO_DISCARD FORCE_INLINE
-typename sse< uint32_t >::vector_t
-   max< sse< uint32_t > >(
+typename sse< uint32_t >::mask_t
+           cmp_neq< sse < uint32_t >
+>(
 typename sse< uint32_t >::vector_t const a,
 typename sse< uint32_t >::vector_t const b
 ) {
-return _mm_max_epu32( a, b );
+#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
+return _mm_cmpneq_epu32_mask( a, b );
+#else
+return
+
+_mm_movemask_ps ( _mm_cmpneq_ps( _mm_castsi128_ps( a ), _mm_castsi128_ps( b ) ) );
+
+#endif
+}
+
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint64_t >::mask_t
+           cmp_lt< sse < uint64_t >
+>(
+typename sse< uint64_t >::vector_t const a,
+typename sse< uint64_t >::vector_t const b
+) {
+#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
+return _mm_cmplt_epu64_mask( a, b );
+#else
+return
+
+_mm_movemask_pd ( _mm_cmplt_pd( _mm_castsi128_pd( a ), _mm_castsi128_pd( b ) ) );
+
+#endif
+}
+
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint64_t >::mask_t
+           cmp_neq< sse < uint64_t >
+>(
+typename sse< uint64_t >::vector_t const a,
+typename sse< uint64_t >::vector_t const b
+) {
+#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
+return _mm_cmpneq_epu64_mask( a, b );
+#else
+return
+
+_mm_movemask_pd ( _mm_cmpneq_pd( _mm_castsi128_pd( a ), _mm_castsi128_pd( b ) ) );
+
+#endif
+}
+
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint8_t >::vector_t
+           min< sse < uint8_t >
+>(
+typename sse< uint8_t >::vector_t const a,
+typename sse< uint8_t >::vector_t const b
+) {
+return
+_mm_min_epu8( a, b
+);
+}
+
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint16_t >::vector_t
+           min< sse < uint16_t >
+>(
+typename sse< uint16_t >::vector_t const a,
+typename sse< uint16_t >::vector_t const b
+) {
+return
+_mm_min_epu16( a, b
+);
+}
+
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint32_t >::vector_t
+           min< sse < uint32_t >
+>(
+typename sse< uint32_t >::vector_t const a,
+typename sse< uint32_t >::vector_t const b
+) {
+return
+_mm_min_epu32( a, b
+);
+}
+
+#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
+template<>
+NO_DISCARD FORCE_INLINE
+typename sse< uint64_t >::vector_t
+min< sse< uint64_t > >(
+   typename sse< uint64_t >::vector_t const a,
+   typename sse< uint64_t >::vector_t const b
+) {
+   return _mm_min_epu64( a, b );
+}
+#endif
+
+#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_BW) && defined(INTEL_INTRINSICS_AVX512_F)
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint8_t >::vector_t
+mask_min< sse< uint8_t > >(
+   typename sse< uint8_t >::vector_t const a,
+   typename sse< uint8_t >::vector_t const b,
+   typename sse< uint8_t >::mask_t const mask
+) {
+   return _mm_mask_min_epu8( b, mask, a, b );
+}
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint16_t >::vector_t
+mask_min< sse< uint16_t > >(
+   typename sse< uint16_t >::vector_t const a,
+   typename sse< uint16_t >::vector_t const b,
+   typename sse< uint16_t >::mask_t const mask
+) {
+   return _mm_mask_min_epu16( b, mask, a, b );
+}
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint32_t >::vector_t
+mask_min< sse< uint32_t > >(
+   typename sse< uint32_t >::vector_t const a,
+   typename sse< uint32_t >::vector_t const b,
+   typename sse< uint32_t >::mask_t const mask
+) {
+   return _mm_mask_min_epu32( b, mask, a, b );
+}
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint64_t >::vector_t
+mask_min< sse< uint64_t > >(
+   typename sse< uint64_t >::vector_t const a,
+   typename sse< uint64_t >::vector_t const b,
+   typename sse< uint64_t >::mask_t const mask
+) {
+   return _mm_mask_min_epu64( b, mask, a, b );
+}
+#endif
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint8_t >::vector_t
+           max< sse < uint8_t >
+>(
+typename sse< uint8_t >::vector_t const a,
+typename sse< uint8_t >::vector_t const b
+) {
+return
+_mm_max_epu8( a, b
+);
+}
+
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint16_t >::vector_t
+           max< sse < uint16_t >
+>(
+typename sse< uint16_t >::vector_t const a,
+typename sse< uint16_t >::vector_t const b
+) {
+return
+_mm_max_epu16( a, b
+);
+}
+
+template< >
+NO_DISCARD FORCE_INLINE
+typename sse< uint32_t >::vector_t
+           max< sse < uint32_t >
+>(
+typename sse< uint32_t >::vector_t const a,
+typename sse< uint32_t >::vector_t const b
+) {
+return
+_mm_max_epu32( a, b
+);
 }
 
 #if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
@@ -249,7 +281,6 @@ template<>
       return _mm_max_epu64( a, b );
    }
 #endif
-
 
 #if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_BW) && defined(INTEL_INTRINSICS_AVX512_F)
 template< >

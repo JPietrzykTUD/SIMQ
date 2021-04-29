@@ -29,41 +29,72 @@
 #define TUDDBS_SIMQ_MIN_PRINT_SIZE 5
 
 namespace tuddbs {
-
+   
    template< class VectorExtension >
    void
-   print( std::ostream & os, typename VectorExtension::vector_t const & simd_register, std::string identifier = "", std::size_t max_size = 0 ) {
+   print(
+      std::ostream & os, typename VectorExtension::vector_t const & simd_register, std::string identifier = "",
+      std::size_t max_size = 0
+   ) {
       typename vector_constants_t< VectorExtension >::array_t tmp;
-      [[maybe_unused]] auto tmp2 = store< VectorExtension >( tmp.data(), simd_register );
-      std::size_t max_size_for_all_values =
+      [[maybe_unused]] auto
+                                                              tmp2                    =
+                                                                 store< VectorExtension >( tmp.data( ), simd_register );
+      std::size_t                                             max_size_for_all_values =
 //         ( max_size == 0 ) ? 32 - __builtin_clz( *( std::max_element( tmp.begin(), tmp.end() ) ) ) : max_size;
-         ( max_size == 0 ) ? ( std::to_string( *( std::max_element( tmp.begin(), tmp.end() ) ) ) ).length() : max_size;
-      max_size_for_all_values = ( max_size_for_all_values < TUDDBS_SIMQ_MIN_PRINT_SIZE ) ? TUDDBS_SIMQ_MIN_PRINT_SIZE : max_size_for_all_values;
-      os << std::setw( 10 ) << identifier << "( VEC " << std::setw( 10 ) << vector_extension_to_str< VectorExtension >() << ") :";
+                                                                 ( max_size == 0 ) ? (
+                                                                    std::to_string(
+                                                                       *( std::max_element( tmp.begin( ), tmp.end( ) ) )
+                                                                    )
+                                                                 ).length( ) : max_size;
+      max_size_for_all_values =
+         ( max_size_for_all_values < TUDDBS_SIMQ_MIN_PRINT_SIZE ) ? TUDDBS_SIMQ_MIN_PRINT_SIZE
+                                                                  : max_size_for_all_values;
+      os
+         << std::setw( 10 )
+         << identifier
+         << "( VEC "
+         << std::setw( 10 )
+         << vector_extension_to_str< VectorExtension >( )
+         << ") :";
       os << "| ";
-      for(auto it = tmp.rbegin(); it != tmp.rend(); it++ ) {
-         os << std::setw( max_size_for_all_values ) << *it + 0  << " | ";
+      for(
+         auto it = tmp.rbegin( ); it != tmp.rend( ); it++
+         ) {
+         os << std::setw( max_size_for_all_values ) << *it + 0 << " | ";
       }
       os << "\n";
    }
-
+   
    template< class VectorExtension >
    void
-   print( std::ostream & os, typename VectorExtension::mask_t const & mask, std::string identifier = "", std::size_t max_size = 0 ) {
+   print(
+      std::ostream & os, typename VectorExtension::mask_t const & mask, std::string identifier = "",
+      std::size_t max_size = 0
+   ) {
       std::bitset< sizeof( typename VectorExtension::mask_t ) * 8 > bs{ mask };
-      os << std::setw( 10 ) << identifier << "(MASK " << std::setw( 10 ) << vector_extension_to_str< VectorExtension >() << ") :";
+      os
+         << std::setw( 10 )
+         << identifier
+         << "(MASK "
+         << std::setw( 10 )
+         << vector_extension_to_str< VectorExtension >( )
+         << ") :";
       os << "| ";
       std::size_t max_size_for_all_values =
-         ( max_size == 0 ) ? TUDDBS_SIMQ_MIN_PRINT_SIZE : max_size;
-      for(int i = ( sizeof( typename VectorExtension::mask_t ) * 8 ) - 1 ; i >= 0; i--) {
-         if( bs[ i ] == 0 )
-            os << std::setw( max_size_for_all_values ) << "FALSE"   << " | ";
-         else
-            os << std::setw( max_size_for_all_values ) << "TRUE"   << " | ";
+                     ( max_size == 0 ) ? TUDDBS_SIMQ_MIN_PRINT_SIZE : max_size;
+      for(
+         int      i                       = ( sizeof( typename VectorExtension::mask_t ) * 8 ) - 1; i >= 0; i--
+         ) {
+         if( bs[ i ] == 0 ) {
+            os << std::setw( max_size_for_all_values ) << "FALSE" << " | ";
+         } else {
+            os << std::setw( max_size_for_all_values ) << "TRUE" << " | ";
+         }
       }
       os << "\n";
    }
-
+   
    template< class VectorExtension >
    struct vec_ext_to_string_t;
 

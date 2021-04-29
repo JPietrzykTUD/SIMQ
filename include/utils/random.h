@@ -24,7 +24,7 @@ namespace tuddbs {
    struct rng {
       using engine_t =
       typename std::conditional<
-         sizeof(T)==8,
+         sizeof( T ) == 8,
          std::mt19937_64,
          std::mt19937
       >::type;

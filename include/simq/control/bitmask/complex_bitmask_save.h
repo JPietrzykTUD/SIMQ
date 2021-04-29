@@ -18,18 +18,19 @@
 #ifndef TUDDBS_SIMQ_INCLUDE_SIMQ_CONTROL_BITMASK_COMPLEX_BITMASK_H
 #define TUDDBS_SIMQ_INCLUDE_SIMQ_CONTROL_BITMASK_COMPLEX_BITMASK_H
 
-
 #include <cstdint>
 #include <cstddef>
-
-
 
 #include <cstddef>
 #include <type_traits>
 #include <typeinfo>
+
 #ifndef _MSC_VER
+
 #   include <cxxabi.h>
+
 #endif
+
 #include <memory>
 #include <string>
 #include <cstdlib>
@@ -38,36 +39,39 @@
 #include <utils/preprocessor.h>
 #include <simd/intrin.h>
 
-namespace tuddbs{
+namespace tuddbs {
    
-   
-   template <class T>
-   std::string type_name() {
-      typedef typename std::remove_reference<T>::type TR;
-      std::unique_ptr<char, void(*)(void*)> own
-         (
+   template< class T >
+   std::string type_name( ) {
+      typedef typename std::remove_reference< T >::type TR;
+      std::unique_ptr< char, void ( * )( void * ) >     own
+                                                           (
 #ifndef _MSC_VER
-         abi::__cxa_demangle(typeid(TR).name(), nullptr,
-                             nullptr, nullptr),
+                                                           abi::__cxa_demangle(
+                                                              typeid( TR ).name( ), nullptr,
+                                                              nullptr, nullptr
+                                                           ),
 #else
-         nullptr,
+                                                           nullptr,
 #endif
-         std::free
-      );
-      std::string r = own != nullptr ? own.get() : typeid(TR).name();
-      if (std::is_const<TR>::value)
+                                                           std::free
+                                                        );
+      std::string                                       r = own != nullptr ? own.get( ) : typeid( TR ).name( );
+      if( std::is_const< TR >::value ) {
          r += " const";
-      if (std::is_volatile<TR>::value)
+      }
+      if( std::is_volatile< TR >::value ) {
          r += " volatile";
-      if (std::is_lvalue_reference<T>::value)
+      }
+      if( std::is_lvalue_reference< T >::value ) {
          r += "&";
-      else if (std::is_rvalue_reference<T>::value)
+      } else if( std::is_rvalue_reference< T >::value ) {
          r += "&&";
+      }
       return r;
    }
 
-#define TYPENAME(x) type_name< decltype( x ) >( )
-   
+#define TYPENAME( x ) type_name< decltype( x ) >( )
    
    template< typename T >
    struct next_bigger_type;
@@ -132,14 +136,17 @@ namespace tuddbs{
       
       template<
          std::size_t INC = incrementor_t::value,
-         typename std::enable_if_t< INC == 1, std::nullptr_t  > = nullptr
+         typename std::enable_if_t< INC == 1, std::nullptr_t > = nullptr
       >
       FORCE_INLINE
       static
-         std::tuple< mask_t, mask_t * > read_mask_and_increment( mask_t * mask_ptr ) {
-         if constexpr( vecs_per_mask_t::value == 1 ) {
+         std::tuple< mask_t, mask_t * >
+      read_mask_and_increment( mask_t * mask_ptr ) {
+         if constexpr( vecs_per_mask_t::value == 1 )
+         {
             return std::make_tuple( *mask_ptr, mask_ptr + 1 );
-         } else if constexpr( vecs_per_mask_t::value == 2 ) {
+         } else if constexpr( vecs_per_mask_t::value == 2 )
+         {
             //if 2 vecs per mask than the first bits are @ Bitpositionoffset, the second bits are @
             // 1/2*mask_size_in_bits + Bitpositionoffset
             using offset_t = std::integral_constant< std::size_t, bits_per_mask_t::value / vecs_per_mask_t::value >;
@@ -147,21 +154,29 @@ namespace tuddbs{
             return std::make_tuple(
                (
                   ( tmp >> BitPositionOffset ) |
-                  ( ( ( tmp >> BitPositionOffset ) >> offset_t::value ) << ( NumberOfBits )  )
+                  ( ( ( tmp >> BitPositionOffset ) >> offset_t::value ) << ( NumberOfBits ) )
                ),
                mask_ptr + 1
             );
-         } else if constexpr( vecs_per_mask_t::value == 4 ) {
+         } else if constexpr( vecs_per_mask_t::value == 4 )
+         {
             using offset_t = std::integral_constant< std::size_t, bits_per_mask_t::value / vecs_per_mask_t::value >;
             auto tmp = *mask_ptr;
             return std::make_tuple(
                (
                   ( tmp >> BitPositionOffset ) |
-                  ( ( ( tmp >> BitPositionOffset ) >> offset_t::value ) << ( NumberOfBits )  )|
-                  ( ( ( tmp >> BitPositionOffset ) >> ( offset_t::value + offset_t::value ) ) << ( NumberOfBits +
-                                                                                                   NumberOfBits ) ) |
-                  ( ( ( tmp >> BitPositionOffset ) >> ( offset_t::value + offset_t::value + offset_t::value ) ) << (
-                     NumberOfBits + NumberOfBits + NumberOfBits ) )
+                  ( ( ( tmp >> BitPositionOffset ) >> offset_t::value ) << ( NumberOfBits ) ) |
+                  (
+                     ( ( tmp >> BitPositionOffset ) >> ( offset_t::value + offset_t::value ) ) << (
+                        NumberOfBits +
+                        NumberOfBits
+                     )
+                  ) |
+                  (
+                     ( ( tmp >> BitPositionOffset ) >> ( offset_t::value + offset_t::value + offset_t::value ) ) << (
+                        NumberOfBits + NumberOfBits + NumberOfBits
+                     )
+                  )
                ),
                mask_ptr + 1
             );
@@ -170,17 +185,18 @@ namespace tuddbs{
       
       template<
          std::size_t INC = incrementor_t::value,
-         typename std::enable_if_t< INC == 2, std::nullptr_t  > = nullptr
+         typename std::enable_if_t< INC == 2, std::nullptr_t > = nullptr
       >
       FORCE_INLINE
       static
-         std::tuple< mask_t, mask_t * > read_mask_and_increment( mask_t * mask_ptr ) {
+         std::tuple< mask_t, mask_t * >
+      read_mask_and_increment( mask_t * mask_ptr ) {
 //         if constexpr( vecs_per_mask_t::value == 1 ) {
          return std::make_tuple(
             // First Full Mask
-            ((*mask_ptr) >> BitPositionOffset) |
+            ( ( *mask_ptr ) >> BitPositionOffset ) |
             // Second Full Mask
-            ( ( (*(mask_ptr+1) ) >> BitPositionOffset) << NumberOfBits ),
+            ( ( ( *( mask_ptr + 1 ) ) >> BitPositionOffset ) << NumberOfBits ),
             mask_ptr + 2
          );
 //         }
@@ -188,21 +204,22 @@ namespace tuddbs{
       
       template<
          std::size_t INC = incrementor_t::value,
-         typename std::enable_if_t< INC == 4, std::nullptr_t  > = nullptr
+         typename std::enable_if_t< INC == 4, std::nullptr_t > = nullptr
       >
       FORCE_INLINE
       static
-         std::tuple< mask_t, mask_t * > read_mask_and_increment( mask_t * mask_ptr ) {
+         std::tuple< mask_t, mask_t * >
+      read_mask_and_increment( mask_t * mask_ptr ) {
          return std::make_tuple(
             (
                // First Full Mask
-               ( ( *mask_ptr ) >> BitPositionOffset) |
+               ( ( *mask_ptr ) >> BitPositionOffset ) |
                // Second Full Mask
-               ( ( ( * ( mask_ptr+1 ) ) >> BitPositionOffset ) << NumberOfBits ) |
+               ( ( ( *( mask_ptr + 1 ) ) >> BitPositionOffset ) << NumberOfBits ) |
                // Third Full Mask
-               ( ( ( * ( mask_ptr+2 ) ) >> BitPositionOffset ) << ( NumberOfBits + NumberOfBits ) ) |
+               ( ( ( *( mask_ptr + 2 ) ) >> BitPositionOffset ) << ( NumberOfBits + NumberOfBits ) ) |
                // Fourth Full Mask
-               ( ( ( * ( mask_ptr+3 ) ) >> BitPositionOffset ) << ( NumberOfBits + NumberOfBits + NumberOfBits) )
+               ( ( ( *( mask_ptr + 3 ) ) >> BitPositionOffset ) << ( NumberOfBits + NumberOfBits + NumberOfBits ) )
             ),
             mask_ptr + 4
          );

@@ -20,12 +20,13 @@
 #include <simd/types/simd.h>
 
 namespace tuddbs {
-
+   
    template< typename T, class VectorExtension >
    struct bitwise_xor_t;
-
+   
    template< class VectorExtension >
    NO_DISCARD FORCE_INLINE
+   
    typename VectorExtension::vector_t
    bitwise_xor(
       typename VectorExtension::vector_t const a,
@@ -33,12 +34,13 @@ namespace tuddbs {
    ) {
       return bitwise_xor_t< typename VectorExtension::base_t, VectorExtension >::apply( a, b );
    }
-
+   
    template< typename T, class VectorExtension >
    struct bitwise_or_t;
-
+   
    template< class VectorExtension >
    NO_DISCARD FORCE_INLINE
+   
    typename VectorExtension::vector_t
    bitwise_or(
       typename VectorExtension::vector_t const a,
@@ -46,12 +48,13 @@ namespace tuddbs {
    ) {
       return bitwise_or_t< typename VectorExtension::base_t, VectorExtension >::apply( a, b );
    }
-
+   
    template< typename T, class VectorExtension >
    struct bitwise_and_t;
-
+   
    template< class VectorExtension >
    NO_DISCARD FORCE_INLINE
+   
    typename VectorExtension::vector_t
    bitwise_and(
       typename VectorExtension::vector_t const a,
@@ -65,6 +68,7 @@ namespace tuddbs {
    
    template< class VectorExtension >
    NO_DISCARD FORCE_INLINE
+   
    typename VectorExtension::vector_t
    bitwise_and_not(
       typename VectorExtension::vector_t const a,
@@ -73,27 +77,27 @@ namespace tuddbs {
       return bitwise_and_not_t< typename VectorExtension::base_t, VectorExtension >::apply( a, b );
    }
    
-
    template< class VectorExtension, int I >
    struct bitshift_left_t;
-
+   
    template< class VectorExtension, int I >
    NO_DISCARD FORCE_INLINE
+   
    typename VectorExtension::vector_t
    bitshift_left( typename VectorExtension::vector_t const a ) {
       return bitshift_left_t< VectorExtension, I >::apply( a );
    }
-
+   
    template< class VectorExtension, int I >
    struct bitshift_right_t;
-
+   
    template< class VectorExtension, int I >
    NO_DISCARD FORCE_INLINE
+   
    typename VectorExtension::vector_t
    bitshift_right( typename VectorExtension::vector_t const a ) {
       return bitshift_right_t< VectorExtension, I >::apply( a );
    }
-   
    
 }
 

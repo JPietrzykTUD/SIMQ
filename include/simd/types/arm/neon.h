@@ -17,13 +17,11 @@
 #ifndef TUDDBS_SIMQ_INCLUDE_SIMD_TYPES_ARM_NEON_H
 #define TUDDBS_SIMQ_INCLUDE_SIMD_TYPES_ARM_NEON_H
 
-
 #include <type_traits>
 #include <cstddef>
 #include <cstdint>
 
 #include <simd/types/simd.h>
-
 
 #include "arm_neon.h"
 
@@ -41,23 +39,22 @@ namespace tuddbs {
       typename std::conditional<
          std::is_integral< T >::value,
          //todo: check for signed or unsigned!!!
-         std::conditional_t<
-            sizeof(T) == 1,
-            uint8x16_t,
-            std::conditional_t<
-               sizeof(T) == 2,
-               uint16x8_t,
-               std::conditional_t<
-                  sizeof(T) == 4,
-                  uint32x4_t,
-                  uint64x2_t
-               >
-            >
-         >,
-         float32x4_t //todo: check for float and double
+         std::conditional_t <
+         sizeof( T ) == 1,
+         uint8x16_t,
+         std::conditional_t <
+         sizeof( T ) == 2,
+         uint16x8_t,
+         std::conditional_t <
+         sizeof( T ) == 4,
+         uint32x4_t,
+         uint64x2_t
+      >
+      >
+      >,
+      float32x4_t //todo: check for float and double
       >;
-         
-      
+
 #if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_BW)
       using mask_t =
          typename std::conditional<
@@ -75,6 +72,5 @@ namespace tuddbs {
 #endif
    };
 }
-
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_TYPES_ARM_NEON_H

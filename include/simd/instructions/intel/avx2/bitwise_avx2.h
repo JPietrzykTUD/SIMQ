@@ -26,79 +26,90 @@
 
 namespace tuddbs {
    template< typename T >
-   struct bitwise_xor_t< T, avx2< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename avx2< T >::vector_t
-      apply(
-         typename avx2< T >::vector_t const a,
-         typename avx2< T >::vector_t const b
-      ) {
-         return _mm256_xor_si256( a, b );
-      }
-   };
-   template< typename T >
-   struct bitwise_or_t< T, avx2< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename avx2< T >::vector_t
-      apply(
-         typename avx2< T >::vector_t const a,
-         typename avx2< T >::vector_t const b
-      ) {
-         return _mm256_or_si256( a, b );
-      }
-   };
-   template< typename T >
-   struct bitwise_and_t< T, avx2< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename avx2< T >::vector_t
-      apply(
-         typename avx2< T >::vector_t const a,
-         typename avx2< T >::vector_t const b
-      ) {
-         return _mm256_and_si256( a, b );
-      }
-   };
+   struct bitwise_xor_t< T, avx2 < T > > {
+   NO_DISCARD FORCE_INLINE
+   
+   static
+   typename avx2< T >::vector_t
+   apply(
+      typename avx2< T >::vector_t const a,
+      typename avx2< T >::vector_t const b
+   ) {
+      return _mm256_xor_si256( a, b );
+   }
+};
+template< typename T >
+struct bitwise_or_t< T, avx2 < T > > {
+NO_DISCARD FORCE_INLINE
 
-   template< typename T >
-   struct bitwise_and_not_t< T, avx2< T > > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename avx2< T >::vector_t
-      apply(
-         typename avx2< T >::vector_t const a,
-         typename avx2< T >::vector_t const b
-      ) {
-         return _mm256_andnot_si256( a, b );
-      }
-   };
+static
+typename avx2< T >::vector_t
+apply(
+   typename avx2< T >::vector_t const a,
+   typename avx2< T >::vector_t const b
+) {
+   return _mm256_or_si256( a, b );
+}
 
-   //use this with care!
-   template< typename T, int I >
-   struct bitshift_left_t< avx2< T >, I > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename avx2< T >::vector_t
-      apply(
-         typename avx2< T >::vector_t const a
-      ) {
-         return _mm256_slli_epi64( a, I );
-      }
-   };
+};
+template< typename T >
+struct bitwise_and_t< T, avx2 < T > > {
+NO_DISCARD FORCE_INLINE
 
-   template< typename T, int I >
-   struct bitshift_right_t< avx2< T >, I > {
-      NO_DISCARD FORCE_INLINE
-      static
-      typename avx2< T >::vector_t
-      apply(
-         typename avx2< T >::vector_t const a
-      ) {
-         return _mm256_srli_epi64( a, I );
-      }
-   };
+static
+typename avx2< T >::vector_t
+apply(
+   typename avx2< T >::vector_t const a,
+   typename avx2< T >::vector_t const b
+) {
+   return _mm256_and_si256( a, b );
+}
+
+};
+
+template< typename T >
+struct bitwise_and_not_t< T, avx2 < T > > {
+NO_DISCARD FORCE_INLINE
+
+static
+typename avx2< T >::vector_t
+apply(
+   typename avx2< T >::vector_t const a,
+   typename avx2< T >::vector_t const b
+) {
+   return _mm256_andnot_si256( a, b );
+}
+
+};
+
+//use this with care!
+template< typename T, int I >
+struct bitshift_left_t< avx2 < T >, I > {
+NO_DISCARD FORCE_INLINE
+
+static
+typename avx2< T >::vector_t
+apply(
+   typename avx2< T >::vector_t const a
+) {
+   return _mm256_slli_epi64( a, I );
+}
+
+};
+
+template< typename T, int I >
+struct bitshift_right_t< avx2 < T >, I > {
+NO_DISCARD FORCE_INLINE
+
+static
+typename avx2< T >::vector_t
+apply(
+   typename avx2< T >::vector_t const a
+) {
+   return _mm256_srli_epi64( a, I );
+}
+
+};
 
 }
 

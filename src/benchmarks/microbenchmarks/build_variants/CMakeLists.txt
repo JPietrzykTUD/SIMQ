@@ -1,3 +1,3 @@
-IF(${CPLATFORM} MATCHES "INTEL")
+IF (${CPLATFORM} MATCHES "INTEL")
     add_subdirectory(intel)
-ENDIF()
+ENDIF ()

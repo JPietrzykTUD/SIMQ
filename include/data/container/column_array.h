@@ -29,7 +29,7 @@
 #include <cstddef>
 
 namespace tuddbs {
-
+   
    template< class VectorExtension, std::size_t NumberOfColumns >
    /**
     * @brief Container class for organizing multiple columns.
@@ -46,43 +46,49 @@ namespace tuddbs {
       using T = typename VectorExtension::base_t;
       using number_or_columns_t = std::integral_constant< std::size_t, NumberOfColumns >;
       using vector_extension_t = VectorExtension;
-      static_assert( NumberOfColumns <= vector_constants_t< VectorExtension >::vector_element_count_t::value,
-         "To many columns specified.");
-      column< T > * columns[ NumberOfColumns ];
-
-
+      static_assert( NumberOfColumns
+      <= vector_constants_t< VectorExtension >::vector_element_count_t::value,
+      "To many columns specified.");
+      column <T> * columns[NumberOfColumns];
+      
       template< class... Args >
-      column_array( Args&&... args ): columns{ std::forward< Args >( args )... } { }
-
-      void assign( std::initializer_list< column< typename VectorExtension::base_t > * > list ) {
-         std::copy( list.begin(), list.end(), columns );
+      column_array( Args && ... args ):
+         columns{ std::forward< Args >( args )... } { }
+      
+      void assign(
+         std::initializer_list< column < typename VectorExtension::base_t > *
+      
+      > list ) {
+         std::copy( list.begin( ), list.end( ), columns );
       }
-
+      
       void set( std::size_t idx, void * a ) {
-         columns[ idx ] = ( column< T > * ) a;
+         columns[ idx ] = ( column <T> * ) a;
       }
-
+      
       T * get_min_address( void ) const {
-         return ( * ( std::min_element( columns, &columns[ NumberOfColumns ] ) ) )->data_ptr;
+         return ( *( std::min_element( columns, &columns[ NumberOfColumns ] ) ) )->data_ptr;
       }
-
+      
       T * get_max_address( void ) const {
-         return ( * ( std::max_element( columns, &columns[ NumberOfColumns ] ) ) )->data_ptr;
+         return ( *( std::max_element( columns, &columns[ NumberOfColumns ] ) ) )->data_ptr;
       }
-
+      
       T * get_max_end_address( void ) const {
-         column< T > * max = ( * ( std::max_element( columns, &columns[ NumberOfColumns ] ) ) );
+         column <T> * max = ( *( std::max_element( columns, &columns[ NumberOfColumns ] ) ) );
          return ( max->data_ptr + max->data_count );
       }
-
+      
       void delete_columns( void ) {
-         for( std::size_t i = 0; i < NumberOfColumns; ++i ) {
+         for(
+            std::size_t i = 0; i < NumberOfColumns; ++i
+            ) {
             delete columns[ i ];
          }
       }
-
+      
    };
-
+   
    template< class VectorExtension, std::size_t NumberOfQueries >
    /**
     * @brief Container class for organizing multiple values.
@@ -95,24 +101,26 @@ namespace tuddbs {
       using T = typename VectorExtension::base_t;
       using number_or_queries_t = std::integral_constant< std::size_t, NumberOfQueries >;
       using vector_extension_t = VectorExtension;
-      static_assert( NumberOfQueries <= vector_constants_t< VectorExtension >::vector_element_count_t::value,
-                     "To many queries specified.");
-      static_assert( ( NumberOfQueries & ( NumberOfQueries - 1 ) ) == 0, "Number of queries has to be an exponent of two.");
-      T values[ NumberOfQueries ];
-
-
+      static_assert( NumberOfQueries
+      <= vector_constants_t< VectorExtension >::vector_element_count_t::value,
+      "To many queries specified.");
+      static_assert( ( NumberOfQueries
+      & ( NumberOfQueries - 1 ) ) == 0, "Number of queries has to be an exponent of two.");
+      T values[NumberOfQueries];
+      
       template< class... Args >
-      constexpr value_array( Args&&... args ): values{ static_cast< T >( std::forward< Args >( args ) )... } { }
-
-      void assign( std::initializer_list< T > list ) {
-         std::copy( list.begin(), list.end(), values );
+      constexpr value_array( Args && ... args ):
+         values{ static_cast< T >( std::forward< Args >( args ) )... } { }
+      
+      void assign( std::initializer_list <T> list ) {
+         std::copy( list.begin( ), list.end( ), values );
       }
-
+      
       void set( std::size_t idx, T a ) {
          values[ idx ] = a;
       }
    };
-
+   
 }
 
 #endif //TUDDBS_SIMQ_INCLUDE_DATA_CONTAINER_COLUMN_ARRAY_H

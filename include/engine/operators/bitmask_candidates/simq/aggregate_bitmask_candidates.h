@@ -30,7 +30,7 @@
 #include <simq/control/bitmask/complex_bitmask.h>
 
 namespace tuddbs {
-
+   
    /**
     * @brief Helper class for reading a mask.
     *
@@ -75,8 +75,8 @@ namespace tuddbs {
        * @endcode
        */
       using values_per_complete_mask_t = typename vector_constants_t< VectorExtension_t >::number_of_vectors_per_mask_t;
-
-
+      
+      
       /**
        * @brief Loads a single vector register which should to be aggregated and applies the specified aggregator with a given mask and returns the result.
        *
@@ -92,18 +92,18 @@ namespace tuddbs {
       static
       typename VectorExtension_t::vector_t
       apply_single(
-         VectorBuilder_t & input_vector_builder,
-         typename VectorExtension_t::vector_t const old_values_vec,
-         typename VectorExtension_t::mask_t const active_lanes_mask
+                     VectorBuilder_t & input_vector_builder,
+      typename VectorExtension_t::vector_t const old_values_vec,
+      typename VectorExtension_t::mask_t const   active_lanes_mask
       ) {
          return
             Aggregator_t< VectorExtension_t >::apply(
-               input_vector_builder.get_and_increment(),
+               input_vector_builder.get_and_increment( ),
                old_values_vec,
                active_lanes_mask
             );
       }
-
+      
       /**
        * @brief Specialization when 1 vector register form a complete mask.
        *
@@ -122,18 +122,18 @@ namespace tuddbs {
       static
       typename VectorExtension_t::vector_t
       apply(
-         VectorBuilder_t & input_vector_builder,
-         typename VectorExtension_t::vector_t const old_values_vec,
-         typename VectorExtension_t::mask_t const active_lanes_mask
+              VectorBuilder_t & input_vector_builder,
+      typename VectorExtension_t::vector_t const old_values_vec,
+      typename VectorExtension_t::mask_t const   active_lanes_mask
       ) {
          return
             Aggregator_t< VectorExtension_t >::apply(
-               input_vector_builder.get_and_increment(),
+               input_vector_builder.get_and_increment( ),
                old_values_vec,
                active_lanes_mask
             );
       }
-
+      
       /**
        * @brief Specialization when 2 vector register form a complete mask.
        *
@@ -159,12 +159,12 @@ namespace tuddbs {
       static
       typename VectorExtension_t::vector_t
       apply(
-         VectorBuilder_t & input_vector_builder,
-         typename VectorExtension_t::vector_t const old_values_vec,
-         typename VectorExtension_t::mask_t const active_lanes_mask
+              VectorBuilder_t & input_vector_builder,
+      typename VectorExtension_t::vector_t const old_values_vec,
+      typename VectorExtension_t::mask_t const   active_lanes_mask
       ) {
-         typename VectorExtension_t::vector_t first = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment();
+         typename VectorExtension_t::vector_t first  = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment( );
          return
             Aggregator_t< VectorExtension_t >::apply(
                second,
@@ -173,10 +173,10 @@ namespace tuddbs {
                   old_values_vec,
                   active_lanes_mask
                ),
-              ( active_lanes_mask >> vector_constants_t< VectorExtension_t >::shift_per_mask_t::value )
+               ( active_lanes_mask >> vector_constants_t< VectorExtension_t >::shift_per_mask_t::value )
             );
       }
-
+      
       /**
        * @brief Specialization when 4 vector register form a complete mask.
        *
@@ -206,14 +206,14 @@ namespace tuddbs {
       static
       typename VectorExtension_t::vector_t
       apply(
-         VectorBuilder_t & input_vector_builder,
-         typename VectorExtension_t::vector_t const old_values_vec,
-         typename VectorExtension_t::mask_t const active_lanes_mask
+              VectorBuilder_t & input_vector_builder,
+      typename VectorExtension_t::vector_t const old_values_vec,
+      typename VectorExtension_t::mask_t const   active_lanes_mask
       ) {
-         typename VectorExtension_t::vector_t first = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t third = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t fourth = input_vector_builder.get_and_increment();
+         typename VectorExtension_t::vector_t first  = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t third  = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t fourth = input_vector_builder.get_and_increment( );
          return
             Aggregator_t< VectorExtension_t >::apply(
                fourth,
@@ -234,7 +234,7 @@ namespace tuddbs {
             );
       }
    };
-
+   
    /**
     * @brief Class for executing a SIMQ-compliant aggregate.
     * @tparam VectorExtension_t Struct representing used vector extension (e.g. sse< uint32_t >, avx< uint64_t >, ... ).
@@ -256,7 +256,7 @@ namespace tuddbs {
       /**
        * @brief Number of elements which fit into the specified vector extension (VectorExtension_t).
        */
-      using incrementor_t = std::integral_constant< std::size_t, VectorBuilder_t::get_incrementor() >;
+      using incrementor_t = std::integral_constant< std::size_t, VectorBuilder_t::get_incrementor( ) >;
       /**
        * @brief Number of masks resulting from the comparator which have to be merged merged.
        * @verbatim
@@ -286,9 +286,10 @@ namespace tuddbs {
        * @brief Number of elements which are processed to form a complete mask (values_per_complete_mask_t::value * incrementor_t::value).
        */
       using step_width_t =
-         std::integral_constant< std::size_t, values_per_complete_mask_t::value * incrementor_t::value >;
-      static_assert( ( ( step_width_t::value & ( step_width_t::value - 1 ) ) == 0 ), "Stepwidth should be 2^x." );
-
+      std::integral_constant< std::size_t, values_per_complete_mask_t::value * incrementor_t::value >;
+      static_assert( ( ( step_width_t::value
+      & ( step_width_t::value - 1 ) ) == 0 ), "Stepwidth should be 2^x." );
+      
       /**
        * @brief SIMQ-compliant aggregate operator which operates on a whole column.
        *
@@ -300,24 +301,31 @@ namespace tuddbs {
        * @return Pointer to the result column.
        */
       static
-      column< T > *
+      column <T> *
       apply(
-         column< T > * const result_column,
+         column <T> * const result_column,
          VectorBuilder_t & input_vector_builder,
-         column< T > * const input_bitmask_column
+         column <T> * const input_bitmask_column
       ) {
          std::size_t const element_count = input_vector_builder.svw.element_count;
-
+         
          typename VectorExtension_t::mask_t * input_bitmask_buffer_ptr =
-            ( typename VectorExtension_t::mask_t * ) input_bitmask_column->data_ptr;
-         typename VectorExtension_t::vector_t result_vec = Aggregator_t< VectorExtension_t >::init();
-         std::size_t const fully_vectorized_count = element_count / step_width_t::value;
-         std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
-         typename VectorExtension_t::mask_t mask = 0;
-         for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
-            if constexpr( NumberOfBits != 0 ) {
+                                               ( typename VectorExtension_t::mask_t * ) input_bitmask_column->data_ptr;
+         typename VectorExtension_t::vector_t result_vec             = Aggregator_t< VectorExtension_t >::init( );
+         std::size_t const                    fully_vectorized_count = element_count / step_width_t::value;
+         std::size_t const                    remainder_count        = element_count & ( step_width_t::value - 1 );
+         typename VectorExtension_t::mask_t   mask                   = 0;
+         for(
+            std::size_t                       pos                    = 0; pos < fully_vectorized_count; ++pos
+            ) {
+            if constexpr( NumberOfBits != 0 )
+            {
                std::tie( mask, input_bitmask_buffer_ptr ) =
-                  complex_bitmask_helper_t< VectorExtension_t, NumberOfBits, BitPositionOffset >::read_mask_and_increment( input_bitmask_buffer_ptr );
+                  complex_bitmask_helper_t<
+                     VectorExtension_t,
+                     NumberOfBits,
+                     BitPositionOffset
+                  >::read_mask_and_increment( input_bitmask_buffer_ptr );
             } else {
                mask = *( input_bitmask_buffer_ptr++ );
             }
@@ -332,12 +340,14 @@ namespace tuddbs {
                   mask
                );
          }
-
+         
          if( remainder_count != 0 ) {
-            throw std::runtime_error("Remainder!!!");
-            std::size_t current_shift = 0;
+            throw std::runtime_error( "Remainder!!!" );
+            std::size_t                        current_shift  = 0;
             typename VectorExtension_t::mask_t remainder_mask = *( input_bitmask_buffer_ptr++ );
-            for( std::size_t i = 0; i < remainder_count; i += incrementor_t::value ) {
+            for(
+               std::size_t                     i              = 0; i < remainder_count; i += incrementor_t::value
+               ) {
                result_vec =
                   aggregate_mask_helper<
                      VectorExtension_t,
@@ -346,27 +356,30 @@ namespace tuddbs {
                   >::apply_single(
                      input_vector_builder,
                      result_vec,
-                     remainder_mask >> ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * current_shift )
+                     remainder_mask
+                        >> ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * current_shift )
                   );
                ++current_shift;
                if( current_shift == values_per_complete_mask_t::value ) {
-                  current_shift = 0;
+                  current_shift  = 0;
                   remainder_mask = *( input_bitmask_buffer_ptr++ );
                }
             }
          }
-
+         
          typename VectorExtension_t::vector_t reduced_result_vec =
-            Aggregator_t< VectorExtension_t >::template inner_finalize< VectorBuilder_t::lanes_per_query_t::value >(
-               result_vec
-            );
+                                                 Aggregator_t< VectorExtension_t >::template inner_finalize<
+                                                    VectorBuilder_t::lanes_per_query_t::value
+                                                 >(
+                                                    result_vec
+                                                 );
 //         typename VectorExtension_t::vector_t reduced_result_vec =
 //            reduce_add< VectorExtension_t, VectorBuilder_t::lanes_per_query_t::value >( result_vec );
-         [[maybe_unused]]typename VectorExtension_t::base_t * tmp = store< VectorExtension_t >( result_column->data_ptr, reduced_result_vec );
+         [[maybe_unused]]typename VectorExtension_t::base_t
+            * tmp = store< VectorExtension_t >( result_column->data_ptr, reduced_result_vec );
          return result_column;
       }
-
-
+      
       /**
        * @brief SIMQ-compliant aggregate operator which operates on a pointer.
        *
@@ -385,16 +398,23 @@ namespace tuddbs {
          std::size_t const element_count,
          typename VectorExtension_t::mask_t * const input_bitmask_column_ptr
       ) {
-
+         
          typename VectorExtension_t::mask_t * input_bitmask_buffer_ptr = input_bitmask_column_ptr;
-         typename VectorExtension_t::vector_t result_vec = load< VectorExtension_t >( result_column );
-         std::size_t const fully_vectorized_count = element_count / step_width_t::value;
-         std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
-         typename VectorExtension_t::mask_t mask = 0;
-         for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
-            if constexpr( NumberOfBits != 0 ) {
+         typename VectorExtension_t::vector_t result_vec             = load< VectorExtension_t >( result_column );
+         std::size_t const                    fully_vectorized_count = element_count / step_width_t::value;
+         std::size_t const                    remainder_count        = element_count & ( step_width_t::value - 1 );
+         typename VectorExtension_t::mask_t   mask                   = 0;
+         for(
+            std::size_t                       pos                    = 0; pos < fully_vectorized_count; ++pos
+            ) {
+            if constexpr( NumberOfBits != 0 )
+            {
                std::tie( mask, input_bitmask_buffer_ptr ) =
-                  complex_bitmask_helper_t< VectorExtension_t, NumberOfBits, BitPositionOffset >::read_mask_and_increment( input_bitmask_buffer_ptr );
+                  complex_bitmask_helper_t<
+                     VectorExtension_t,
+                     NumberOfBits,
+                     BitPositionOffset
+                  >::read_mask_and_increment( input_bitmask_buffer_ptr );
             } else {
                mask = *( input_bitmask_buffer_ptr++ );
             }
@@ -409,12 +429,14 @@ namespace tuddbs {
                   mask
                );
          }
-
+         
          if( remainder_count != 0 ) {
-            throw std::runtime_error("Remainder!!!");
-            std::size_t current_shift = 0;
+            throw std::runtime_error( "Remainder!!!" );
+            std::size_t                        current_shift  = 0;
             typename VectorExtension_t::mask_t remainder_mask = *( input_bitmask_buffer_ptr++ );
-            for( std::size_t i = 0; i < remainder_count; i += incrementor_t::value ) {
+            for(
+               std::size_t                     i              = 0; i < remainder_count; i += incrementor_t::value
+               ) {
                result_vec =
                   aggregate_mask_helper<
                      VectorExtension_t,
@@ -423,18 +445,23 @@ namespace tuddbs {
                   >::apply_single(
                      input_vector_builder,
                      result_vec,
-                     remainder_mask >> ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * current_shift )
+                     remainder_mask
+                        >> ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * current_shift )
                   );
                ++current_shift;
                if( current_shift == values_per_complete_mask_t::value ) {
-                  current_shift = 0;
+                  current_shift  = 0;
                   remainder_mask = *( input_bitmask_buffer_ptr++ );
                }
             }
          }
-         typename VectorExtension_t::vector_t reduced_result_vec =
-            reduce_add< VectorExtension_t, VectorBuilder_t::lanes_per_query_t::value >( result_vec );
-         [[maybe_unused]]typename VectorExtension_t::base_t * tmp = store< VectorExtension_t >( result_column, reduced_result_vec );
+         typename VectorExtension_t::vector_t reduced_result_vec     =
+                                                 reduce_add<
+                                                    VectorExtension_t,
+                                                    VectorBuilder_t::lanes_per_query_t::value
+                                                 >( result_vec );
+         [[maybe_unused]]typename VectorExtension_t::base_t
+            * tmp = store< VectorExtension_t >( result_column, reduced_result_vec );
          return result_column;
       }
    };

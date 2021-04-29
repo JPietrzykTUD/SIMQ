@@ -70,88 +70,105 @@ namespace tuddbs {
    template< >
    NO_DISCARD FORCE_INLINE
    typename avx512< uint32_t >::vector_t
-   add< avx512< uint32_t > >(
-      typename avx512< uint32_t >::vector_t const a,
-      typename avx512< uint32_t >::vector_t const b
+              add< avx512 < uint32_t >
+   >(
+   typename avx512< uint32_t >::vector_t const a,
+   typename avx512< uint32_t >::vector_t const b
    ) {
-      return _mm512_add_epi32( a, b );
-   }
+   return
+   _mm512_add_epi32( a, b
+   );
+}
 
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx512< uint64_t >::vector_t
-   add< avx512< uint64_t > >(
-      typename avx512< uint64_t >::vector_t const a,
-      typename avx512< uint64_t >::vector_t const b
-   ) {
-      return _mm512_add_epi64( a, b );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx512< uint64_t >::vector_t
+           add< avx512 < uint64_t >
+>(
+typename avx512< uint64_t >::vector_t const a,
+typename avx512< uint64_t >::vector_t const b
+) {
+return
+_mm512_add_epi64( a, b
+);
+}
 
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx512< uint32_t >::vector_t
-   sub< avx512< uint32_t > >(
-      typename avx512< uint32_t >::vector_t const a,
-      typename avx512< uint32_t >::vector_t const b
-   ) {
-      return _mm512_sub_epi32( a, b );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx512< uint32_t >::vector_t
+           sub< avx512 < uint32_t >
+>(
+typename avx512< uint32_t >::vector_t const a,
+typename avx512< uint32_t >::vector_t const b
+) {
+return
+_mm512_sub_epi32( a, b
+);
+}
 
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx512< uint64_t >::vector_t
-   sub< avx512< uint64_t > >(
-      typename avx512< uint64_t >::vector_t const a,
-      typename avx512< uint64_t >::vector_t const b
-   ) {
-      return _mm512_sub_epi64( a, b );
-   }
-
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx512< uint64_t >::vector_t
+           sub< avx512 < uint64_t >
+>(
+typename avx512< uint64_t >::vector_t const a,
+typename avx512< uint64_t >::vector_t const b
+) {
+return
+_mm512_sub_epi64( a, b
+);
+}
 
 #if defined(INTEL_INTRINSICS_AVX512_BW)
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx512< uint8_t >::vector_t
-   mask_add< avx512< uint8_t > >(
-      typename avx512< uint8_t >::vector_t const incrementor,
-      typename avx512< uint8_t >::vector_t const result,
-      typename avx512< uint8_t >::mask_t const mask
-   ) {
-      return _mm512_mask_add_epi8( result, mask, incrementor, result );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx512< uint8_t >::vector_t
+mask_add< avx512< uint8_t > >(
+   typename avx512< uint8_t >::vector_t const incrementor,
+   typename avx512< uint8_t >::vector_t const result,
+   typename avx512< uint8_t >::mask_t const mask
+) {
+   return _mm512_mask_add_epi8( result, mask, incrementor, result );
+}
 
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx512< uint16_t >::vector_t
-   mask_add< avx512< uint16_t > >(
-      typename avx512< uint16_t >::vector_t const incrementor,
-      typename avx512< uint16_t >::vector_t const result,
-      typename avx512< uint16_t >::mask_t const mask
-   ) {
-      return _mm512_mask_add_epi16( result, mask, incrementor, result );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx512< uint16_t >::vector_t
+mask_add< avx512< uint16_t > >(
+   typename avx512< uint16_t >::vector_t const incrementor,
+   typename avx512< uint16_t >::vector_t const result,
+   typename avx512< uint16_t >::mask_t const mask
+) {
+   return _mm512_mask_add_epi16( result, mask, incrementor, result );
+}
 #endif
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx512< uint32_t >::vector_t
-   mask_add< avx512< uint32_t > >(
-      typename avx512< uint32_t >::vector_t const incrementor,
-      typename avx512< uint32_t >::vector_t const result,
-      typename avx512< uint32_t >::mask_t const mask
-   ) {
-      return _mm512_mask_add_epi32( result, mask, incrementor, result );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx512< uint32_t >::vector_t
+           mask_add< avx512 < uint32_t >
+>(
+typename avx512< uint32_t >::vector_t const incrementor,
+typename avx512< uint32_t >::vector_t const result,
+typename avx512< uint32_t >::mask_t const   mask
+) {
+return
+_mm512_mask_add_epi32( result, mask, incrementor, result
+);
+}
 
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx512< uint64_t >::vector_t
-   mask_add< avx512< uint64_t > >(
-      typename avx512< uint64_t >::vector_t const incrementor,
-      typename avx512< uint64_t >::vector_t const result,
-      typename avx512< uint64_t >::mask_t const mask
-   ) {
-      return _mm512_mask_add_epi64( result, mask, incrementor, result );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx512< uint64_t >::vector_t
+           mask_add< avx512 < uint64_t >
+>(
+typename avx512< uint64_t >::vector_t const incrementor,
+typename avx512< uint64_t >::vector_t const result,
+typename avx512< uint64_t >::mask_t const   mask
+) {
+return
+_mm512_mask_add_epi64( result, mask, incrementor, result
+);
+}
 
 }
 

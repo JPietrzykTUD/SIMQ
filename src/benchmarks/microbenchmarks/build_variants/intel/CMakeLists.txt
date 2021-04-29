@@ -1,5 +1,5 @@
-IF(${CPROC} MATCHES "XEON")
+IF (${CPROC} MATCHES "XEON")
     add_subdirectory(xeon)
-ELSEIF(${CPROC} MATCHES "KNL")
+ELSEIF (${CPROC} MATCHES "KNL")
     add_subdirectory(knl)
-ENDIF()
+ENDIF ()

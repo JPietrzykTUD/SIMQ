@@ -27,7 +27,7 @@
 #include <data/column.h>
 
 namespace tuddbs {
-
+   
    /**
     * @brief Helper Class for generating a mask.
     *
@@ -87,7 +87,7 @@ namespace tuddbs {
        * @endcode
        */
       using values_per_complete_mask_t = typename vector_constants_t< VectorExtension_t >::number_of_vectors_per_mask_t;
-
+      
       /**
        * @brief Loads a single vector register, applies the specified comparator with all arguments and return the result.
        * This function is intended to be used for the remaining part of an input column.
@@ -102,12 +102,14 @@ namespace tuddbs {
       static
       typename VectorExtension_t::mask_t
       apply_single(
-         VectorBuilder_t & input_vector_builder,
-         Args&& ... predicates
+                     VectorBuilder_t & input_vector_builder,
+      Args && ... predicates
       ) {
-         return Comparator_t< VectorExtension_t >::apply( input_vector_builder.get_and_increment(), std::forward< Args >( predicates )... );
+         return Comparator_t< VectorExtension_t >::apply(
+            input_vector_builder.get_and_increment( ), std::forward< Args >( predicates )...
+         );
       }
-
+      
       /**
        * @brief Specialization when 1 vector register form a complete mask.
        * Loads a single vector register, applies the specified comparator with all arguments and return the result.
@@ -127,12 +129,14 @@ namespace tuddbs {
       static
       typename VectorExtension_t::mask_t
       apply(
-         VectorBuilder_t & input_vector_builder,
-         Args&& ... predicates
+              VectorBuilder_t & input_vector_builder,
+      Args && ... predicates
       ) {
-         return Comparator_t< VectorExtension_t >::apply( input_vector_builder.get_and_increment(), std::forward< Args >( predicates )... );
+         return Comparator_t< VectorExtension_t >::apply(
+            input_vector_builder.get_and_increment( ), std::forward< Args >( predicates )...
+         );
       }
-
+      
       /**
        * @brief Specialization when 2 vector register form a complete mask.
        * Loads two single vector register, applies the specified comparator with all arguments and return the result.
@@ -161,22 +165,24 @@ namespace tuddbs {
       static
       typename VectorExtension_t::mask_t
       apply(
-         VectorBuilder_t & input_vector_builder,
-         Args&& ... predicates
+              VectorBuilder_t & input_vector_builder,
+      Args && ... predicates
       ) {
-         typename VectorExtension_t::vector_t first = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment();
+         typename VectorExtension_t::vector_t first  = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment( );
          return
             (
                Comparator_t< VectorExtension_t >::apply( first, std::forward< Args >( predicates )... )
                |
                (
                   Comparator_t< VectorExtension_t >::apply( second, std::forward< Args >( predicates )... ) <<
-                  vector_constants_t< VectorExtension_t >::shift_per_mask_t::value
+                                                                                                            vector_constants_t<
+                                                                                                               VectorExtension_t
+                                                                                                            >::shift_per_mask_t::value
                )
             );
       }
-
+      
       /**
        * @brief Specialization when 4 vector register form a complete mask.
        * Loads two single vector register, applies the specified comparator with all arguments and return the result.
@@ -211,35 +217,47 @@ namespace tuddbs {
       static
       typename VectorExtension_t::mask_t
       apply(
-         VectorBuilder_t & input_vector_builder,
-         Args&& ... predicates
+              VectorBuilder_t & input_vector_builder,
+      Args && ... predicates
       ) {
-         typename VectorExtension_t::vector_t first = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t third = input_vector_builder.get_and_increment();
-         typename VectorExtension_t::vector_t fourth = input_vector_builder.get_and_increment();
+         typename VectorExtension_t::vector_t first  = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t second = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t third  = input_vector_builder.get_and_increment( );
+         typename VectorExtension_t::vector_t fourth = input_vector_builder.get_and_increment( );
          return
             (
                Comparator_t< VectorExtension_t >::apply( first, std::forward< Args >( predicates )... )
                |
-                  (
-                     Comparator_t< VectorExtension_t >::apply( second, std::forward< Args >( predicates )... ) <<
-                     vector_constants_t< VectorExtension_t >::shift_per_mask_t::value
-                  )
+               (
+                  Comparator_t< VectorExtension_t >::apply( second, std::forward< Args >( predicates )... ) <<
+                                                                                                            vector_constants_t<
+                                                                                                               VectorExtension_t
+                                                                                                            >::shift_per_mask_t::value
+               )
                |
-                  (
-                     Comparator_t< VectorExtension_t >::apply( third, std::forward< Args >( predicates )... ) <<
-                     ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * 2 )
-                  )
+               (
+                  Comparator_t< VectorExtension_t >::apply( third, std::forward< Args >( predicates )... ) <<
+                                                                                                           (
+                                                                                                              vector_constants_t<
+                                                                                                                 VectorExtension_t
+                                                                                                              >::shift_per_mask_t::value
+                                                                                                              * 2
+                                                                                                           )
+               )
                |
-                  (
-                     Comparator_t< VectorExtension_t >::apply( fourth, std::forward< Args >( predicates )... ) <<
-                     ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * 3 )
-                  )
+               (
+                  Comparator_t< VectorExtension_t >::apply( fourth, std::forward< Args >( predicates )... ) <<
+                                                                                                            (
+                                                                                                               vector_constants_t<
+                                                                                                                  VectorExtension_t
+                                                                                                               >::shift_per_mask_t::value
+                                                                                                               * 3
+                                                                                                            )
+               )
             );
       }
    };
-
+   
    /**
     * @brief Class for executing a SIMQ-compliant filter.
     * @tparam VectorExtension_t Struct representing used vector extension (e.g. sse< uint32_t >, avx< uint64_t >, ... ).
@@ -259,7 +277,7 @@ namespace tuddbs {
       /**
        * @brief Number of elements which fit into the specified vector extension (VectorExtension_t).
        */
-      using incrementor_t = std::integral_constant< std::size_t, VectorBuilder_t::get_incrementor() >;
+      using incrementor_t = std::integral_constant< std::size_t, VectorBuilder_t::get_incrementor( ) >;
       /**
        * @brief Number of masks resulting from the comparator which have to be merged merged.
        * @verbatim
@@ -289,10 +307,10 @@ namespace tuddbs {
        * @brief Number of elements which are processed to form a complete mask (values_per_complete_mask_t::value * incrementor_t::value).
        */
       using step_width_t =
-         std::integral_constant< std::size_t, values_per_complete_mask_t::value * incrementor_t::value >;
-      static_assert( ( ( step_width_t::value & ( step_width_t::value - 1 ) ) == 0 ), "Stepwidth should be 2^x." );
-
-
+      std::integral_constant< std::size_t, values_per_complete_mask_t::value * incrementor_t::value >;
+      static_assert( ( ( step_width_t::value
+      & ( step_width_t::value - 1 ) ) == 0 ), "Stepwidth should be 2^x." );
+      
       /**
        * @brief SIMQ-compliant filter operator which operates on a whole column.
        *
@@ -314,44 +332,53 @@ namespace tuddbs {
        */
       template< typename... Args >
       static
-      column< T > *
+      column <T> *
       apply(
-         column< T > * const result_bitmask_column,
+         column <T> * const result_bitmask_column,
          VectorBuilder_t & input_vector_builder,
-         Args&& ... predicates
+         Args && ... predicates
       ) {
          std::size_t const element_count = input_vector_builder.svw.element_count;
-
+         
          /**
           * fully vectorized part
           */
          typename VectorExtension_t::mask_t * result_mask_buffer =
-            ( typename VectorExtension_t::mask_t * ) result_bitmask_column->data_ptr;
+                                               ( typename VectorExtension_t::mask_t * ) result_bitmask_column->data_ptr;
          std::size_t const fully_vectorized_count = element_count / step_width_t::value;
-         std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
-         for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
+         std::size_t const remainder_count        = element_count & ( step_width_t::value - 1 );
+         for(
+            std::size_t    pos                    = 0; pos < fully_vectorized_count; ++pos
+            ) {
             *( result_mask_buffer++ ) =
-                filter_mask_helper<
-                   VectorExtension_t,
-                   VectorBuilder_t,
-                   Comparator_t
-                >::apply( input_vector_builder, std::forward< Args >( predicates )... );
+               filter_mask_helper<
+                  VectorExtension_t,
+                  VectorBuilder_t,
+                  Comparator_t
+               >::apply( input_vector_builder, std::forward< Args >( predicates )... );
          }
-
+         
          /**
           * Remainder processing
           */
          if( remainder_count != 0 ) {
-            std::size_t current_shift = 0;
-            typename VectorExtension_t::mask_t result_mask = 0;
-            for( std::size_t i = 0; i < remainder_count; i += incrementor_t::value ) {
+            std::size_t                        current_shift = 0;
+            typename VectorExtension_t::mask_t result_mask   = 0;
+            for(
+               std::size_t                     i             = 0; i < remainder_count; i += incrementor_t::value
+               ) {
                result_mask |=
                   filter_mask_helper<
                      VectorExtension_t,
                      VectorBuilder_t,
                      Comparator_t
                   >::apply_single( input_vector_builder, std::forward< Args >( predicates )... ) <<
-                  ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * current_shift );
+                                                                                                 (
+                                                                                                    vector_constants_t<
+                                                                                                       VectorExtension_t
+                                                                                                    >::shift_per_mask_t::value
+                                                                                                    * current_shift
+                                                                                                 );
                ++current_shift;
                if( current_shift == values_per_complete_mask_t::value ) {
                   current_shift = 0;
@@ -362,7 +389,7 @@ namespace tuddbs {
          }
          return result_bitmask_column;
       }
-
+      
       /**
        * @brief SIMQ-compliant filter operator which operates on a pointer.
        *
@@ -390,15 +417,17 @@ namespace tuddbs {
          typename VectorExtension_t::mask_t * const result_bitmask_column_ptr,
          VectorBuilder_t & input_vector_builder,
          std::size_t const element_count,
-         Args&& ... predicates
+         Args && ... predicates
       ) {
          /**
           * fully vectorized part
           */
          typename VectorExtension_t::mask_t * result_mask_buffer = result_bitmask_column_ptr;
          std::size_t const fully_vectorized_count = element_count / step_width_t::value;
-         std::size_t const remainder_count = element_count & ( step_width_t::value - 1 );
-         for( std::size_t pos = 0; pos < fully_vectorized_count; ++pos ) {
+         std::size_t const remainder_count        = element_count & ( step_width_t::value - 1 );
+         for(
+            std::size_t    pos                    = 0; pos < fully_vectorized_count; ++pos
+            ) {
             *( result_mask_buffer++ ) =
                filter_mask_helper<
                   VectorExtension_t,
@@ -406,21 +435,28 @@ namespace tuddbs {
                   Comparator_t
                >::apply( input_vector_builder, std::forward< Args >( predicates )... );
          }
-
+         
          /**
           * Remainder processing
           */
          if( remainder_count != 0 ) {
-            std::size_t current_shift = 0;
-            typename VectorExtension_t::mask_t result_mask = 0;
-            for( std::size_t i = 0; i < remainder_count; i += incrementor_t::value ) {
+            std::size_t                        current_shift = 0;
+            typename VectorExtension_t::mask_t result_mask   = 0;
+            for(
+               std::size_t                     i             = 0; i < remainder_count; i += incrementor_t::value
+               ) {
                result_mask |=
                   filter_mask_helper<
                      VectorExtension_t,
                      VectorBuilder_t,
                      Comparator_t
                   >::apply_single( input_vector_builder, std::forward< Args >( predicates )... ) <<
-                                                                                                 ( vector_constants_t< VectorExtension_t >::shift_per_mask_t::value * current_shift );
+                                                                                                 (
+                                                                                                    vector_constants_t<
+                                                                                                       VectorExtension_t
+                                                                                                    >::shift_per_mask_t::value
+                                                                                                    * current_shift
+                                                                                                 );
                ++current_shift;
                if( current_shift == values_per_complete_mask_t::value ) {
                   current_shift = 0;

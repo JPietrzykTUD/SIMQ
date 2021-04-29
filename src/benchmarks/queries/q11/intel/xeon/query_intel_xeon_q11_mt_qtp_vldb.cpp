@@ -1,17 +1,17 @@
-/* 
+/*
  * This file is part of the SIMQ Project (https://github.com/JPietrzykTUD/SIMQ).
  * Copyright (c) 2020 Johannes Pietrzyk.
- * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3.
  *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
+ * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef EXPERIMENT_MEASUREMENT_REPETITION_COUNT
@@ -26,8 +26,9 @@
 #include <ctime>
 
 #include <benchmarks/queries/q11/query11_data.h>
-#include <benchmarks/queries/q11/query11_seq.h>
-#include <benchmarks/queries/q11/query11_simq.h>
+//#include <benchmarks/queries/q11/query11_seq.h>
+#include <benchmarks/queries/q11/query11_seq_parallel_tput.h>
+#include <benchmarks/queries/q11/query11_simq_parallel_tput.h>
 
 #include <cstddef>
 #include <chrono>
@@ -49,16 +50,20 @@ void run_build_variants(
    using namespace tuddbs;
    std::cerr << "   " << vec_ext_to_string_t< VectorExtension >::apply( )
              << ". Queries: " << QueryCount << ". Columns: " << ColumnCount << ". BatchSize: " << BatchSize << "\n";
-   sequential_wl_q11< VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
-   simq_wl_q11< simq_vector_builder_buffer_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run(
+
+   
+   sequential_parallel_wl_q11_tput< VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
+   simq_wl_q11_parallel_tput< simq_vector_builder_buffer_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run(
       datagenerator
    );
-   simq_wl_q11< simq_vector_builder_mask_broadcast_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run(
+   simq_wl_q11_parallel_tput< simq_vector_builder_mask_broadcast_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run(
       datagenerator
    );
-   simq_wl_q11< simq_vector_builder_set_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run( datagenerator );
+   simq_wl_q11_parallel_tput< simq_vector_builder_set_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run(
+      datagenerator
+   );
    if( sizeof( typename VectorExtension::base_t ) > 2 ) {
-      simq_wl_q11< simq_vector_builder_gather_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run(
+      simq_wl_q11_parallel_tput< simq_vector_builder_gather_t, VectorExtension, ColumnCount, QueryCount, BatchSize >::run(
          datagenerator
       );
    }
@@ -84,9 +89,6 @@ struct run_batch_sizes {
                                                                                            QueryCount
                                                                                         >( data_size );
       run_build_variants< VectorExtension, ColumnCount, QueryCount, 0 >( datagenerator );
-      run_build_variants< VectorExtension, ColumnCount, QueryCount, 4_KiB >( datagenerator );
-      run_build_variants< VectorExtension, ColumnCount, QueryCount, 4_MiB >( datagenerator );
-      
       delete datagenerator;
    }
    
@@ -126,9 +128,9 @@ int main( void ) {
    auto               t  = std::time( nullptr );
    auto               tm = *std::localtime( &t );
    std::ostringstream oss;
-   oss << "query_intel_xeon_q11_sample_run_" << std::put_time( &tm, "%Y_%m_%d_%H-%M" ) << ".csv";
+   oss << "query_intel_xeon_q11_vldb_sample_run_" << std::put_time( &tm, "%Y_%m_%d_%H-%M" ) << ".csv";
    auto str = oss.str( );
-   std::cerr << "Executing Benchmark Query 1.1 on Xeon Gold.\n";
+   std::cerr << "Executing Benchmark Query 1.1 for VLDB on Xeon Gold.\n";
    std::cout << str.c_str( ) << "\n";
    global::outputfile.open( str.c_str( ) );
    if( !global::outputfile.is_open( ) ) {
@@ -139,7 +141,7 @@ int main( void ) {
    auto start = std::chrono::system_clock::now( );
    using namespace tuddbs;
    global::outputfile << get_definitions( "#" );
-   q11_header( );
+   q11_mt_qtp_header( );
    run_experiment( 128_MiB );
 //   run_experiment( 128 );
    auto                            end             = std::chrono::system_clock::now( );

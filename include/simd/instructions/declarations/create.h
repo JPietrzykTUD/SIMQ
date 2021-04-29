@@ -20,13 +20,13 @@
 #include <simd/types/simd.h>
 
 namespace tuddbs {
-
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    broadcast(
       typename VectorExtension::base_t const
    );
-
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    mask_broadcast(
@@ -34,22 +34,22 @@ namespace tuddbs {
       typename VectorExtension::mask_t const,
       typename VectorExtension::vector_t const
    );
-
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    set_zero( void );
-
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    maskz_move(
       typename VectorExtension::mask_t const,
       typename VectorExtension::vector_t const
    );
-
+   
    template< class VectorExtension >
    typename VectorExtension::mask_t
    move_mask( typename VectorExtension::vector_t const );
-
+   
 }
 #ifdef INTEL_SIMDI
 #  include <generated/simd/instructions/declarations/create.h>

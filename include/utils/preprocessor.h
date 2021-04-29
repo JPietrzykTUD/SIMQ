@@ -29,5 +29,4 @@
 #  endif
 #endif
 
-
 #endif //TUDDBS_SIMQ_INCLUDE_UTILS_PREPROCESSOR_H

@@ -23,6 +23,7 @@
 
 //TYPES
 #include <simd/types/simd.h>
+
 #ifdef INTEL_SIMDI
 #  include <simd/types/intel/sse.h>
 #  include <simd/types/intel/avx2.h>
@@ -61,6 +62,5 @@
 #  include <generated/simd/instructions/intel/avx512/create_avx512.h>
 #  include <simd/utils/print.h>
 #endif
-
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_INTRIN_H

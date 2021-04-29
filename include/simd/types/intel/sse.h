@@ -26,25 +26,25 @@
 #include "immintrin.h"
 
 namespace tuddbs {
-
+   
    template< typename T >
    struct sse {
       static_assert( std::is_arithmetic< T >::value, "Basetype has to be an arithmetic type." );
-   
+      
       template< typename U >
       using cast_t = sse< U >;
       
       using base_t = T;
       using vector_t =
+      typename std::conditional<
+         std::is_integral< T >::value,
+         __m128i,
          typename std::conditional<
-            std::is_integral< T >::value,
-            __m128i,
-            typename std::conditional<
-               (std::is_floating_point< T >::value && sizeof( T ) == sizeof( float ) ),
-               __m128,
-               __m128d
-            >::type
-         >::type;
+            ( std::is_floating_point< T >::value && sizeof( T ) == sizeof( float ) ),
+            __m128,
+            __m128d
+         >::type
+      >::type;
 #if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_BW)
       using mask_t =
          typename std::conditional<
@@ -54,11 +54,11 @@ namespace tuddbs {
          >::type;
 #else
       using mask_t =
-         typename std::conditional<
-            sizeof( T ) == 1,
-            uint16_t,
-            uint8_t
-         >::type;
+      typename std::conditional<
+         sizeof( T ) == 1,
+         uint16_t,
+         uint8_t
+      >::type;
 #endif
    };
 }

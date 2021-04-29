@@ -26,65 +26,69 @@
 
 namespace tuddbs {
    template< >
-   char const * vector_extension_to_str< avx2< uint8_t > >( void ) {
-      return "AVX2;u8";
-   }
-   template< >
-   char const * vector_extension_to_str< avx2< uint16_t > >( void ) {
-      return "AVX2;u16";
-   }
-   template< >
-   char const * vector_extension_to_str< avx2< uint32_t > >( void ) {
-      return "AVX2;u32";
-   }
-   template< >
-   char const * vector_extension_to_str< avx2< uint64_t > >( void ) {
-      return "AVX2;u64";
-   }
+   char const * vector_extension_to_str< avx2 < uint8_t >
+   >( void ) {
+   return "AVX2;u8";
+}
+template< >
+char const * vector_extension_to_str< avx2 < uint16_t >
+>( void ) {
+return "AVX2;u16";
+}
+template< >
+char const * vector_extension_to_str< avx2 < uint32_t >
+>( void ) {
+return "AVX2;u32";
+}
+template< >
+char const * vector_extension_to_str< avx2 < uint64_t >
+>( void ) {
+return "AVX2;u64";
+}
 
 #if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_BW)
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx2< uint8_t >::vector_t
-   blend< avx2< uint8_t > >(
-      typename avx2< uint8_t >::vector_t const value,
-      typename avx2< uint8_t >::mask_t const mask,
-      typename avx2< uint8_t >::vector_t const src
-   ) {
-      return _mm256_mask_blend_epi8( mask, src, value );
-   }
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx2< uint16_t >::vector_t
-   blend< avx2< uint16_t > >(
-      typename avx2< uint16_t >::vector_t const value,
-      typename avx2< uint16_t >::mask_t const mask,
-      typename avx2< uint16_t >::vector_t const src
-   ) {
-      return _mm256_mask_blend_epi16( mask, src, value );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx2< uint8_t >::vector_t
+blend< avx2< uint8_t > >(
+   typename avx2< uint8_t >::vector_t const value,
+   typename avx2< uint8_t >::mask_t const mask,
+   typename avx2< uint8_t >::vector_t const src
+) {
+   return _mm256_mask_blend_epi8( mask, src, value );
+}
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx2< uint16_t >::vector_t
+blend< avx2< uint16_t > >(
+   typename avx2< uint16_t >::vector_t const value,
+   typename avx2< uint16_t >::mask_t const mask,
+   typename avx2< uint16_t >::vector_t const src
+) {
+   return _mm256_mask_blend_epi16( mask, src, value );
+}
 #endif
 #if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_F)
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx2< uint32_t >::vector_t
-   blend< avx2< uint32_t > >(
-      typename avx2< uint32_t >::vector_t const value,
-      typename avx2< uint32_t >::mask_t const mask,
-      typename avx2< uint32_t >::vector_t const src
-   ) {
-      return _mm256_mask_blend_epi32( mask, src, value );
-   }
-   template< >
-   NO_DISCARD FORCE_INLINE
-   typename avx2< uint64_t >::vector_t
-   blend< avx2< uint64_t > >(
-      typename avx2< uint64_t >::vector_t const value,
-      typename avx2< uint64_t >::mask_t const mask,
-      typename avx2< uint64_t >::vector_t const src
-   ) {
-      return _mm256_mask_blend_epi64( mask, src, value );
-   }
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx2< uint32_t >::vector_t
+blend< avx2< uint32_t > >(
+   typename avx2< uint32_t >::vector_t const value,
+   typename avx2< uint32_t >::mask_t const mask,
+   typename avx2< uint32_t >::vector_t const src
+) {
+   return _mm256_mask_blend_epi32( mask, src, value );
+}
+template< >
+NO_DISCARD FORCE_INLINE
+typename avx2< uint64_t >::vector_t
+blend< avx2< uint64_t > >(
+   typename avx2< uint64_t >::vector_t const value,
+   typename avx2< uint64_t >::mask_t const mask,
+   typename avx2< uint64_t >::vector_t const src
+) {
+   return _mm256_mask_blend_epi64( mask, src, value );
+}
 #endif
 
 }

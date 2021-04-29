@@ -17,25 +17,27 @@
 
 #ifndef TUDDBS_SIMQ_INCLUDE_GENERATED_SIMD_INSTRUCTIONS_DECLARATIONS_CREATE_H
 #define TUDDBS_SIMQ_INCLUDE_GENERATED_SIMD_INSTRUCTIONS_DECLARATIONS_CREATE_H
+
 #include <simd/types/simd.h>
+
 namespace tuddbs {
-      
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    set(
       typename VectorExtension::base_t const val1,
-      typename VectorExtension::base_t const val0 
+      typename VectorExtension::base_t const val0
    );
-               
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    set(
       typename VectorExtension::base_t const val3,
       typename VectorExtension::base_t const val2,
       typename VectorExtension::base_t const val1,
-      typename VectorExtension::base_t const val0 
+      typename VectorExtension::base_t const val0
    );
-               
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    set(
@@ -46,9 +48,9 @@ namespace tuddbs {
       typename VectorExtension::base_t const val3,
       typename VectorExtension::base_t const val2,
       typename VectorExtension::base_t const val1,
-      typename VectorExtension::base_t const val0 
+      typename VectorExtension::base_t const val0
    );
-               
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    set(
@@ -67,9 +69,9 @@ namespace tuddbs {
       typename VectorExtension::base_t const val3,
       typename VectorExtension::base_t const val2,
       typename VectorExtension::base_t const val1,
-      typename VectorExtension::base_t const val0 
+      typename VectorExtension::base_t const val0
    );
-               
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    set(
@@ -104,9 +106,9 @@ namespace tuddbs {
       typename VectorExtension::base_t const val3,
       typename VectorExtension::base_t const val2,
       typename VectorExtension::base_t const val1,
-      typename VectorExtension::base_t const val0 
+      typename VectorExtension::base_t const val0
    );
-               
+   
    template< class VectorExtension >
    typename VectorExtension::vector_t
    set(
@@ -173,9 +175,9 @@ namespace tuddbs {
       typename VectorExtension::base_t const val3,
       typename VectorExtension::base_t const val2,
       typename VectorExtension::base_t const val1,
-      typename VectorExtension::base_t const val0 
+      typename VectorExtension::base_t const val0
    );
-               
+   
 }
 #endif
         

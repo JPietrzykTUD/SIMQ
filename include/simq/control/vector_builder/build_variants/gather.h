@@ -32,14 +32,17 @@ namespace tuddbs {
    >
    struct simq_vector_builder_gather_t {
       using T = typename VectorExtension::base_t;
+      
       static constexpr char const * get_name( void ) { return "GATHER"; }
-
+      
       FORCE_INLINE
       static
       typename VectorExtension::vector_t
-      get_and_increment( simq_column_vector_view_t< ColumnContainer, NumberOfQueries > & svw ) {
-         typename VectorExtension::vector_t result = gather< VectorExtension >( svw.column_data_ptr_vec, svw.min_address );
-         svw.min_address += simq_column_vector_view_t< ColumnContainer, NumberOfQueries >::get_incrementor();
+      get_and_increment( simq_column_vector_view_t< ColumnContainer, NumberOfQueries >
+      & svw ) {
+         typename VectorExtension::vector_t
+            result = gather< VectorExtension >( svw.column_data_ptr_vec, svw.min_address );
+         svw.min_address += simq_column_vector_view_t < ColumnContainer, NumberOfQueries > ::get_incrementor( );
          return result;
       }
    };

@@ -24,56 +24,62 @@
 #include <utils/definitions.h>
 #include <utils/md_singleton.h>
 
-
-
 namespace tuddbs {
    std::size_t const cache_flush_size = 32_MiB;
-   uint64_t * cache_flush_helper = new uint64_t[ cache_flush_size / sizeof( uint64_t ) ];
-
-   class cache_flusher : public singleton< cache_flusher > {
+   uint64_t * cache_flush_helper = new uint64_t[cache_flush_size / sizeof( uint64_t )];
+   
+   class cache_flusher :
+      public singleton< cache_flusher > {
       public:
          friend class singleton< cache_flusher >;
+      
       private:
-         std::mt19937_64 rnd_engine;
-         std::uniform_int_distribution< std::size_t > distribution;
-
-
+         std::mt19937_64                             rnd_engine;
+         std::uniform_int_distribution <std::size_t> distribution;
+         
          cache_flusher( void ) :
             rnd_engine{ 0xC004C0FEEBADC0DE },
-            distribution{ 0, std::numeric_limits< uint64_t >::max() - 1 } {
+            distribution{ 0, std::numeric_limits< uint64_t >::max( ) - 1 } {
          }
-
+         
          uint64_t aggregate( void ) {
-            uint64_t result = 0;
-            for( std::size_t i = 0; i < cache_flush_size/sizeof( uint64_t ); ++i ) {
+            uint64_t       result = 0;
+            for(
+               std::size_t i      = 0; i < cache_flush_size / sizeof( uint64_t ); ++i
+               ) {
                result ^= cache_flush_helper[ i ];
             }
             return result;
          }
-
+      
       public:
          uint64_t flush( void ) {
-            for( std::size_t i = 0; i < cache_flush_size/sizeof( uint64_t ); ++i ) {
+            for(
+               std::size_t i = 0; i < cache_flush_size / sizeof( uint64_t ); ++i
+               ) {
                cache_flush_helper[ i ] ^= distribution( rnd_engine );
             }
-            return aggregate();
+            return aggregate( );
          }
    };
-
+   
    struct stride_range {
       std::string identifier;
       std::size_t lower_bound;
       std::size_t upper_bound;
    };
-
+   
    struct stride_generator {
-      std::vector< stride_range > stride_ranges;
-      stride_generator( std::initializer_list< stride_range > l ):
+      std::vector <stride_range> stride_ranges;
+      
+      stride_generator( std::initializer_list <stride_range> l ) :
          stride_ranges{ l } { }
-
-      std::vector< stride_range > get_possible_strides( std::size_t data_size ) const {
-         std::vector< stride_range > result;
-         for( auto stride_range : stride_ranges ) {
+      
+      std::vector <stride_range> get_possible_strides( std::size_t data_size ) const {
+         std::vector <stride_range> result;
+         for(
+            auto                    stride_range : stride_ranges
+            ) {
             if( data_size > stride_range.upper_bound ) {
                result.push_back( stride_range );
             }
