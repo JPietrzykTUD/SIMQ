@@ -197,18 +197,18 @@ struct workload {
 //      std::cerr << "Done.\n       Multi Threaded... ";
 //      seq_parallel_wl_q12_three_Stage2_ops< avx512< uint64_t >, 4, 2, 2 >::run()
 //      seq_parallel_wl_q12_three_Stage2_ops_tput< avx512< uint64_t >, 4, 2, 2 >::run()
-//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_buffer_t, VectorExtension, 4, 2, 2 >::run(
-//         datagenerator
-//      );
-//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_mask_broadcast_t, VectorExtension, 4, 2, 2 >::run(
-//         datagenerator
-//      );
-//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_set_t, VectorExtension, 4, 2, 2 >::run(
-//         datagenerator
-//      );
-//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_gather_t, VectorExtension, 4, 2, 2 >::run(
-//         datagenerator
-//      );
+      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_buffer_t, VectorExtension, 4, 2, 2 >::run(
+         datagenerator
+      );
+      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_mask_broadcast_t, VectorExtension, 4, 2, 2 >::run(
+         datagenerator
+      );
+      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_set_t, VectorExtension, 4, 2, 2 >::run(
+         datagenerator
+      );
+      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_gather_t, VectorExtension, 4, 2, 2 >::run(
+         datagenerator
+      );
    }
 };
 
