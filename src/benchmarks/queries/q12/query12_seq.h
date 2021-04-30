@@ -133,6 +133,7 @@ namespace tuddbs {
             auto           dummy              = cache_flusher::instance( )->flush( );
             auto           start_simq_builder = now( );
             auto           start              = now( );
+            // SELECT SUM( R.A ) WHERE
             for(
                std::size_t query_id           = 0; query_id < QueryCount2ndStageOp1; ++query_id
                ) {
@@ -152,6 +153,7 @@ namespace tuddbs {
                   ++column_id;
                }
             }
+            // SELECT MIN( R.A ) WHERE
             for(
                std::size_t query_id = 0; query_id < QueryCount2ndStageOp2; ++query_id
                ) {
