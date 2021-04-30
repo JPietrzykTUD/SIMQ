@@ -36,9 +36,9 @@
 
 #include <benchmarks/queries/q12/query12_seq.h>
 #include <benchmarks/queries/q12/query12_simq.h>
-//#include <benchmarks/queries/q12/query12_seq_parallel.h>
+#include <benchmarks/queries/q12/query12_seq_parallel.h>
 //#include <benchmarks/queries/q12/query12_seq_parallel_tput.h>
-#include <benchmarks/queries/q12/query12_simq_parallel_tput.h>
+//#include <benchmarks/queries/q12/query12_simq_parallel_tput.h>
 
 
 #include <cstddef>
@@ -142,21 +142,22 @@ struct workload {
       simq_wl_q12_two_Stage2_ops < simq_vector_builder_gather_t, VectorExtension, 4, 4 > ::run(
          datagenerator
       );
-      std::cerr << "Done.\n       Multi Threaded... ";
-//      seq_parallel_wl_q12_two_Stage2_ops< avx512< uint64_t >, 4, 4 >::run()
+      std::cerr << "Done.\n       Multi Threaded...";
+     seq_parallel_wl_q12_two_Stage2_ops< avx512< uint64_t >, 4, 4 >::run( datagenerator );
 //      seq_parallel_wl_q12_two_Stage2_ops_tput< avx512< uint64_t >, 4, 4 >::run()
-      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_buffer_t, VectorExtension, 4, 4 >::run(
-         datagenerator
-      );
-      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_mask_broadcast_t, VectorExtension, 4, 4 >::run(
-         datagenerator
-      );
-      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_set_t, VectorExtension, 4, 4 >::run(
-         datagenerator
-      );
-      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_gather_t, VectorExtension, 4, 4 >::run(
-         datagenerator
-      );
+//      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_buffer_t, VectorExtension, 4, 4 >::run(
+//         datagenerator
+//      );
+//      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_mask_broadcast_t, VectorExtension, 4, 4 >::run(
+//         datagenerator
+//      );
+//      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_set_t, VectorExtension, 4, 4 >::run(
+//         datagenerator
+//      );
+//      simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_gather_t, VectorExtension, 4, 4 >::run(
+//         datagenerator
+//      );
+      std::cerr << "Done.\n";
    }
    
    template<
@@ -194,45 +195,43 @@ struct workload {
       simq_wl_q12_three_Stage2_ops < simq_vector_builder_gather_t, VectorExtension, 4, 2, 2 > ::run(
          datagenerator
       );
-//      std::cerr << "Done.\n       Multi Threaded... ";
-//      seq_parallel_wl_q12_three_Stage2_ops< avx512< uint64_t >, 4, 2, 2 >::run()
+     std::cerr << "Done.\n       Multi Threaded... ";
+     seq_parallel_wl_q12_three_Stage2_ops< avx512< uint64_t >, 4, 2, 2 >::run( datagenerator );
 //      seq_parallel_wl_q12_three_Stage2_ops_tput< avx512< uint64_t >, 4, 2, 2 >::run()
-      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_buffer_t, VectorExtension, 4, 2, 2 >::run(
-         datagenerator
-      );
-      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_mask_broadcast_t, VectorExtension, 4, 2, 2 >::run(
-         datagenerator
-      );
-      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_set_t, VectorExtension, 4, 2, 2 >::run(
-         datagenerator
-      );
-      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_gather_t, VectorExtension, 4, 2, 2 >::run(
-         datagenerator
-      );
+//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_buffer_t, VectorExtension, 4, 2, 2 >::run(
+//         datagenerator
+//      );
+//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_mask_broadcast_t, VectorExtension, 4, 2, 2 >::run(
+//         datagenerator
+//      );
+//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_set_t, VectorExtension, 4, 2, 2 >::run(
+//         datagenerator
+//      );
+//      simq_wl_q12_three_Stage2_ops_tput< simq_vector_builder_gather_t, VectorExtension, 4, 2, 2 >::run(
+//         datagenerator
+//      );
+      std::cerr << "Done.\n";
    }
 };
 
 void run_experiment( std::size_t data_size ) {
    using namespace tuddbs;
-//   std::cerr << "Experiment Batch Size\n";
-//   workload< avx512< uint64_t >, 1,  8, 1, 4_KiB >::run( data_size );
-//   workload< avx512< uint64_t >, 1,  8, 1, 4_MiB >::run( data_size );
-   std::cerr << "Experiment vector size\n";
-   workload<    sse< uint64_t >, 1,  2, 1 >::run( data_size );
-   workload<   avx2< uint64_t >, 1,  4, 1 >::run( data_size );
-   workload< avx512< uint64_t >, 1,  8, 1 >::run( data_size );
-   std::cerr << "Experiment value size\n";
-   workload< avx512<  uint8_t >, 1, 64, 1 >::run( data_size );
-   workload< avx512< uint16_t >, 1, 32, 1 >::run( data_size );
-   workload< avx512< uint32_t >, 1, 16, 1 >::run( data_size );
-   std::cerr << "Experiment query count\n";
-   workload< avx512< uint64_t >, 1,  1, 1 >::run( data_size );
-   workload< avx512< uint64_t >, 1,  2, 1 >::run( data_size );
-   workload< avx512< uint64_t >, 1,  4, 1 >::run( data_size );
-   std::cerr << "Experiment column count\n";
-   workload< avx512< uint64_t >, 2,  8, 1 >::run( data_size );
-   workload< avx512< uint64_t >, 4,  8, 1 >::run( data_size );
-   workload< avx512< uint64_t >, 8,  8, 1 >::run( data_size );
+   // std::cerr << "Experiment vector size\n";
+   // workload<    sse< uint64_t >, 1,  2, 1 >::run( data_size );
+   // workload<   avx2< uint64_t >, 1,  4, 1 >::run( data_size );
+   // workload< avx512< uint64_t >, 1,  8, 1 >::run( data_size );
+   // std::cerr << "Experiment value size\n";
+   // workload< avx512<  uint8_t >, 1, 64, 1 >::run( data_size );
+   // workload< avx512< uint16_t >, 1, 32, 1 >::run( data_size );
+   // workload< avx512< uint32_t >, 1, 16, 1 >::run( data_size );
+   // std::cerr << "Experiment query count\n";
+   // workload< avx512< uint64_t >, 1,  1, 1 >::run( data_size );
+   // workload< avx512< uint64_t >, 1,  2, 1 >::run( data_size );
+   // workload< avx512< uint64_t >, 1,  4, 1 >::run( data_size );
+   // std::cerr << "Experiment column count\n";
+   // workload< avx512< uint64_t >, 2,  8, 1 >::run( data_size );
+   // workload< avx512< uint64_t >, 4,  8, 1 >::run( data_size );
+   // workload< avx512< uint64_t >, 8,  8, 1 >::run( data_size );
    std::cerr << "Experiment succeeding operators\n";
    workload< avx512< uint64_t >, 1,  8, 2 >::run( data_size );
    workload< avx512< uint64_t >, 1,  8, 3 >::run( data_size );
