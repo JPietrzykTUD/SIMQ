@@ -20,6 +20,9 @@
 #ifndef EXPERIMENT_THROUGHPUT_TIME_SLOT
 #define EXPERIMENT_THROUGHPUT_TIME_SLOT 30
 #endif
+#ifndef EXPERIMENT_THROUGHPUT_THREAD_BUDGET
+#define EXPERIMENT_THROUGHPUT_THREAD_BUDGET 4
+#endif
 
 #include <benchmarks/queries/q11/query11_data.h>
 #include <benchmarks/queries/data/measurement_helper.h>
@@ -63,8 +66,6 @@ namespace tuddbs {
       static void run(
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount_t::value > * const datagenerator
       ) {
-         const size_t ThreadCount = 12;
-         
          using T = typename VectorExtension::base_t;
          using column_array_1st_stage_t = column_array< VectorExtension, ColumnCount >;
          using column_array_2nd_stage_t = column_array< VectorExtension, ColumnCount2ndStageOp1 >;
@@ -93,7 +94,7 @@ namespace tuddbs {
          std::vector < column < T > * > aggregation1_result_cols;
          std::vector < column < T > * > aggregation2_result_cols;
          for(
-            std::size_t tid           = 0; tid < ThreadCount; ++tid
+            std::size_t tid           = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             filter_result_masks.emplace_back( create_bitmask( T, data_count * QueryCount_t::value ) );
             aggregation1_result_cols.emplace_back(
@@ -107,7 +108,7 @@ namespace tuddbs {
             aggregation2_result_cols[ tid ]->init( 0 ); // make one per thread
          }
    
-         std::array <std::atomic< std::size_t >, ThreadCount> global_query_counter = { };
+         std::array <std::atomic< std::size_t >, EXPERIMENT_THROUGHPUT_THREAD_BUDGET> global_query_counter = { };
          std::promise< void >       p;
          std::shared_future< void > ready_future( p.get_future( ) );
    
@@ -189,7 +190,7 @@ namespace tuddbs {
          std::vector <std::thread> pool;
          cpu_set_t cpuset;
          for(
-            std::size_t            tid = 0; tid < ThreadCount; ++tid
+            std::size_t            tid = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             CPU_ZERO(&cpuset);
             CPU_SET(tid, &cpuset);
@@ -202,7 +203,7 @@ namespace tuddbs {
          }
          using namespace std::chrono_literals;
          cpu_freq_monitor::instance()->init(
-            ThreadCount, (std::chrono::milliseconds( EXPERIMENT_THROUGHPUT_TIME_SLOT ) / cpu_freq_monitor::instance()
+            EXPERIMENT_THROUGHPUT_THREAD_BUDGET, (std::chrono::milliseconds( EXPERIMENT_THROUGHPUT_TIME_SLOT ) / cpu_freq_monitor::instance()
                ->get_resolution()) + 1
          );
          p.set_value( );
@@ -218,7 +219,7 @@ namespace tuddbs {
          }
          std::size_t    executed_queries = 0;
          for(
-            std::size_t i                = 0; i < ThreadCount; ++i
+            std::size_t i                = 0; i < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++i
             ) {
             executed_queries += global_query_counter[ i ];
          }
@@ -229,17 +230,17 @@ namespace tuddbs {
          // Wait for threads to finish
          std::for_each( pool.begin( ), pool.end( ), [ ]( std::thread & t ) { t.join( ); } );
    
-         experiment_query_11_12< VectorExtension, ColumnCount, QueryCount_t::value, BatchSize
+         experiment_query_11_12< VectorExtension, ColumnCount, QueryCount_t::value, BatchSize, QueryCount2ndStageOp2
          >::print_experiment_result(
-            0, datagenerator, "SIMQ", "BITMASK", Strategy< column_array_1st_stage_t, QueryCount_t::value,
+            0, datagenerator, "SIMQ-PAR-Budget", "BITMASK", Strategy< column_array_1st_stage_t, QueryCount_t::value,
                                                            typename VectorExtension::base_t, VectorExtension
             >::get_name( ),
-            executed_queries, ThreadCount, start_interval, start_interval, start_interval, end_interval,
+            executed_queries, EXPERIMENT_THROUGHPUT_THREAD_BUDGET, start_interval, start_interval, start_interval, end_interval,
             time_elapsed_ns( start_interval, end_interval ),
             cpu_freq_monitor::instance()->get_data(), 0, aggregation1_result_cols[0], aggregation2_result_cols[0]
          );
          for(
-            std::size_t query_id = 0; query_id < ThreadCount; ++query_id
+            std::size_t query_id = 0; query_id < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++query_id
             ) {
             destroy_column( filter_result_masks[ query_id ] );
             destroy_column( aggregation1_result_cols[ query_id ] );
@@ -282,8 +283,6 @@ namespace tuddbs {
          datagenerator_q11< typename VectorExtension::base_t, ColumnCount, QueryCount_t::value > * const datagenerator
       ) {
          
-         const size_t ThreadCount = 12;
-   
          using T = typename VectorExtension::base_t;
          using column_array_1st_stage_t = column_array< VectorExtension, ColumnCount >;
          using column_array_2nd_stage_op_1_t = column_array< VectorExtension, ColumnCount2ndStageOp1 >;
@@ -320,7 +319,7 @@ namespace tuddbs {
          std::vector < column < T > * > aggregation2_result_cols;
          std::vector < column < T > * > aggregation3_result_cols;
          for(
-            std::size_t tid           = 0; tid < ThreadCount; ++tid
+            std::size_t tid           = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             filter_result_masks.emplace_back( create_bitmask( T, data_count * QueryCount_t::value ) );
             aggregation1_result_cols.emplace_back(
@@ -338,7 +337,7 @@ namespace tuddbs {
             aggregation3_result_cols[ tid ]->init( 0 ); // make one per thread
          }
    
-         std::array <std::atomic< std::size_t >, ThreadCount> global_query_counter = { };
+         std::array <std::atomic< std::size_t >, EXPERIMENT_THROUGHPUT_THREAD_BUDGET> global_query_counter = { };
          std::promise< void >       p;
          std::shared_future< void > ready_future( p.get_future( ) );
    
@@ -447,7 +446,7 @@ namespace tuddbs {
          std::vector <std::thread> pool;
          cpu_set_t cpuset;
          for(
-            std::size_t            tid = 0; tid < ThreadCount; ++tid
+            std::size_t            tid = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             CPU_ZERO(&cpuset);
             CPU_SET(tid, &cpuset);
@@ -460,7 +459,7 @@ namespace tuddbs {
          }
          using namespace std::chrono_literals;
          cpu_freq_monitor::instance()->init(
-            ThreadCount, (std::chrono::milliseconds( EXPERIMENT_THROUGHPUT_TIME_SLOT ) / cpu_freq_monitor::instance()
+            EXPERIMENT_THROUGHPUT_THREAD_BUDGET, (std::chrono::milliseconds( EXPERIMENT_THROUGHPUT_TIME_SLOT ) / cpu_freq_monitor::instance()
                ->get_resolution()) + 1
          );
          p.set_value( );
@@ -476,7 +475,7 @@ namespace tuddbs {
          }
          std::size_t    executed_queries = 0;
          for(
-            std::size_t i                = 0; i < ThreadCount; ++i
+            std::size_t i                = 0; i < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++i
             ) {
             executed_queries += global_query_counter[ i ];
          }
@@ -487,18 +486,19 @@ namespace tuddbs {
          // Wait for threads to finish
          std::for_each( pool.begin( ), pool.end( ), [ ]( std::thread & t ) { t.join( ); } );
    
-         experiment_query_11_12< VectorExtension, ColumnCount, QueryCount_t::value, BatchSize
+         experiment_query_11_12< VectorExtension, ColumnCount, QueryCount_t::value, BatchSize, QueryCount2ndStageOp2,
+         QueryCount2ndStageOp3
          >::print_experiment_result(
-            0, datagenerator, "SIMQ", "BITMASK", Strategy< column_array_1st_stage_t, QueryCount_t::value,
+            0, datagenerator, "SIMQ-PAR-Budget", "BITMASK", Strategy< column_array_1st_stage_t, QueryCount_t::value,
                                                            typename VectorExtension::base_t, VectorExtension
             >::get_name( ),
-            executed_queries, ThreadCount, start_interval, start_interval, start_interval, end_interval,
+            executed_queries, EXPERIMENT_THROUGHPUT_THREAD_BUDGET, start_interval, start_interval, start_interval, end_interval,
             time_elapsed_ns( start_interval, end_interval ),
             cpu_freq_monitor::instance()->get_data(), 0, aggregation1_result_cols[0], aggregation2_result_cols[0],
             aggregation3_result_cols[0]
          );
          for(
-            std::size_t query_id = 0; query_id < ThreadCount; ++query_id
+            std::size_t query_id = 0; query_id < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++query_id
             ) {
             destroy_column( filter_result_masks[ query_id ] );
             destroy_column( aggregation1_result_cols[ query_id ] );

@@ -79,8 +79,8 @@ namespace tuddbs {
             experiment_query_11_12<
                VectorExtension, ColumnCount, QueryCount2ndStageOp1, 0
             >::print_experiment_result(
-               rep, datagenerator, "SISQ", "BITMASK", "SEQ",
-               QueryCount2ndStageOp1, 1, start_simq_builder, start_simq_builder, start, end,  time_elapsed_ns( start, end ),
+               rep, datagenerator, "SISQ-PAR", "BITMASK", "SEQ",
+               QueryCount_t::value, QueryCount_t::value, start_simq_builder, start_simq_builder, start, end,  time_elapsed_ns( start, end ),
                "", dummy, results_from_queries
             );
          }
@@ -223,8 +223,8 @@ namespace tuddbs {
             experiment_query_11_12<
                VectorExtension, ColumnCount, QueryCount2ndStageOp1+QueryCount2ndStageOp2, 0, QueryCount2ndStageOp2
             >::print_experiment_result(
-               rep, datagenerator, "SISQ", "BITMASK", "SEQ-PAR",
-               QueryCount2ndStageOp1 + QueryCount2ndStageOp2, TotalQueryCount, start_simq_builder, start_simq_builder,  earliest_start, latest_end,
+               rep, datagenerator, "SISQ-PAR", "BITMASK", "SEQ",
+               QueryCount_t::value, QueryCount_t::value, start_simq_builder, start_simq_builder,  earliest_start, latest_end,
                total_cpu_time_ns, "", dummy, results1_from_queries, results2_from_queries
             );
          }
@@ -416,8 +416,8 @@ namespace tuddbs {
                QueryCount2ndStageOp1+QueryCount2ndStageOp2+QueryCount2ndStageOp3, 0, QueryCount2ndStageOp2,
                QueryCount2ndStageOp3
             >::print_experiment_result(
-               rep, datagenerator, "SISQ", "BITMASK", "SEQ-PAR",
-               QueryCount2ndStageOp1 + QueryCount2ndStageOp2 + QueryCount2ndStageOp3, TotalQueryCount, start_simq_builder,
+               rep, datagenerator, "SISQ-PAR", "BITMASK", "SEQ",
+               QueryCount_t::value, QueryCount_t::value, start_simq_builder,
                start_simq_builder,  earliest_start, latest_end, total_cpu_time_ns, "", dummy, results1_from_queries,
                results2_from_queries, results3_from_queries
             );
