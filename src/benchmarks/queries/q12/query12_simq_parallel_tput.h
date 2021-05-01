@@ -162,12 +162,6 @@ namespace tuddbs {
                   >::apply(
                      aggregation1_result_cols[ tid ], svb_aggregation1, filter_result_masks[ tid ]
                   );
-                  aggregate_impl<
-                     VectorExtension, svbSecondStageOp2_t, aggregate_mask_min, QueryCount2ndStageOp2,
-                     QueryCount2ndStageOp1
-                  >::apply(
-                     aggregation2_result_cols[ tid ], svb_aggregation2, filter_result_masks[ tid ]
-                  );
                   [[maybe_unused]]typename VectorExtension::base_t * tmp1 = store< VectorExtension >(
                      aggregation1_result_cols[ tid ]->data_ptr,
                      aggregate_mask_add< VectorExtension >::template finalize< svbSecondStageOp1_t::lanes_per_query_t::value >(
@@ -175,6 +169,12 @@ namespace tuddbs {
                      )
                   );
                   global_query_counter[ tid ] += QueryCount2ndStageOp1;
+                  aggregate_impl<
+                     VectorExtension, svbSecondStageOp2_t, aggregate_mask_min, QueryCount2ndStageOp2,
+                     QueryCount2ndStageOp1
+                  >::apply(
+                     aggregation2_result_cols[ tid ], svb_aggregation2, filter_result_masks[ tid ]
+                  );
                   [[maybe_unused]]typename VectorExtension::base_t * tmp2 = store< VectorExtension >(
                      aggregation2_result_cols[ tid ]->data_ptr,
                      aggregate_mask_min< VectorExtension >::template finalize<
