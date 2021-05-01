@@ -170,7 +170,7 @@ struct workload {
       );
       
       
-      std::cerr << "Done.\n       Multi Threaded...Two";
+      std::cerr << "Done.\n       Multi Threaded... ";
       seq_parallel_wl_q12_two_Stage2_ops< avx512 < uint64_t >, 4, 4 > ::run( datagenerator );
       seq_parallel_wl_q12_two_Stage2_ops_tput< avx512 < uint64_t >, 4, 4 > ::run( datagenerator );
       simq_wl_q12_two_Stage2_ops_tput< simq_vector_builder_buffer_t, VectorExtension, 4, 4 >::run(

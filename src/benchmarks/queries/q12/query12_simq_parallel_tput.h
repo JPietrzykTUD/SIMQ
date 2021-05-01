@@ -112,7 +112,7 @@ namespace tuddbs {
          std::promise< void >       p;
          std::shared_future< void > ready_future( p.get_future( ) );
    
-         bool finished;
+         bool finished = false;
    
          auto
             magic                      =
@@ -345,7 +345,7 @@ namespace tuddbs {
          std::promise< void >       p;
          std::shared_future< void > ready_future( p.get_future( ) );
    
-         bool finished;
+         bool finished = false;
    
          auto
             magic                      =

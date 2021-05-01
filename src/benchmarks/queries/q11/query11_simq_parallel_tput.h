@@ -285,8 +285,7 @@ namespace tuddbs {
                                                         >::apply( q11_predicates_array );
                   svb_t svb_filter( q11_filter_column_array );
                   svb_t svb_aggregation( q11_aggregate_column_array );
-
-                  std::size_t loop_count = 0;
+                  
                   while( svb_filter.has_next() ) {
                      filter_result_bitmask_ptr_new = filter_impl< VectorExtension, svb_t, point_filter_lt_core >::apply(
                         filter_result_bitmask_ptr, svb_filter, BatchCount, predicate_vec
@@ -296,7 +295,6 @@ namespace tuddbs {
                         aggregation_result_column_ptr, svb_aggregation, BatchCount, filter_result_bitmask_ptr
                      );
                      filter_result_bitmask_ptr = filter_result_bitmask_ptr_new;
-                     ++loop_count;
                   }
                   
                   

@@ -233,17 +233,18 @@ namespace tuddbs {
                     column <T> * const filter_column    = datagenerator->filter_columns[ column_id ];
                     column <T> * const aggregate_column = datagenerator->aggregate_columns[ column_id ];
    
-                    T * filter_column_ptr    = filter_column->data_ptr;
-                    T * const filter_column_ptr_end = filter_column->data_ptr + filter_column->data_count;
-                    T * aggregate_column_ptr = aggregate_column->data_ptr;
-                    typename VectorExtension::mask_t * filter_result_bitmask_ptr = ( typename VectorExtension::mask_t
-                       * ) filter_result_masks[ tid ]->data_ptr;
-                    typename VectorExtension::mask_t * filter_result_bitmask_ptr_new;
-                    auto aggregation_result_column_ptr = aggregation_result_cols[ tid ]->data_ptr;
+                    
                     while( !finished ) {
                        T predicate = datagenerator->extended_predicates[ pos & 1023 ];
                        pos += EXPERIMENT_THROUGHPUT_THREAD_BUDGET;
-   
+                       T * filter_column_ptr    = filter_column->data_ptr;
+                       T * const filter_column_ptr_end = filter_column->data_ptr + filter_column->data_count;
+                       T * aggregate_column_ptr = aggregate_column->data_ptr;
+                       typename VectorExtension::mask_t * filter_result_bitmask_ptr = ( typename VectorExtension::mask_t
+                       * ) filter_result_masks[ tid ]->data_ptr;
+                       typename VectorExtension::mask_t * filter_result_bitmask_ptr_new;
+                       auto aggregation_result_column_ptr = aggregation_result_cols[ tid ]->data_ptr;
+                       
                        while( filter_column_ptr != filter_column_ptr_end ) {
                           filter_result_bitmask_ptr_new =
                              sequential_filter_impl< VectorExtension, point_filter_lt_core >::apply(
