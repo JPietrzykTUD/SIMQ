@@ -456,8 +456,8 @@ namespace tuddbs {
             }
          }
          typename VectorExtension_t::vector_t reduced_result_vec     =
-                                                 reduce_add<
-                                                    VectorExtension_t,
+                                                 Aggregator_t<
+                                                    VectorExtension_t >::template inner_finalize<
                                                     VectorBuilder_t::lanes_per_query_t::value
                                                  >( result_vec );
          [[maybe_unused]]typename VectorExtension_t::base_t

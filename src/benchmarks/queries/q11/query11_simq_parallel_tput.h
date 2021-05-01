@@ -135,7 +135,11 @@ namespace tuddbs {
             std::size_t            tid = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             CPU_ZERO(&cpuset);
+#ifdef KNL
+            CPU_SET( ( (tid*68)%271 ), &cpuset );
+#else
             CPU_SET(tid, &cpuset);
+#endif
             // Parallelize
             pool.emplace_back( std::thread( magic, tid ) );
             int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
@@ -312,7 +316,11 @@ namespace tuddbs {
             std::size_t            tid = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             CPU_ZERO(&cpuset);
+#ifdef KNL
+            CPU_SET( ( (tid*68)%271 ), &cpuset );
+#else
             CPU_SET(tid, &cpuset);
+#endif
             // Parallelize
             pool.emplace_back( std::thread( magic, tid ) );
             int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);

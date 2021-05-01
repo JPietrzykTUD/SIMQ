@@ -482,7 +482,8 @@ namespace tuddbs {
             }
          }
          typename VectorExtension_t::vector_t reduced_result_vec =
-                                                 reduce_add< VectorExtension_t, Lanes >( result_vec );
+                                                 Aggregator_t< VectorExtension_t >::template inner_finalize< Lanes >(
+                                                    result_vec );
          [[maybe_unused]]typename VectorExtension_t::base_t
             * tmp = store< VectorExtension_t >( result_column, reduced_result_vec );
          return result_column;

@@ -16,7 +16,6 @@ function(create_benchmark benchmark_name benchmark_file)
     else ()
         set(ADDITIONAL_FLAGS "")
     endif ()
-    message("WOLOLO: ${ADDITIONAL_FLAGS}")
 
     string(REPLACE ";" " " TMP_COMPILE_OPTIONS "${BENCHMARK_COMPILE_OPTIONS}")
     set(BENCHMARK_COMPILE_FLAGS "COMPILE_OPTIONS=\"${TMP_COMPILE_OPTIONS}\"")

@@ -254,8 +254,6 @@ void run_experiment( std::size_t data_size ) {
    workload< avx2 < uint64_t >, 1, 4, 1 > ::run( data_size );
    workload< avx512 < uint64_t >, 1, 8, 1 > ::run( data_size );
    std::cerr << "Experiment value size\n";
-   workload< avx512 < uint8_t >, 1, 64, 1 > ::run( data_size );
-   workload< avx512 < uint16_t >, 1, 32, 1 > ::run( data_size );
    workload< avx512 < uint32_t >, 1, 16, 1 > ::run( data_size );
    std::cerr << "Experiment query count\n";
    workload< avx512 < uint64_t >, 1, 1, 1 > ::run( data_size );

@@ -95,7 +95,7 @@ namespace tuddbs {
                        sequential_aggregate_impl< VectorExtension, aggregate_mask_add >::apply(
                           aggregation_result_cols[ tid ], aggregate_column, filter_result_masks[ tid ]
                        );
-                       results_from_queries->data_ptr[ tid ] = aggregation_result_cols[ tid ]->data_ptr[ 0 ];
+                       results_from_queries->data_ptr[ tid ] ^= aggregation_result_cols[ tid ]->data_ptr[ 0 ];
                        ++global_query_counter[ tid ];
                     }
                  };
@@ -107,7 +107,11 @@ namespace tuddbs {
             std::size_t            tid       = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             CPU_ZERO(&cpuset);
+#ifdef KNL
+            CPU_SET( ( (tid*68)%271 ), &cpuset );
+#else
             CPU_SET(tid, &cpuset);
+#endif
             // Parallelize
             pool.emplace_back( std::thread( magic, tid, column_id ) );
             int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
@@ -251,7 +255,7 @@ namespace tuddbs {
                           );
                           filter_result_bitmask_ptr = filter_result_bitmask_ptr_new;
                        }
-                       results_from_queries->data_ptr[ tid ] = aggregation_result_cols[ tid ]->data_ptr[ 0 ];
+                       results_from_queries->data_ptr[ tid ] ^= aggregation_result_cols[ tid ]->data_ptr[ 0 ];
                        ++global_query_counter[ tid ];
                     }
                  };
@@ -263,7 +267,11 @@ namespace tuddbs {
             std::size_t            tid       = 0; tid < EXPERIMENT_THROUGHPUT_THREAD_BUDGET; ++tid
             ) {
             CPU_ZERO(&cpuset);
+#ifdef KNL
+            CPU_SET( ( (tid*68)%271 ), &cpuset );
+#else
             CPU_SET(tid, &cpuset);
+#endif
             // Parallelize
             pool.emplace_back( std::thread( magic, tid, column_id ) );
             int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
