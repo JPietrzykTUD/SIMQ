@@ -19,7 +19,7 @@ from enum import Enum
 from simq.general.general import ColumnQueryPair
 
 
-class VectorExtension(Enum):
+class IntelVectorExtension(Enum):
    sse = 128
    avx2 = 256
    avx512 = 512
@@ -34,6 +34,12 @@ class VectorExtension(Enum):
       else:
          return "{}{}".format(result, self.value)
 
+class ARMVectorExtension(Enum):
+   neon = 128
+   def __str__(self):
+      return "{}".format(self.name)
+   def to_intrin_prefix(self):
+      return "v"
 
 class DataType(Enum):
    uint8_t = 8
@@ -42,16 +48,18 @@ class DataType(Enum):
    uint64_t = 64
    def __str__(self):
       return "{}".format(self.name)
-   def to_intrin_postfix(self):
+   def to_intel_intrin_postfix(self):
       return "epi{}".format(self.value)
+   def to_arm_intrin_postfix(self):
+      return f"q_u{self.value}"
 
 class VectorSpec:
-   def __init__(self, vector_extension: VectorExtension, data_type_list: list):
+   def __init__(self, vector_extension: IntelVectorExtension, data_type_list: list):
       self.vector_extension = vector_extension
       self.data_type_list = data_type_list
 
 class VectorRegister:
-   def __init__(self, vector_extension: VectorExtension, data_type: DataType):
+   def __init__(self, vector_extension: IntelVectorExtension, data_type: DataType):
       self.vector_extension = vector_extension
       self.data_type = data_type
       self.element_count = int(vector_extension.value / data_type.value)
@@ -73,7 +81,7 @@ class VectorRegister:
          query_count *= 2
       return result
 
-   def __get_mask_size(self, vector_extension: VectorExtension, data_type: DataType):
+   def __get_mask_size(self, vector_extension: IntelVectorExtension, data_type: DataType):
       val = int(vector_extension.value / data_type.value)
       if val < 8:
          return 8

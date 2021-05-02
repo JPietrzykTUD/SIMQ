@@ -17,14 +17,15 @@
 #ifndef TUDDBS_SIMQ_INCLUDE_UTILS_CLOCK_H
 #define TUDDBS_SIMQ_INCLUDE_UTILS_CLOCK_H
 
-#ifdef INTEL_SIMDI
+#if defined(INTEL_SIMDI) || defined(ARM_SIMDI)
 #include <chrono>
 #elif defined(NEC_SIMDI)
 #include <cstdint>
+
 #endif
 
 namespace tuddbs {
-#ifdef INTEL_SIMDI
+#if defined(INTEL_SIMDI) || defined(ARM_SIMDI)
    static inline std::chrono::time_point< std::chrono::high_resolution_clock > now() {
       return std::chrono::high_resolution_clock::now();
    }

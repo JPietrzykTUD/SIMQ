@@ -19,33 +19,39 @@ from simq.build_variants.buffer.buffer import write_SIMQBuilderBuffer_to_file
 from simq.build_variants.mask_broadcast.mask_boradcast import write_SIMQBuilderMaskBroadCast_to_file
 from simq.build_variants.set.set import write_SIMQBuilderSET_to_file
 from simq.general.simq_vector_view import write_SIMQVectorView_to_file
-from simq.vector.intel.instructions import CreateIntrinsicCreator
-from simq.vector.types import VectorExtension, DataType, VectorSpec
-
+from simq.vector.arm.instructions import ARMCreateIntrinsicCreator
+from simq.vector.intel.instructions import IntelCreateIntrinsicCreator
+from simq.vector.types import IntelVectorExtension, DataType, VectorSpec, ARMVectorExtension
 
 # svv = SIMQVectorView(VectorRegister(VectorExtension.avx512, DataType.uint16_t), 2, 8)
 # print("{}".format(svv.to_cpp()))
 
 
 vector_spec_list_intel =[
-    VectorSpec(VectorExtension.sse, [
+    VectorSpec(IntelVectorExtension.sse, [
         DataType.uint8_t,
         DataType.uint16_t,
         DataType.uint32_t,
         DataType.uint64_t,
     ]),
-    VectorSpec(VectorExtension.avx2, [
+    VectorSpec(IntelVectorExtension.avx2, [
         DataType.uint8_t,
         DataType.uint16_t,
         DataType.uint32_t,
         DataType.uint64_t,
     ]),
-    VectorSpec(VectorExtension.avx512, [
+    VectorSpec(IntelVectorExtension.avx512, [
         DataType.uint8_t,
         DataType.uint16_t,
         DataType.uint32_t,
         DataType.uint64_t,
-    ])
+    ]),
+    VectorSpec(ARMVectorExtension.neon, [
+        DataType.uint8_t,
+        DataType.uint16_t,
+        DataType.uint32_t,
+        DataType.uint64_t,
+    ]),
 ]
 
 def create_simqvector_view_structs(base_path: str):
@@ -82,8 +88,13 @@ def create_buffer_impl(base_path: str):
     )
 
 def create_intel_intrinsics(base_path:str):
-    a = CreateIntrinsicCreator("{}/include/generated/simd".format(base_path))
+    a = IntelCreateIntrinsicCreator("{}/include/generated/simd".format(base_path))
     a.create_function_definition()
+    a.create_function_implementation()
+
+def create_arm_intrinsics(base_path:str):
+    a = ARMCreateIntrinsicCreator("{}/include/generated/simd".format(base_path))
+    # a.create_function_definition()
     a.create_function_implementation()
 
 print("{}".format(str(Path(__file__))))
@@ -93,3 +104,4 @@ create_mask_broadcast_impl(base_path)
 create_set_impl(base_path)
 create_buffer_impl(base_path)
 create_intel_intrinsics(base_path)
+create_arm_intrinsics(base_path)

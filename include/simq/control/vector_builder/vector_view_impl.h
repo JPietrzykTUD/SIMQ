@@ -31,6 +31,8 @@ namespace tuddbs {
 #  include <generated/simq/control/vector_builder/vector_view_impl_sse.h>
 #  include <generated/simq/control/vector_builder/vector_view_impl_avx2.h>
 #  include <generated/simq/control/vector_builder/vector_view_impl_avx512.h>
+#elif defined(ARM_SIMDI)
+#  include <generated/simq/control/vector_builder/vector_view_impl_neon.h>
 #endif
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMQ_CONTROL_VECTOR_BUILDER_VECTOR_VIEW_IMPL_H

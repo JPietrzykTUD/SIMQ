@@ -19,7 +19,7 @@
 
 #include <utils/preprocessor.h>
 #include <simd/types/simd.h>
-#include <simd/types/intel/neon.h>
+#include <simd/types/arm/neon.h>
 #include <simd/instructions/declarations/math.h>
 
 #include <cstdint>

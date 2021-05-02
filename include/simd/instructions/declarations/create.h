@@ -53,6 +53,8 @@ namespace tuddbs {
 }
 #ifdef INTEL_SIMDI
 #  include <generated/simd/instructions/declarations/create.h>
+#elif defined(ARM_SIMDI)
+#  include <generated/simd/instructions/declarations/create.h>
 #endif
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_INSTRUCTIONS_DECLARATIONS_CREATE_H

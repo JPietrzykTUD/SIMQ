@@ -104,8 +104,8 @@ def write_SIMQBuilderMaskBroadCast_to_file(file_name, vector_spec_list):
         f = open("{}_{vecext}.h".format(file_name, vecext=vec_reg.vector_extension), "w")
         f.write(get_license_text())
         code = '''
-#ifndef TUDDBS_SIMQ_INCLUDE_GENERATED_SIMQ_CONTROL_VECTOR_BUILDER_BUILD_VARIANTS_MASK_BROADCAST_INTEL_IMPL_{vecext}_H
-#define TUDDBS_SIMQ_INCLUDE_GENERATED_SIMQ_CONTROL_VECTOR_BUILDER_BUILD_VARIANTS_MASK_BROADCAST_INTEL_IMPL_{vecext}_H
+#ifndef TUDDBS_SIMQ_INCLUDE_GENERATED_SIMQ_CONTROL_VECTOR_BUILDER_BUILD_VARIANTS_MASK_BROADCAST_IMPL_{vecext}_H
+#define TUDDBS_SIMQ_INCLUDE_GENERATED_SIMQ_CONTROL_VECTOR_BUILDER_BUILD_VARIANTS_MASK_BROADCAST_IMPL_{vecext}_H
 #include <utils/preprocessor.h>
 #include <simd/types/simd.h>
 #include <cstdint>

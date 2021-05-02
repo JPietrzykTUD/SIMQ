@@ -19,7 +19,7 @@
 
 #include <utils/preprocessor.h>
 #include <simd/types/simd.h>
-#include <simd/types/intel/neon.h>
+#include <simd/types/arm/neon.h>
 #include <simd/instructions/declarations/create.h>
 
 #include <cstdint>
@@ -338,14 +338,14 @@ namespace tuddbs {
          );
       return
          (
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 7 ] )      ) |
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 6 ] ) >> 1 ) |
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 5 ] ) >> 2 ) |
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 4 ] ) >> 3 ) |
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 3 ] ) >> 4 ) |
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 2 ] ) >> 5 ) |
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 1 ] ) >> 6 ) |
-            ( ( (typename neon< uint16_t >::mask_t) ( t[ 0 ] ) >> 7 )
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 7 ] )      ) |
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 6 ] ) >> 1 ) |
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 5 ] ) >> 2 ) |
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 4 ] ) >> 3 ) |
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 3 ] ) >> 4 ) |
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 2 ] ) >> 5 ) |
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 1 ] ) >> 6 ) |
+            ( ( (typename neon< uint16_t >::mask_t)  t[ 0 ] ) >> 7 )
          );
    }
 
@@ -365,10 +365,10 @@ namespace tuddbs {
          );
       return
          (
-            ( ( (typename neon< uint32_t >::mask_t) t[ 3 ] )      ) |
-            ( ( (typename neon< uint32_t >::mask_t) t[ 2 ] ) >> 1 ) |
-            ( ( (typename neon< uint32_t >::mask_t) t[ 1 ] ) >> 2 ) |
-            ( ( (typename neon< uint32_t >::mask_t) t[ 0 ] ) >> 3 )
+            ( ( (typename neon< uint32_t >::mask_t) t[ 3 ] ) >> 4 ) |
+            ( ( (typename neon< uint32_t >::mask_t) t[ 2 ] ) >> 5 ) |
+            ( ( (typename neon< uint32_t >::mask_t) t[ 1 ] ) >> 6 ) |
+            ( ( (typename neon< uint32_t >::mask_t) t[ 0 ] ) >> 7 )
          );
    }
 

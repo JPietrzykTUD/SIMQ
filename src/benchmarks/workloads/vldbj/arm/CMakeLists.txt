@@ -1,0 +1,1 @@
+create_benchmark(benchmark_vldb_arm workload_vldbj.cpp -pthread)

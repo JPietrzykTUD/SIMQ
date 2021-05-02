@@ -72,6 +72,8 @@
 #  include <simd/instructions/arm/neon/compare_neon.h>
 #  include <simd/instructions/arm/neon/math_neon.h>
 #  include <simd/instructions/arm/neon/bitwise_neon.h>
+#  include <generated/simd/instructions/arm/neon/create_neon.h>
+#  include <simd/utils/print.h>
 #endif
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_INTRIN_H

@@ -19,7 +19,7 @@
 
 #include <utils/preprocessor.h>
 #include <simd/types/simd.h>
-#include <simd/types/intel/neon.h>
+#include <simd/types/arm/neon.h>
 #include <simd/instructions/declarations/io.h>
 
 #include <cstdint>
@@ -31,7 +31,7 @@ namespace tuddbs {
    load< neon < uint8_t > >(
       typename neon< uint8_t >::base_t * const a
    ) {
-      vld1q_u8( a );
+      return vld1q_u8( a );
    }
 
    template< >
@@ -40,7 +40,7 @@ namespace tuddbs {
    load< neon < uint16_t > >(
       typename neon< uint16_t >::base_t * const a
    ) {
-      vld1q_u16( a );
+      return vld1q_u16( a );
    }
 
    template< >
@@ -49,7 +49,7 @@ namespace tuddbs {
    load< neon < uint32_t > >(
       typename neon< uint32_t >::base_t * const a
    ) {
-      vld1q_u32( a );
+      return vld1q_u32( a );
    }
 
    template< >
@@ -58,7 +58,7 @@ namespace tuddbs {
    load< neon < uint64_t > >(
       typename neon< uint64_t >::base_t * const a
    ) {
-      vld1q_u64( a );
+      return vld1q_u64( a );
    }      
 
 
@@ -134,7 +134,7 @@ namespace tuddbs {
             ) {
             res[ i ] = *( base + ( ( ( std::size_t ) idx[ i ] ) * Scale ) );
          }
-         return load< neon< T > >( res.data( ) ) );
+         return load< neon< T > >( res.data( ) );
       }
    };
    
@@ -144,22 +144,7 @@ namespace tuddbs {
    load_mask< neon < uint8_t > >(
       typename neon< uint8_t >::mask_t * const mask_ptr
    ) {
-      uint8x16_t cmp = { 
-         1, 2, 4, 8, 16, 32, 64, 128, 1, 2, 4, 8, 16, 32, 64, 128 
-      };
-
-      uint16_t mask = *mask_ptr;
-      return 
-         vceqq_u8(
-            vandq_u8(
-               vcombine_u8(
-                  vdup_n_u8( (uint8_t) mask ),
-                  vdup_n_u8( (uint8_t) ( mask >> 8 ) ) 
-               ),  
-               cmp 
-            ),  
-            cmp 
-         );
+      return *mask_ptr;
    }
 
    template< >
@@ -168,18 +153,7 @@ namespace tuddbs {
    load_mask< neon < uint16_t > >(
       typename neon< uint16_t >::mask_t * const mask_ptr
    ) {
-      uint16x8_t cmp = { 
-         1, 2, 4, 8, 16, 32, 64, 128
-      };
-
-      return 
-         vceqq_u16(
-            vandq_u16(
-               vdupq_n_u16( ( uint16_t ) *mask_ptr ),  
-               cmp 
-            ),  
-            cmp 
-         );
+      return *mask_ptr;
    }
 
    template< >
@@ -188,18 +162,7 @@ namespace tuddbs {
    load_mask< neon < uint32_t > >(
       typename neon< uint32_t >::mask_t * const mask_ptr
    ) {
-      uint32x4_t cmp = { 
-         1, 2, 4, 8
-      };
-
-      return 
-         vceqq_u32(
-            vandq_u32(
-               vdupq_n_u32( ( uint32_t ) *mask_ptr ),  
-               cmp 
-            ),  
-            cmp 
-         );
+      return *mask_ptr;
    }
 
    template< >
@@ -208,18 +171,7 @@ namespace tuddbs {
    load_mask< neon < uint64_t > >(
       typename neon< uint64_t >::mask_t * const mask_ptr
    ) {
-      uint64x2_t cmp = { 
-         1, 2
-      };
-
-      return 
-         vceqq_u64(
-            vandq_u64(
-               vdupq_n_u64( ( uint64_t ) *mask_ptr ),  
-               cmp 
-            ),  
-            cmp 
-         );
+      return *mask_ptr;
    }
 
 

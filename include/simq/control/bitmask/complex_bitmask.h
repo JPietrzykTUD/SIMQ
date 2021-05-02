@@ -32,52 +32,72 @@ namespace tuddbs {
    
    template< typename T >
    NO_DISCARD FORCE_INLINE
-   
    uint64_t interleave_with_one_zero( T a ) {
+#ifdef INTEL_SIMDI
       auto _a = _mm_set1_epi64x( a );
       return _mm_extract_epi64( _mm_clmulepi64_si128( _a, _a, 0 ), 0 );
+#elif defined(ARM_SIMDI)
+      auto _a = vmull_p64( a, a );
+      return vreinterpretq_s64_p128(_a)[0];
+#endif
    }
    
    template< typename T >
    NO_DISCARD FORCE_INLINE
-   
    uint64_t interleave_with_three_zeroes( T a ) {
+#ifdef INTEL_SIMDI
       auto _a = _mm_set1_epi64x( a );
       auto _b = _mm_clmulepi64_si128( _a, _a, 0 );
       return _mm_extract_epi64( _mm_clmulepi64_si128( _b, _b, 0 ), 0 );
+#elif defined(ARM_SIMDI)
+      uint64_t _a = vreinterpretq_s64_p128(vmull_p64( a, a ))[0];
+      auto _b = vmull_p64( _a, _a );
+      return vreinterpretq_s64_p128(_b)[0];
+#endif
    }
    
    template< typename T >
    NO_DISCARD FORCE_INLINE
-   
    uint64_t interleave_with_seven_zeroes( T a ) {
+#ifdef INTEL_SIMDI
       auto _a = _mm_set1_epi64x( a );
       auto _b = _mm_clmulepi64_si128( _a, _a, 0 );
       auto _c = _mm_clmulepi64_si128( _b, _b, 0 );
       return _mm_extract_epi64( _mm_clmulepi64_si128( _c, _c, 0 ), 0 );
+#elif defined(ARM_SIMDI)
+      uint64_t _a = vreinterpretq_s64_p128(vmull_p64( a, a ) )[0];
+      uint64_t _b = vreinterpretq_s64_p128(vmull_p64( _a, _a ) )[0];
+      auto _c = vmull_p64( _b, _b );
+      return vreinterpretq_s64_p128(_c)[0];
+#endif
    }
    
    template< typename T >
    NO_DISCARD FORCE_INLINE
-   
    uint64_t interleave_with_15_zeroes( T a ) {
+#ifdef INTEL_SIMDI
       auto _a = _mm_set1_epi64x( a );
       auto _b = _mm_clmulepi64_si128( _a, _a, 0 );
       auto _c = _mm_clmulepi64_si128( _b, _b, 0 );
       auto _d = _mm_clmulepi64_si128( _c, _c, 0 );
       return _mm_extract_epi64( _mm_clmulepi64_si128( _d, _d, 0 ), 0 );
+#elif defined(ARM_SIMDI)
+      uint64_t _a = vreinterpretq_s64_p128(vmull_p64( a, a ) )[0];
+      uint64_t _b = vreinterpretq_s64_p128(vmull_p64( _a, _a ) )[0];
+      uint64_t _c = vreinterpretq_s64_p128(vmull_p64( _b, _b ) )[0];
+      auto _d = vmull_p64( _c, _c );
+      return vreinterpretq_s64_p128(_d)[0];
+#endif
    }
    
    template< typename T >
    NO_DISCARD FORCE_INLINE
-   
    uint64_t interleave_with_31_zeroes( T a ) {
       return ( a & 0b1 ) | ( ( a & 0b01 ) << 32 );
    }
    
    template< typename T >
    NO_DISCARD FORCE_INLINE
-   
    uint64_t interleave_with_63_zeroes( T a ) {
       return ( a & 0b1 );
    }

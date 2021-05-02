@@ -31,6 +31,8 @@ namespace tuddbs {
 #include <generated/simq/control/vector_builder/build_variants/buffer/buffer_sse.h>
 #include <generated/simq/control/vector_builder/build_variants/buffer/buffer_avx2.h>
 #include <generated/simq/control/vector_builder/build_variants/buffer/buffer_avx512.h>
+#elif defined(ARM_SIMDI)
+#include <generated/simq/control/vector_builder/build_variants/buffer/buffer_neon.h>
 #endif
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMQ_CONTROL_VECTOR_BUILDER_BUILD_VARIANTS_BUFFER_H

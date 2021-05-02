@@ -36,23 +36,23 @@ namespace tuddbs {
       
       using base_t = T;
       using vector_t =
-      typename std::conditional<
-         std::is_integral< T >::value,
-         //todo: check for signed or unsigned!!!
-         std::conditional_t <
-         sizeof( T ) == 1,
-         uint8x16_t,
-         std::conditional_t <
-         sizeof( T ) == 2,
-         uint16x8_t,
-         std::conditional_t <
-         sizeof( T ) == 4,
-         uint32x4_t,
-         uint64x2_t
-      >
-      >
-      >,
-      float32x4_t //todo: check for float and double
+         typename std::conditional_t<
+            std::is_integral_v< T >,
+            //todo: check for signed or unsigned!!!
+            std::conditional_t <
+               sizeof( T ) == 1,
+               uint8x16_t,
+               std::conditional_t <
+                  sizeof( T ) == 2,
+                  uint16x8_t,
+                  std::conditional_t <
+                     sizeof( T ) == 4,
+                     uint32x4_t,
+                     uint64x2_t
+                  >
+               >
+            >,
+            float32x4_t //todo: check for float and double
       >;
 
 

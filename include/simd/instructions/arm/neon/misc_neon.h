@@ -117,11 +117,11 @@ namespace tuddbs {
 
    template< >
    NO_DISCARD FORCE_INLINE
-   typename neon< uint32_t >::vector_t
-   blend< neon< uint32_t > >(
-      typename neon< uint32_t >::vector_t const value,
-      typename neon< uint32_t >::mask_t const mask,
-      typename neon< uint32_t >::vector_t const src
+   typename neon< uint64_t >::vector_t
+   blend< neon< uint64_t > >(
+      typename neon< uint64_t >::vector_t const value,
+      typename neon< uint64_t >::mask_t const mask,
+      typename neon< uint64_t >::vector_t const src
    ) {
       uint64x2_t cmp = { 
          1, 2

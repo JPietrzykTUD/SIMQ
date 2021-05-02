@@ -109,8 +109,8 @@ namespace tuddbs {
          std::string discrete_cpu_freq,
          uint64_t const dummy,
          column< typename VectorExtension::base_t > * const aggregation_result_column1,
-         column< typename VectorExtension::base_t > * const aggregation_result_column2 = nullptr,
-         column< typename VectorExtension::base_t > * const aggregation_result_column3 = nullptr
+         [[maybe_unused]]column< typename VectorExtension::base_t > * const aggregation_result_column2 = nullptr,
+         [[maybe_unused]]column< typename VectorExtension::base_t > * const aggregation_result_column3 = nullptr
       ) {
          std::size_t succ_op_count = 0;
          if( QueryCount2ndStageOp3 > 0 ) {

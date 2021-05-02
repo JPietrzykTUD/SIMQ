@@ -17,10 +17,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from pathlib import Path
 
 from simq.general.license import get_license_text
-from simq.vector.types import VectorExtension, DataType, VectorRegister
+from simq.vector.types import IntelVectorExtension, DataType, VectorRegister
 
 
-class CreateIntrinsicCreator:
+class IntelCreateIntrinsicCreator:
     def __init__(self, base_path: str):
         Path(base_path).mkdir(parents=True, exist_ok=True)
         self.definition_path = "{}/instructions/declarations".format(base_path)
@@ -32,7 +32,7 @@ class CreateIntrinsicCreator:
         f = open("{}/create.h".format(self.definition_path), "w")
         elem_count_set = set()
         for data_type in DataType:
-            for vector_extension in VectorExtension:
+            for vector_extension in IntelVectorExtension:
                 elem_count_set.add(VectorRegister(vector_extension, data_type).element_count)
         elem_count_list = []
         for val in elem_count_set:
@@ -65,7 +65,7 @@ namespace tuddbs {{
         f.close()
 
     def create_function_implementation(self):
-        for vector_extension in VectorExtension:
+        for vector_extension in IntelVectorExtension:
             path = "{}/{}".format(self.implementation_path, vector_extension)
             Path(path).mkdir(parents=True, exist_ok=True)
             f = open("{}/create_{}.h".format(path, vector_extension), "w")
@@ -76,9 +76,9 @@ namespace tuddbs {{
                 parameter = "typename {vecext}::base_t const val{idx}".format(vecext=vector_register.to_cpp(), idx = vector_register.element_count-1)
                 additional_spec = ""
                 if data_type == DataType.uint64_t:
-                    if vector_extension == VectorExtension.sse or vector_extension == VectorExtension.avx2:
+                    if vector_extension == IntelVectorExtension.sse or vector_extension == IntelVectorExtension.avx2:
                         additional_spec = "x"
-                instruction = "return {}_set_{}{}(val{}".format(vector_extension.to_intrin_prefix(), data_type.to_intrin_postfix(), additional_spec, vector_register.element_count-1)
+                instruction = "return {}_set_{}{}(val{}".format(vector_extension.to_intrin_prefix(), data_type.to_intel_intrin_postfix(), additional_spec, vector_register.element_count - 1)
                 for i in range(1, vector_register.element_count):
                     parameter += ",\n   typename {vecext}::base_t const val{idx}".format(vecext=vector_register.to_cpp(), idx = vector_register.element_count-i-1)
                     instruction += ", val{}".format(vector_register.element_count-i-1)
