@@ -1,6 +1,6 @@
 /*
  * This file is part of the SIMQ Project (https://github.com/JPietrzykTUD/SIMQ).
- * Copyright (c) 2020 Johannes Pietrzyk.
+ * Copyright (c) 2021 Johannes Pietrzyk.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -173,6 +173,32 @@ namespace tuddbs {
          return "AVX512;64";
       }
    };
+
+#elif defined(ARM_SIMDI)
+   template< >
+   struct vec_ext_to_string_t< neon< uint8_t > > {
+      static std::string apply( void ) {
+         return "NEON;8";
+      }
+   };
+   template< >
+   struct vec_ext_to_string_t< neon< uint16_t > > {
+      static std::string apply( void ) {
+         return "NEON;16";
+      }
+   };
+   template< >
+   struct vec_ext_to_string_t< neon< uint32_t > > {
+      static std::string apply( void ) {
+         return "NEON;32";
+      }
+   };
+   template< >
+   struct vec_ext_to_string_t< neon< uint64_t > > {
+      static std::string apply( void ) {
+         return "NEON;64";
+      }
+   };
 #endif
 }
 

@@ -22,6 +22,10 @@
 #define SIMD_MALLOC(size) _mm_malloc(size, 64)
 #define SIMD_FREE(ptr) _mm_free(ptr)
 
+#elif defined(ARM_SIMDI)
+
+#define SIMD_MALLOC(size) malloc(size)
+#define SIMD_FREE(ptr) free(ptr)
 
 #endif
 

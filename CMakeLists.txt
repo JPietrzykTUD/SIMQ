@@ -141,6 +141,11 @@ IF(${CPLATFORM} MATCHES "INTEL")
         set(TEST_COMPILE_OPTIONS "-O0;-g")
         set(GENERAL_COMPILE_WARNINGS_DEFINITIONS "-Werror;-Wall;-Wextra;-Wno-ignored-attributes;-Wno-unused-parameter;-Wno-uninitialized;-Wno-missing-braces;-pedantic;-Wno-unused-command-line-argument")
     ENDIF()
+ELSEIF(${CPLATFORM} MATCHES "ARM")
+    set(GENERAL_LINK_OPTIONS "-static-libgcc;-static-libstdc++")
+    message("Platform ARM")
+    set(GENERAL_COMPILE_DEFINITIONS "${SPECS};C17=True;INTRIN=True;ARM_SIMDI=True")
+    set(GENERAL_COMPILE_OPTIONS "-msse2;-msse4.2;-mpclmul;-mavx2;-mavx512f;-mavx512bw;-mavx512vl;-mavx512dq")
 ENDIF()
 
 

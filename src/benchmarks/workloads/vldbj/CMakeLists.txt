@@ -1,1 +1,5 @@
-add_subdirectory(intel)
+IF(${CPLATFORM} MATCHES "INTEL")
+    add_subdirectory(intel)
+ELSEIF(${CPLATFORM} MATCHES "ARM")
+    add_subdirectory(arm)
+ENDIF()

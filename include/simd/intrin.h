@@ -19,6 +19,8 @@
 
 #ifdef INTEL_SIMDI
 #  include <immintrin.h>
+#elif defined(ARM_SIMDI)
+#  include "arm_neon.h"
 #endif
 
 //TYPES
@@ -28,6 +30,8 @@
 #  include <simd/types/intel/sse.h>
 #  include <simd/types/intel/avx2.h>
 #  include <simd/types/intel/avx512.h>
+#elif defined(ARM_SIMDI)
+#  include <simd/types/arm/neon.h>
 #endif
 //Functions
 #include <simd/instructions/declarations/misc.h>
@@ -61,6 +65,13 @@
 #  include <generated/simd/instructions/intel/avx2/create_avx2.h>
 #  include <generated/simd/instructions/intel/avx512/create_avx512.h>
 #  include <simd/utils/print.h>
+#elif defined(ARM_SIMDI)
+#  include <simd/instructions/arm/neon/misc_neon.h>
+#  include <simd/instructions/arm/neon/create_neon.h>
+#  include <simd/instructions/arm/neon/io_neon.h>
+#  include <simd/instructions/arm/neon/compare_neon.h>
+#  include <simd/instructions/arm/neon/math_neon.h>
+#  include <simd/instructions/arm/neon/bitwise_neon.h>
 #endif
 
 #endif //TUDDBS_SIMQ_INCLUDE_SIMD_INTRIN_H

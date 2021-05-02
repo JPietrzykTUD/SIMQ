@@ -23,7 +23,7 @@
 
 #include <simd/types/simd.h>
 
-#include "arm_neon.h"
+
 
 namespace tuddbs {
    
@@ -32,7 +32,7 @@ namespace tuddbs {
       static_assert( std::is_arithmetic< T >::value, "Basetype has to be an arithmetic type." );
       
       template< typename U >
-      using cast_t = sse< U >;
+      using cast_t = neon< U >;
       
       using base_t = T;
       using vector_t =
@@ -55,21 +55,13 @@ namespace tuddbs {
       float32x4_t //todo: check for float and double
       >;
 
-#if defined(INTEL_INTRINSICS_AVX512_VL) && defined(INTEL_INTRINSICS_AVX512_BW)
-      using mask_t =
-         typename std::conditional<
-            sizeof( T ) == 1,
-            __mmask16,
-            __mmask8
-         >::type;
-#else
+
       using mask_t =
       typename std::conditional<
          sizeof( T ) == 1,
          uint16_t,
          uint8_t
       >::type;
-#endif
    };
 }
 
