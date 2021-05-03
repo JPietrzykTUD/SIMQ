@@ -270,6 +270,7 @@ void run_experiment( std::size_t data_size ) {
    workload< avx512 < uint64_t >, 1, 8, 3 > ::run( data_size );
    std::cerr << "Experiment Batch Size\n";
    workload< avx512 < uint64_t >, 1, 8, 1, 4_KiB > ::run( data_size );
+   workload< avx512 < uint64_t >, 1, 8, 1, 512_KiB > ::run( data_size );
    workload< avx512 < uint64_t >, 1, 8, 1, 4_MiB > ::run( data_size );
 }
 
@@ -277,7 +278,7 @@ int main( void ) {
    auto               t  = std::time( nullptr );
    auto               tm = *std::localtime( &t );
    std::ostringstream oss;
-   oss << "vldbj_results_" << std::put_time( &tm, "%Y_%m_%d_%H-%M" ) << ".csv";
+   oss << "vldbj_results_xeon_" << std::put_time( &tm, "%Y_%m_%d_%H-%M" ) << ".csv";
    auto str = oss.str( );
    std::cerr << "Executing Benchmarks for VLDB on Xeon Gold.\n";
    std::cout << str.c_str( ) << "\n";
