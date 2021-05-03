@@ -260,90 +260,40 @@ void run_experiment( std::size_t data_size ) {
    workload< neon < uint16_t >, 1, 8, 1, 4_KiB > ::run( data_size );
    workload< neon < uint16_t >, 1, 8, 1, 4_MiB > ::run( data_size );
 }
-void run_experiment2( std::size_t data_size ) {
-   using namespace tuddbs;
-   std::cerr << "Experiment value size\n";
-   workload< neon < uint8_t >, 1, 16, 1 > ::run( data_size );
-   workload< neon < uint16_t >, 1, 8, 1 > ::run( data_size );
-   workload< neon < uint32_t >, 1, 4, 1 > ::run( data_size );
-   workload< neon < uint64_t >, 1, 2, 1 > ::run( data_size );
-   std::cerr << "Experiment query count\n";
-   workload< neon < uint64_t >, 1, 1, 1 > ::run( data_size );
-   std::cerr << "Experiment column count\n";
-   workload< neon < uint64_t >, 2, 2, 1 > ::run( data_size );
-   std::cerr << "Experiment succeeding operators\n";
-   workload< neon < uint64_t >, 1, 2, 2 > ::run( data_size );
-   std::cerr << "Experiment Batch Size\n";
-   workload< neon < uint64_t >, 1, 2, 1, 4_KiB > ::run( data_size );
-   workload< neon < uint64_t >, 1, 2, 1, 4_MiB > ::run( data_size );
-}
 
 int main( void ) {
-   {
-      auto               t  = std::time( nullptr );
-      auto               tm = *std::localtime( &t );
-      std::ostringstream oss;
-      oss << "vldbj_results_uint16_" << std::put_time( &tm, "%Y_%m_%d_%H-%M" ) << ".csv";
-      auto str = oss.str( );
-      std::cerr << "Executing Benchmarks for VLDB on ARM focussing uint16_t.\n";
-      std::cout << str.c_str( ) << "\n";
-      global::outputfile.open( str.c_str( ) );
-      if( !global::outputfile.is_open( ) ) {
-         std::cerr << "Could not open for writing: " << str << "\n";
-         return 1;
-      }
-      
-      auto start = std::chrono::system_clock::now( );
-      using namespace tuddbs;
-      global::outputfile << get_definitions( "#" );
-      measurement_header( );
-      run_experiment( 128_MiB );
-      auto                            end             = std::chrono::system_clock::now( );
-      std::chrono::duration< double > elapsed_seconds = end - start;
-      std::time_t                     start_time      = std::chrono::system_clock::to_time_t( start );
-      std::time_t                     end_time        = std::chrono::system_clock::to_time_t( end );
-      global::outputfile
-         << "#Started:  "
-         << std::ctime( &start_time )
-         << "#End:      "
-         << std::ctime( &end_time )
-         << "#Duration: "
-         << elapsed_seconds.count( )
-         << "s.";
-      global::outputfile.close( );
+
+   auto               t  = std::time( nullptr );
+   auto               tm = *std::localtime( &t );
+   std::ostringstream oss;
+   oss << "vldbj_results_uint16_" << std::put_time( &tm, "%Y_%m_%d_%H-%M" ) << ".csv";
+   auto str = oss.str( );
+   std::cerr << "Executing Benchmarks for VLDB on ARM focussing uint16_t.\n";
+   std::cout << str.c_str( ) << "\n";
+   global::outputfile.open( str.c_str( ) );
+   if( !global::outputfile.is_open( ) ) {
+      std::cerr << "Could not open for writing: " << str << "\n";
+      return 1;
    }
-   {
-      auto               t  = std::time( nullptr );
-      auto               tm = *std::localtime( &t );
-      std::ostringstream oss;
-      oss << "vldbj_results_uint64_t" << std::put_time( &tm, "%Y_%m_%d_%H-%M" ) << ".csv";
-      auto str = oss.str( );
-      std::cerr << "Executing Benchmarks for VLDB on ARM focussing uint64_t.\n";
-      std::cout << str.c_str( ) << "\n";
-      global::outputfile.open( str.c_str( ) );
-      if( !global::outputfile.is_open( ) ) {
-         std::cerr << "Could not open for writing: " << str << "\n";
-         return 1;
-      }
    
-      auto start = std::chrono::system_clock::now( );
-      using namespace tuddbs;
-      global::outputfile << get_definitions( "#" );
-      measurement_header( );
-      run_experiment2( 128_MiB );
-      auto                            end             = std::chrono::system_clock::now( );
-      std::chrono::duration< double > elapsed_seconds = end - start;
-      std::time_t                     start_time      = std::chrono::system_clock::to_time_t( start );
-      std::time_t                     end_time        = std::chrono::system_clock::to_time_t( end );
-      global::outputfile
-         << "#Started:  "
-         << std::ctime( &start_time )
-         << "#End:      "
-         << std::ctime( &end_time )
-         << "#Duration: "
-         << elapsed_seconds.count( )
-         << "s.";
-      global::outputfile.close( );
-   }
+   auto start = std::chrono::system_clock::now( );
+   using namespace tuddbs;
+   global::outputfile << get_definitions( "#" );
+   measurement_header( );
+   run_experiment( 128_MiB );
+   auto                            end             = std::chrono::system_clock::now( );
+   std::chrono::duration< double > elapsed_seconds = end - start;
+   std::time_t                     start_time      = std::chrono::system_clock::to_time_t( start );
+   std::time_t                     end_time        = std::chrono::system_clock::to_time_t( end );
+   global::outputfile
+      << "#Started:  "
+      << std::ctime( &start_time )
+      << "#End:      "
+      << std::ctime( &end_time )
+      << "#Duration: "
+      << elapsed_seconds.count( )
+      << "s.";
+   global::outputfile.close( );
+
    return 0;
 }
