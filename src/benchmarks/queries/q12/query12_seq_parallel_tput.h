@@ -127,15 +127,23 @@ namespace tuddbs {
          
          std::size_t column_id = 0;
          std::vector <std::thread> pool;
-         cpu_set_t cpuset;
          for(
             std::size_t            tid       = 0; tid < ThreadCount; ++tid
             ) {
+            cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
-#ifdef KNL
-            CPU_SET( ( (tid*68)%271 ), &cpuset );
+#ifdef CPU_PINNING_DENSE
+            #ifdef KNL
+                  CPU_SET( ( (tid*68)%271 ), &cpuset );
+   #elif defined(XEON)
+                  CPU_SET( ( (tid*12)%23 ), &cpuset );
+   #else
+                  CPU_SET( tid, &cpuset );
+   #endif
+#elif defined(CPU_PINNING_LOOSE)
+            CPU_SET( tid, &cpuset );
 #else
-            CPU_SET(tid, &cpuset);
+            static_assert(false, "No Pinning strategy defined.");
 #endif
             // Parallelize
             pool.emplace_back( std::thread( metamagic, tid, column_id ) );
@@ -329,15 +337,23 @@ namespace tuddbs {
          
          std::size_t column_id = 0;
          std::vector <std::thread> pool;
-         cpu_set_t cpuset;
          for(
             std::size_t            tid       = 0; tid < ThreadCount; ++tid
             ) {
+            cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
-#ifdef KNL
-            CPU_SET( ( (tid*68)%271 ), &cpuset );
+#ifdef CPU_PINNING_DENSE
+            #ifdef KNL
+                  CPU_SET( ( (tid*68)%271 ), &cpuset );
+   #elif defined(XEON)
+                  CPU_SET( ( (tid*12)%23 ), &cpuset );
+   #else
+                  CPU_SET( tid, &cpuset );
+   #endif
+#elif defined(CPU_PINNING_LOOSE)
+            CPU_SET( tid, &cpuset );
 #else
-            CPU_SET(tid, &cpuset);
+            static_assert(false, "No Pinning strategy defined.");
 #endif
             // Parallelize
             pool.emplace_back( std::thread( metamagic, tid, column_id ) );

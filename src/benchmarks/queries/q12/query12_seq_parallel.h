@@ -189,7 +189,26 @@ namespace tuddbs {
             std::vector <std::thread> pool;
             /* Launch Q1 */
             for (std::size_t query_id = 0; query_id < QueryCount2ndStageOp1; ++query_id ) {
+               cpu_set_t cpuset;
+               CPU_ZERO(&cpuset);
+#ifdef CPU_PINNING_DENSE
+               #ifdef KNL
+                  CPU_SET( ( (query_id*68)%271 ), &cpuset );
+   #elif defined(XEON)
+                  CPU_SET( ( (query_id*12)%23 ), &cpuset );
+   #else
+                  CPU_SET( query_id, &cpuset );
+   #endif
+#elif defined(CPU_PINNING_LOOSE)
+               CPU_SET( query_id, &cpuset );
+#else
+               static_assert(false, "No Pinning strategy defined.");
+#endif
                pool.emplace_back( std::thread( magic1, tid, query_id, column_id ) );
+               int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+               if (rc != 0) {
+                  std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+               }
                if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount ) == 0 ) ) {
                   ++column_id;
                }
@@ -197,7 +216,26 @@ namespace tuddbs {
             }
             /* Launch Q2 */
             for( std::size_t query_id = 0; query_id < QueryCount2ndStageOp2; ++query_id ) {
+               cpu_set_t cpuset;
+               CPU_ZERO(&cpuset);
+#ifdef CPU_PINNING_DENSE
+               #ifdef KNL
+                  CPU_SET( ( (query_id*68)%271 ), &cpuset );
+   #elif defined(XEON)
+                  CPU_SET( ( (query_id*12)%23 ), &cpuset );
+   #else
+                  CPU_SET( query_id, &cpuset );
+   #endif
+#elif defined(CPU_PINNING_LOOSE)
+               CPU_SET( query_id, &cpuset );
+#else
+               static_assert(false, "No Pinning strategy defined.");
+#endif
                pool.emplace_back( std::thread( magic2, tid, query_id, column_id ) );
+               int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+               if (rc != 0) {
+                  std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+               }
                if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount2ndStageOp1 ) == 0 ) ) {
                   ++column_id;
                }
@@ -370,7 +408,26 @@ namespace tuddbs {
             std::vector <std::thread> pool;
             /* Launch Q1 */
             for (std::size_t query_id = 0; query_id < QueryCount2ndStageOp1; ++query_id ) {
+               cpu_set_t cpuset;
+               CPU_ZERO(&cpuset);
+#ifdef CPU_PINNING_DENSE
+               #ifdef KNL
+                  CPU_SET( ( (query_id*68)%271 ), &cpuset );
+   #elif defined(XEON)
+                  CPU_SET( ( (query_id*12)%23 ), &cpuset );
+   #else
+                  CPU_SET( query_id, &cpuset );
+   #endif
+#elif defined(CPU_PINNING_LOOSE)
+               CPU_SET( query_id, &cpuset );
+#else
+               static_assert(false, "No Pinning strategy defined.");
+#endif
                pool.emplace_back( std::thread( magic1, tid, query_id, column_id ) );
+               int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+               if (rc != 0) {
+                  std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+               }
                if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount ) == 0 ) ) {
                   ++column_id;
                }
@@ -378,7 +435,26 @@ namespace tuddbs {
             }
             /* Launch Q2 */
             for( std::size_t query_id = 0; query_id < QueryCount2ndStageOp2; ++query_id ) {
+               cpu_set_t cpuset;
+               CPU_ZERO(&cpuset);
+#ifdef CPU_PINNING_DENSE
+               #ifdef KNL
+                  CPU_SET( ( (query_id*68)%271 ), &cpuset );
+   #elif defined(XEON)
+                  CPU_SET( ( (query_id*12)%23 ), &cpuset );
+   #else
+                  CPU_SET( query_id, &cpuset );
+   #endif
+#elif defined(CPU_PINNING_LOOSE)
+               CPU_SET( query_id, &cpuset );
+#else
+               static_assert(false, "No Pinning strategy defined.");
+#endif
                pool.emplace_back( std::thread( magic2, tid, query_id, column_id ) );
+               int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+               if (rc != 0) {
+                  std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+               }
                if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount2ndStageOp1 ) == 0 ) ) {
                   ++column_id;
                }
@@ -387,7 +463,26 @@ namespace tuddbs {
             
             /* Launch Q3 */
             for( std::size_t query_id = 0; query_id < QueryCount2ndStageOp3; ++query_id ) {
+               cpu_set_t cpuset;
+               CPU_ZERO(&cpuset);
+#ifdef CPU_PINNING_DENSE
+               #ifdef KNL
+                  CPU_SET( ( (query_id*68)%271 ), &cpuset );
+   #elif defined(XEON)
+                  CPU_SET( ( (query_id*12)%23 ), &cpuset );
+   #else
+                  CPU_SET( query_id, &cpuset );
+   #endif
+#elif defined(CPU_PINNING_LOOSE)
+               CPU_SET( query_id, &cpuset );
+#else
+               static_assert(false, "No Pinning strategy defined.");
+#endif
                pool.emplace_back( std::thread( magic3, tid, query_id, column_id ) );
+               int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+               if (rc != 0) {
+                  std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+               }
                if( ( ( query_id + 1 ) % ( QueryCount_t::value / ColumnCount2ndStageOp1 ) == 0 ) ) {
                   ++column_id;
                }
