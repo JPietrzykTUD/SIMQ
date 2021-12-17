@@ -119,7 +119,7 @@ namespace tuddbs {
 #endif
                // Parallelize
                pool.emplace_back( std::thread( magic, query_id, column_id ) );
-               int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+               int rc = pthread_setaffinity_np(pool[query_id].native_handle(), sizeof(cpu_set_t), &cpuset);
                if (rc != 0) {
                   std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
                }
@@ -275,7 +275,7 @@ namespace tuddbs {
 #endif
                // Parallelize
                pool.emplace_back( std::thread( magic, query_id, column_id ) );
-               int rc = pthread_setaffinity_np(pool[tid].native_handle(), sizeof(cpu_set_t), &cpuset);
+               int rc = pthread_setaffinity_np(pool[query_id].native_handle(), sizeof(cpu_set_t), &cpuset);
                if (rc != 0) {
                   std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
                }
