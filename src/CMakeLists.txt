@@ -33,7 +33,8 @@ function(create_benchmark benchmark_name benchmark_file)
     target_link_libraries("${benchmark_name}_dense" PRIVATE "${GENERAL_LINK_OPTIONS};${BENCHMARK_LINK_OPTIONS};${ADDITIONAL_FLAGS}")
 
     if (DEFINED CMAKE_INSTALL_PATH)
-        install(TARGETS "${benchmark_name}" DESTINATION ${CMAKE_INSTALL_PATH})
+        install(TARGETS "${benchmark_name}_loose" DESTINATION ${CMAKE_INSTALL_PATH})
+        install(TARGETS "${benchmark_name}_dense" DESTINATION ${CMAKE_INSTALL_PATH})
     endif ()
 endfunction()
 
