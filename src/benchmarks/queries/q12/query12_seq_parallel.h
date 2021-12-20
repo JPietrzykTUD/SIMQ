@@ -200,7 +200,12 @@ namespace tuddbs {
                   CPU_SET( query_id, &cpuset );
    #endif
 #elif defined(CPU_PINNING_LOOSE)
+   #ifdef XEON
+               CPU_SET( (query_id%23 ), &cpuset );
+   #else
                CPU_SET( query_id, &cpuset );
+   #endif
+#else
 #else
                static_assert(false, "No Pinning strategy defined.");
 #endif
@@ -227,7 +232,11 @@ namespace tuddbs {
                   CPU_SET( query_id, &cpuset );
    #endif
 #elif defined(CPU_PINNING_LOOSE)
+   #ifdef XEON
+               CPU_SET( (query_id%23 ), &cpuset );
+   #else
                CPU_SET( query_id, &cpuset );
+   #endif
 #else
                static_assert(false, "No Pinning strategy defined.");
 #endif
@@ -419,7 +428,11 @@ namespace tuddbs {
                   CPU_SET( query_id, &cpuset );
    #endif
 #elif defined(CPU_PINNING_LOOSE)
+   #ifdef XEON
+               CPU_SET( (query_id%23 ), &cpuset );
+   #else
                CPU_SET( query_id, &cpuset );
+   #endif
 #else
                static_assert(false, "No Pinning strategy defined.");
 #endif
@@ -446,7 +459,11 @@ namespace tuddbs {
                   CPU_SET( query_id, &cpuset );
    #endif
 #elif defined(CPU_PINNING_LOOSE)
+   #ifdef XEON
+               CPU_SET( (query_id%23 ), &cpuset );
+   #else
                CPU_SET( query_id, &cpuset );
+   #endif
 #else
                static_assert(false, "No Pinning strategy defined.");
 #endif
@@ -474,7 +491,11 @@ namespace tuddbs {
                   CPU_SET( query_id, &cpuset );
    #endif
 #elif defined(CPU_PINNING_LOOSE)
+   #ifdef XEON
+               CPU_SET( (query_id%23 ), &cpuset );
+   #else
                CPU_SET( query_id, &cpuset );
+   #endif
 #else
                static_assert(false, "No Pinning strategy defined.");
 #endif

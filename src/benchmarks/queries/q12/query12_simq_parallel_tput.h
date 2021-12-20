@@ -202,7 +202,11 @@ namespace tuddbs {
                   CPU_SET( tid, &cpuset );
    #endif
 #elif defined(CPU_PINNING_LOOSE)
-            CPU_SET( tid, &cpuset );
+   #ifdef XEON
+               CPU_SET( (tid%23 ), &cpuset );
+   #else
+               CPU_SET( tid, &cpuset );
+   #endif
 #else
             static_assert(false, "No Pinning strategy defined.");
 #endif
@@ -470,7 +474,11 @@ namespace tuddbs {
                   CPU_SET( tid, &cpuset );
    #endif
 #elif defined(CPU_PINNING_LOOSE)
-            CPU_SET( tid, &cpuset );
+   #ifdef XEON
+               CPU_SET( (tid%23 ), &cpuset );
+   #else
+               CPU_SET( tid, &cpuset );
+   #endif
 #else
             static_assert(false, "No Pinning strategy defined.");
 #endif
