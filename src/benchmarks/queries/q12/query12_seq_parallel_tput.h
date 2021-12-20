@@ -133,7 +133,7 @@ namespace tuddbs {
             cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
 #ifdef CPU_PINNING_DENSE
-            #ifdef KNL
+   #ifdef KNL
                   CPU_SET( ( (tid*68)%271 ), &cpuset );
    #elif defined(XEON)
                   CPU_SET( ( (tid*12)%23 ), &cpuset );

@@ -206,7 +206,6 @@ namespace tuddbs {
                CPU_SET( query_id, &cpuset );
    #endif
 #else
-#else
                static_assert(false, "No Pinning strategy defined.");
 #endif
                pool.emplace_back( std::thread( magic1, tid, query_id, column_id ) );
